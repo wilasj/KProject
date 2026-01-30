@@ -1,0 +1,12 @@
+# .NET build artifacts
+*/bin/
+*/obj/
+
+# JetBrains Rider
+.idea/
+*.sln.DotSettings.user
+
+# User-specific files
+*.user
+*.userosscache
+*.suo

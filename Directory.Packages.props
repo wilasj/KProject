@@ -1,0 +1,10 @@
+<Project>
+    <PropertyGroup>
+        <ManagePackageVersionsCentrally>true</ManagePackageVersionsCentrally>
+        <!-- https://blog.jetbrains.com/dotnet/2022/11/07/nuget-central-package-management-comes-to-jetbrains-rider/ -->
+        <NoWarn>NU1507</NoWarn>
+    </PropertyGroup>
+    <ItemGroup>
+        
+    </ItemGroup>
+</Project>

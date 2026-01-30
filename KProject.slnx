@@ -1,0 +1,7 @@
+<Solution>
+  <Folder Name="/Configs/">
+    <File Path="Directory.Build.props" />
+    <File Path="Directory.Packages.props" />
+  </Folder>
+  <Project Path="KProject.Domain/KProject.Domain.csproj" />
+</Solution>
