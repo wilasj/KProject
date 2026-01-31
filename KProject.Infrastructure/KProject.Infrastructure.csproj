@@ -7,5 +7,10 @@
       <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" />
       <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" />
     </ItemGroup>
+    
+    <ItemGroup>
+      <Folder Include="Configurations\" />
+      <Folder Include="Database\Migrations\" />
+    </ItemGroup>
 
 </Project>
