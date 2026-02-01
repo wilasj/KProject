@@ -2,11 +2,15 @@ using System.Reflection;
 using KProject.Api.Extensions;
 using KProject.Infrastructure;
 using KProject.Infrastructure.Database;
+using Microsoft.AspNetCore.DataProtection;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddInfrastructure(builder.Configuration);
+builder.Services
+    .AddInfrastructure(builder.Configuration)
+    .AddDataProtection()
+    .PersistKeysToDbContext<AppDbContext>();
 
 builder.Services.AddEndpoints(Assembly.GetExecutingAssembly());
 

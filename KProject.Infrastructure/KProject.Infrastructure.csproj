@@ -1,9 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
-    
     <ItemGroup>
       <PackageReference Include="EFCore.NamingConventions" />
-      <PackageReference Include="Microsoft.AspNetCore.Authorization.Policy" />
-      <PackageReference Include="Microsoft.AspNetCore.Identity" />
+      <PackageReference Include="Microsoft.AspNetCore.DataProtection.EntityFrameworkCore" />
       <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" />
       <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" />
     </ItemGroup>
@@ -12,5 +10,8 @@
       <Folder Include="Configurations\" />
       <Folder Include="Database\Migrations\" />
     </ItemGroup>
-
+    
+    <ItemGroup>
+        <FrameworkReference Include="Microsoft.AspNetCore.App"/>
+    </ItemGroup>
 </Project>

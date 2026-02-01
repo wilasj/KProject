@@ -1,7 +1,12 @@
 <Project Sdk="Microsoft.NET.Sdk.Web">
-
     <ItemGroup>
       <ProjectReference Include="..\KProject.Infrastructure\KProject.Infrastructure.csproj" />
     </ItemGroup>
-
+    <ItemGroup>
+      <PackageReference Include="Microsoft.AspNetCore.DataProtection.EntityFrameworkCore" />
+      <PackageReference Include="Microsoft.EntityFrameworkCore.Tools">
+        <PrivateAssets>all</PrivateAssets>
+        <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+      </PackageReference>
+    </ItemGroup>
 </Project>

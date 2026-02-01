@@ -3,6 +3,10 @@
     <File Path="Directory.Build.props" />
     <File Path="Directory.Packages.props" />
   </Folder>
+  <Folder Name="/Solution Items/">
+    <File Path=".dockerignore" />
+    <File Path="compose.yaml" />
+  </Folder>
   <Project Path="KProject.Api/KProject.Api.csproj" />
   <Project Path="KProject.Domain/KProject.Domain.csproj" />
   <Project Path="KProject.Infrastructure/KProject.Infrastructure.csproj" />

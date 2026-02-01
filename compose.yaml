@@ -1,0 +1,29 @@
+﻿services:
+  kproject.api:
+    image: kproject.api
+    build:
+      context: .
+      dockerfile: KProject.Api/Dockerfile
+      args:
+        BUILD_CONFIGURATION: Debug
+    environment:
+      DOTNET_ENVIRONMENT: Development
+    ports:
+      - "8080:8080"
+    
+    depends_on:
+      - kproject.database
+        
+  kproject.database:
+    image: postgres:17
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_DB=kproject
+    volumes:
+      - db-data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+  
+volumes:
+  db-data:
