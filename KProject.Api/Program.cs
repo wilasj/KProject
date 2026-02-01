@@ -16,7 +16,9 @@ builder.Services.AddEndpoints(Assembly.GetExecutingAssembly());
 
 var app = builder.Build();
 
-app.MapEndpoints();
+var api = app.MapGroup("/api");
+
+app.MapEndpoints(api);
 
 app.MapGet("/", () => "Hello World!");
 
