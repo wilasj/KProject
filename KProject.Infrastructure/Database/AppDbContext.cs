@@ -29,5 +29,5 @@ public sealed class AppDbContext(DbContextOptions options) : IdentityUserContext
 
     }
 
-    public DbSet<DataProtectionKey> DataProtectionKeys { get; }
+    public DbSet<DataProtectionKey> DataProtectionKeys { get; set; }
 }
