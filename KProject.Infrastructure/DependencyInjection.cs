@@ -54,7 +54,12 @@ public static class DependencyInjection
                     options.DefaultChallengeScheme =
                         IdentityConstants.ApplicationScheme;
                 })
-                .AddCookie(IdentityConstants.ApplicationScheme, options => { options.LoginPath = "/login"; });
+                .AddCookie(IdentityConstants.ApplicationScheme, options =>
+                {
+                    options.LoginPath = "/users/login";
+                    options.LogoutPath = "/users/logout";
+                    options.AccessDeniedPath = "/users/access-denied"; 
+                });
 
             return services;
         }
