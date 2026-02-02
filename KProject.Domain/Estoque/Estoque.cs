@@ -4,6 +4,7 @@ public class Estoque
 {
     public int Id { get; private set; }
     public int LoteId { get; private set; }
-    public int QuantidadeTotal => Historico.Sum(h => h.DeltaQuantidade);
-    public List<HistoricoEstoque> Historico { get; private set; } = [];
+    private readonly List<HistoricoEstoque> _historico = [];
+    public IReadOnlyCollection<HistoricoEstoque> Historico => _historico;
+    public int QuantidadeTotal => _historico.Sum(h => h.DeltaQuantidade);
 }

@@ -5,5 +5,5 @@ public sealed record HistoricoQuantidade
     public uint Devolvido { get; set; }
     public uint Vendido { get; set; }
     public DateTime AlteradoEm { get; set; }
-    //por quem
+    public int AlteradoPor { get; set; }
 }
