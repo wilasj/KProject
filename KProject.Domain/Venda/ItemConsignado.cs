@@ -1,4 +1,6 @@
 ﻿
+using KProject.Common;
+
 namespace KProject.Domain.Venda;
 
 public sealed class ItemConsignado
@@ -13,4 +15,28 @@ public sealed class ItemConsignado
     public uint EmAberto => QuantidadeConsignada - Vendido - Devolvido;
     
     public DateTime? UltimaAlteracao => _historico.OrderBy(hq => hq.AlteradoEm).LastOrDefault()?.AlteradoEm;
+
+    private ItemConsignado(int loteId, int usuarioId, uint quantidadeConsignada)
+    {
+        LoteId = loteId;
+        QuantidadeConsignada = quantidadeConsignada;
+        _historico.Add(new HistoricoQuantidade { AlteradoEm = DateTime.UtcNow, AlteradoPor = usuarioId, Vendido = 0, Devolvido = 0 });
+    }
+
+    public static Result<ItemConsignado> Criar(int loteId, int usuarioId, uint quantidadeConsignada)
+    {
+        if (quantidadeConsignada <= 0)
+        {
+            return Result.Failure<ItemConsignado>(Error.Failure("ItemConsignado.QuantidadeInvalida", "A quantidade deve ser maior que zero"));
+        }
+
+        if (loteId <= 0)
+        {
+            return Result.Failure<ItemConsignado>(Error.Failure("ItemConsignado.LoteInvalido", "Lote inválido"));
+        }
+        
+        var item = new ItemConsignado(loteId, usuarioId, quantidadeConsignada);
+        
+        return Result.Success(item);
+    }
 }
