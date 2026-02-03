@@ -30,10 +30,4 @@ public sealed class HistoricoEstoque
     /// registrados no histórico, em ordem cronológica.
     /// </remarks>
     public int DeltaQuantidade { get; set; }
-
-    /// <summary>
-    /// Identificador da entidade que originou esta movimentação de estoque,
-    /// como uma consignação, devolução ou ajuste.
-    /// </summary>
-    public int? ReferenciaId { get; set; }
 }

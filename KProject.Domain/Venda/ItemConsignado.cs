@@ -6,6 +6,7 @@ namespace KProject.Domain.Venda;
 public sealed class ItemConsignado
 {
     public int Id { get; private set; }
+    public int VendaId { get; private set; }
     public int LoteId { get; private set; }
     private readonly List<HistoricoQuantidade> _historico = [];
     public IReadOnlyList<HistoricoQuantidade> Historico => _historico;
@@ -16,6 +17,10 @@ public sealed class ItemConsignado
     
     public DateTime? UltimaAlteracao => _historico.OrderBy(hq => hq.AlteradoEm).LastOrDefault()?.AlteradoEm;
 
+    private ItemConsignado()
+    {
+    }
+    
     private ItemConsignado(int loteId, int usuarioId, uint quantidadeConsignada)
     {
         LoteId = loteId;

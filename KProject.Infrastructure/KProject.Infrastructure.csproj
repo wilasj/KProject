@@ -7,10 +7,10 @@
     </ItemGroup>
     
     <ItemGroup>
-      <Folder Include="Configurations\" />
+        <FrameworkReference Include="Microsoft.AspNetCore.App"/>
     </ItemGroup>
     
     <ItemGroup>
-        <FrameworkReference Include="Microsoft.AspNetCore.App"/>
+      <ProjectReference Include="..\KProject.Domain\KProject.Domain.csproj" />
     </ItemGroup>
 </Project>
