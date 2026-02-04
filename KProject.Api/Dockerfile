@@ -7,6 +7,8 @@ EXPOSE 8081
 FROM mcr.microsoft.com/dotnet/sdk:10.0 AS build
 ARG BUILD_CONFIGURATION=Release
 WORKDIR /src
+COPY ["Directory.Packages.props", "."]
+COPY ["Directory.Build.props", "."]
 COPY ["KProject.Api/KProject.Api.csproj", "KProject.Api/"]
 COPY ["KProject.Infrastructure/KProject.Infrastructure.csproj", "KProject.Infrastructure/"]
 RUN dotnet restore "KProject.Api/KProject.Api.csproj"
