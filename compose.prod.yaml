@@ -1,0 +1,11 @@
+﻿services:
+  kproject.api:
+    image: ghcr.io/wilasj/kproject:latest
+    environment:
+      DOTNET_ENVIRONMENT: Production
+    expose:
+      - 8080
+
+  kproject.database:
+    environment:
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}

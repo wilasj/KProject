@@ -1,0 +1,34 @@
+﻿name: create-image
+
+on:
+  push:
+    branches: [ main ]
+    
+permissions:
+  packages: write
+  contents: read
+  
+jobs: 
+  build-and-push-image:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        
+      - name: Log into Github Container Registry
+        uses: docker/login-action@v3
+          with:
+            registry: https://ghcr.io
+            username: ${{ github.actor }}
+            password: ${{ secrets.GITHUB_TOKEN }}
+            
+      - name: Build and push Docker image
+        uses: docker/build-push-action@v6
+          with:
+            context: ./KProject.Api
+            file: Dockerfile
+            push: true
+            build-args: BUILD_CONFIGURATION=Release
+            tags: |
+              ghcr.io/wilasj/kproject:latest
+              ghcr.io/wilasj/kproject:${{ github.sha }}
