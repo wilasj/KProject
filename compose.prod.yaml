@@ -3,6 +3,7 @@
     image: ghcr.io/wilasj/kproject:latest
     environment:
       DOTNET_ENVIRONMENT: Production
+      ConnectionStrings__Database: Host=kproject.database;Database=kproject;Username=postgres;Password=${POSTGRES_PASSWORD}
     expose:
       - 8080
 
