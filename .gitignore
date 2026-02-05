@@ -10,3 +10,5 @@
 *.user
 *.userosscache
 *.suo
+
+*/node_modules
