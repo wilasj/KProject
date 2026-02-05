@@ -12,3 +12,5 @@
 *.suo
 
 */node_modules
+*/.angular
+*/dist
