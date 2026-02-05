@@ -25,6 +25,10 @@ app.MapGet("/", () => "Hello World!");
 //logs
 //exception handler
 
+app.UseStaticFiles();
+
+app.MapFallbackToFile("index.html");
+
 app.UseAuthentication();
 
 app.UseAuthorization();

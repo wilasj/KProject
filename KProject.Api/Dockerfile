@@ -20,7 +20,20 @@ FROM build AS publish
 ARG BUILD_CONFIGURATION=Release
 RUN dotnet publish "./KProject.Api.csproj" -c $BUILD_CONFIGURATION -o /app/publish /p:UseAppHost=false
 
+FROM node:20-alpine AS angular-build
+WORKDIR /app
+
+COPY KProject.Web/package.json KProject.Web/package-lock.json ./
+RUN npm ci
+
+COPY KProject.Web/ ./
+
+RUN npm run prod
+
 FROM base AS final
 WORKDIR /app
+
 COPY --from=publish /app/publish .
+COPY --from=angular-build /app/dist /app/wwwroot
+
 ENTRYPOINT ["dotnet", "KProject.Api.dll"]
