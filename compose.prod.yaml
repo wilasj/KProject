@@ -1,6 +1,7 @@
 ﻿services:
   kproject.api:
     image: ghcr.io/wilasj/kproject:latest
+    pull_policy: always
     environment:
       DOTNET_ENVIRONMENT: Production
       ConnectionStrings__Database: Host=kproject.database;Database=kproject;Username=postgres;Password=${POSTGRES_PASSWORD}
