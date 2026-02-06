@@ -39,5 +39,5 @@ jobs:
           -H 'Content-Type: application/json' \
           -H 'x-api-key: ${{secrets.DOKPLOY_API_TOKEN}}' \
           -d '{
-            "applicationId": "${{ secrets.DOKPLOY_APPLICATION_ID }}"
+            "composeId": "${{ secrets.DOKPLOY_APPLICATION_ID }}"
           }'
