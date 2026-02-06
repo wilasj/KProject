@@ -34,6 +34,6 @@ FROM base AS final
 WORKDIR /app
 
 COPY --from=publish /app/publish .
-COPY --from=angular-build /app/dist /app/wwwroot
+COPY --from=angular-build /app/dist/ /app/wwwroot/
 
 ENTRYPOINT ["dotnet", "KProject.Api.dll"]
