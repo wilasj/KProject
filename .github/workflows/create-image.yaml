@@ -31,3 +31,13 @@ jobs:
           tags: |
             ghcr.io/wilasj/kproject:latest
             ghcr.io/wilasj/kproject:${{ github.sha }}
+            
+      - name: Trigger Dokploy
+        run: |
+          curl -X POST "${{secrets.DOKPLOY_API_URL}}" \
+          -H 'accept: application/json' \
+          -H 'Content-Type: application/json' \
+          -H 'x-api-key: ${{secrets.DOKPLOY_API_TOKEN}}' \
+          -d '{
+            "applicationId": "${{ secrets.DOKPLOY_APPLICATION_ID }}"
+          }'
