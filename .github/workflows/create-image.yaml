@@ -26,6 +26,7 @@ jobs:
         uses: docker/build-push-action@v6
         with:
           file: ./KProject.Api/Dockerfile
+          target: final
           push: true
           build-args: BUILD_CONFIGURATION=Release
           tags: |

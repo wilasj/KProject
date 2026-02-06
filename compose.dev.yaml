@@ -4,6 +4,7 @@
     build:
       context: .
       dockerfile: KProject.Api/Dockerfile
+      target: dev
       args:
         BUILD_CONFIGURATION: Debug
     environment:
