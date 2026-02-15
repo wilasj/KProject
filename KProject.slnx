@@ -14,4 +14,5 @@
   <Project Path="KProject.Common/KProject.Common.csproj" />
   <Project Path="KProject.Domain/KProject.Domain.csproj" />
   <Project Path="KProject.Infrastructure/KProject.Infrastructure.csproj" />
+  <Project Path="KProject.Tests/KProject.Tests.csproj" />
 </Solution>
