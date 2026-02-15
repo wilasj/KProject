@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
-namespace KProject.Infrastructure.Configurations.Venda;
+namespace KProject.Infrastructure.Venda;
 
 public class HistoricoQuantidadeConfiguration: IEntityTypeConfiguration<HistoricoQuantidade>
 {

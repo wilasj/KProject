@@ -2,7 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
-namespace KProject.Infrastructure.Configurations.Estoque;
+namespace KProject.Infrastructure.Estoque;
 
 public class HistoricoEstoqueConfiguration: IEntityTypeConfiguration<HistoricoEstoque>
 {

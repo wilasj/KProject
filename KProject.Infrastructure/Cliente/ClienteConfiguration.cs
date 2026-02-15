@@ -1,7 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
-namespace KProject.Infrastructure.Configurations.Cliente;
+namespace KProject.Infrastructure.Cliente;
 
 public class ClienteConfiguration: IEntityTypeConfiguration<Domain.Cliente.Cliente>
 {

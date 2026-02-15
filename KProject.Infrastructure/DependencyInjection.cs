@@ -1,4 +1,4 @@
-﻿using KProject.Infrastructure.Database;
+﻿using KProject.Infrastructure.Shared;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;

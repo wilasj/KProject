@@ -1,7 +1,7 @@
 using System.Reflection;
 using KProject.Api.Extensions;
 using KProject.Infrastructure;
-using KProject.Infrastructure.Database;
+using KProject.Infrastructure.Shared;
 using Microsoft.AspNetCore.DataProtection;
 using Microsoft.EntityFrameworkCore;
 

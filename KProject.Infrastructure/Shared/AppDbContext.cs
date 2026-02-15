@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
-namespace KProject.Infrastructure.Database;
+namespace KProject.Infrastructure.Shared;
 
 public sealed class AppDbContext(DbContextOptions options) : IdentityUserContext<IdentityUser<int>, int>(options), IDataProtectionKeyContext
 {

@@ -1,7 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
-namespace KProject.Infrastructure.Configurations.Produto;
+namespace KProject.Infrastructure.Produto;
 
 public class ProdutoConfiguration: IEntityTypeConfiguration<Domain.Produto.Produto>
 {

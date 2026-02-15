@@ -1,8 +1,7 @@
-﻿using KProject.Domain.Lote;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
-namespace KProject.Infrastructure.Configurations.Estoque;
+namespace KProject.Infrastructure.Estoque;
 
 public class EstoqueConfiguration: IEntityTypeConfiguration<Domain.Estoque.Estoque>
 {
@@ -11,7 +10,7 @@ public class EstoqueConfiguration: IEntityTypeConfiguration<Domain.Estoque.Estoq
         builder.HasKey(e => e.Id);
 
         builder
-            .HasOne<Lote>()
+            .HasOne<Domain.Lote.Lote>()
             .WithOne()
             .HasForeignKey<Domain.Estoque.Estoque>(l => l.LoteId)
             .OnDelete(DeleteBehavior.Restrict);

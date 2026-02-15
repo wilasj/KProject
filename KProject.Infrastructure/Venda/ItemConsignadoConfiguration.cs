@@ -1,9 +1,8 @@
-﻿using KProject.Domain.Lote;
-using KProject.Domain.Venda;
+﻿using KProject.Domain.Venda;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
-namespace KProject.Infrastructure.Configurations.Venda;
+namespace KProject.Infrastructure.Venda;
 
 public class ItemConsignadoConfiguration: IEntityTypeConfiguration<ItemConsignado>
 {
@@ -16,7 +15,7 @@ public class ItemConsignadoConfiguration: IEntityTypeConfiguration<ItemConsignad
             .IsRequired();
         
         builder
-            .HasOne<Lote>()
+            .HasOne<Domain.Lote.Lote>()
             .WithMany()
             .HasForeignKey(i => i.LoteId);
 

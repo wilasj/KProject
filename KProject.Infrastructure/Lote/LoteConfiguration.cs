@@ -1,12 +1,11 @@
-﻿using KProject.Domain.Lote;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
-namespace KProject.Infrastructure.Configurations.LoteConfiguration;
+namespace KProject.Infrastructure.Lote;
 
-public class LoteConfiguration : IEntityTypeConfiguration<Lote>
+public class LoteConfiguration : IEntityTypeConfiguration<Domain.Lote.Lote>
 {
-    public void Configure(EntityTypeBuilder<Lote> builder)
+    public void Configure(EntityTypeBuilder<Domain.Lote.Lote> builder)
     {
         builder.HasKey(l => l.Id);
         
