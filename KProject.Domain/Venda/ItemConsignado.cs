@@ -30,6 +30,11 @@ public sealed class ItemConsignado
 
     public static Result<ItemConsignado> Criar(int loteId, int usuarioId, uint quantidadeConsignada)
     {
+        if (usuarioId <= 0)
+        {
+            return Result.Failure<ItemConsignado>(Error.Failure("ItemConsignado.UsuarioInvalido", "O ID do usuário deve ser maior que zero"));
+        }
+        
         if (quantidadeConsignada <= 0)
         {
             return Result.Failure<ItemConsignado>(Error.Failure("ItemConsignado.QuantidadeInvalida", "A quantidade deve ser maior que zero"));
@@ -43,5 +48,29 @@ public sealed class ItemConsignado
         var item = new ItemConsignado(loteId, usuarioId, quantidadeConsignada);
         
         return Result.Success(item);
+    }
+
+    public Result AdicionarHistorico(uint devolvido, uint vendido, int alteradoPor)
+    {
+        if (alteradoPor <= 0)
+        {
+            return Result.Failure<ItemConsignado>(Error.Failure("ItemConsignado.UsuarioInvalido", "O ID do usuário deve ser maior que zero"));
+        }
+
+        if (devolvido + vendido > QuantidadeConsignada)
+        {
+            return Result.Failure<ItemConsignado>(Error.Failure("ItemConsignado.HistoricoInvalido", "O valor devolvido e vendido não pode ser maior que a quantidade consignada"));
+        }
+
+        var historico = new HistoricoQuantidade
+        {
+            Devolvido = devolvido,
+            Vendido = vendido,
+            AlteradoEm = DateTime.UtcNow,
+            AlteradoPor = alteradoPor
+        };
+        
+        _historico.Add(historico);
+        return Result.Success();
     }
 }

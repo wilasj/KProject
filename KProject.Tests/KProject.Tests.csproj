@@ -7,6 +7,7 @@
     <ItemGroup>
         <PackageReference Include="coverlet.collector"/>
         <PackageReference Include="Microsoft.NET.Test.Sdk"/>
+        <PackageReference Include="Shouldly" />
         <PackageReference Include="xunit.runner.visualstudio"/>
         <PackageReference Include="xunit.v3" />
     </ItemGroup>
@@ -16,7 +17,7 @@
     </ItemGroup>
 
     <ItemGroup>
-      <Folder Include="Cliente\" />
+      <ProjectReference Include="..\KProject.Domain\KProject.Domain.csproj" />
     </ItemGroup>
 
 </Project>

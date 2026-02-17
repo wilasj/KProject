@@ -20,14 +20,20 @@ public sealed class Venda
         Status = StatusVenda.Aberta;
     }
 
+    //TODO: A melhor forma de fazer isso eh realmente usando um int pro loteId? Nao daria pra gente usar uma tupla pra especificar mais essa variavel?
     public static Result<Venda> Criar(int clienteId, int criadaPor, Dictionary<int, uint> novosItens)
     {
-        var venda = new Venda(clienteId, criadaPor);
-
+        if (clienteId == 0)
+        {
+            return Result.Failure<Venda>(Error.Failure("Venda.ClienteInvalido", "O ID do cliente deve ser maior que zero"));
+        }
+        
         if (novosItens.Count == 0)
         {
             return Result.Failure<Venda>(Error.Failure("Venda.ItensInvalidos", "Nenhum item foi fornecido para a venda"));
         }
+        
+        var venda = new Venda(clienteId, criadaPor);
 
         var addResult = venda.AdicionarItens(novosItens, venda.CriadaPor);
         
@@ -64,6 +70,32 @@ public sealed class Venda
         }
             
         _itens.Add(item);
+
+        return Result.Success();
+    }
+
+    //TODO: Por enquanto, so faz verificacoes simples e fecha a venda. Na verdade, depende de ItemConsignado pra atualizar as quantidades em aberto
+    // para devolvidos e setar o status.
+    public Result FecharVenda()
+    {
+        if (Status is StatusVenda.Fechada or StatusVenda.Cancelada)
+        {
+            return Result.Failure(Error.Failure("Venda.FechamentoInvalido", "É impossível fechar vendas já fechadas/canceladas"));
+        }
+        
+        Status = StatusVenda.Fechada;
+
+        return Result.Success();
+    }
+
+    public Result CancelarVenda()
+    {
+        if (Status is StatusVenda.Fechada or StatusVenda.Cancelada)
+        {
+            return Result.Failure(Error.Failure("Venda.CancelamentoInvalido", "É impossível cancelar vendas já fechadas/canceladas"));
+        }
+
+        Status = StatusVenda.Cancelada;
 
         return Result.Success();
     }
