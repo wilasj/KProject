@@ -37,7 +37,7 @@ public sealed class Venda
 
         var addResult = venda.AdicionarItens(novosItens, venda.CriadaPor);
         
-        return addResult.IsFailure ? Result.Failure<Venda>(addResult.Error) : Result.Success(venda);
+        return addResult.IsFailure ? Result.Failure<Venda>(addResult.Errors.First()) : Result.Success(venda);
     }
 
     private Result AdicionarItens(Dictionary<int, uint> novosItens, int criadoPor)
@@ -48,7 +48,7 @@ public sealed class Venda
             
             if (itemResult.IsFailure)
             {
-                return Result.Failure(itemResult.Error);
+                return Result.Failure(itemResult.Errors.First());
             }
 
             _itens.Add(itemResult.Value);

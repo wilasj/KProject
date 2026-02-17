@@ -13,7 +13,7 @@ public class VendaTests
 
         var venda = Domain.Venda.Venda.Criar(1, 1, dict);
         
-        venda.Error.ShouldBe(Error.Failure("Venda.ItensInvalidos", "Nenhum item foi fornecido para a venda"));
+        venda.Errors.First().ShouldBe(Error.Failure("Venda.ItensInvalidos", "Nenhum item foi fornecido para a venda"));
         venda.IsSuccess.ShouldBeFalse();
     }
 
@@ -27,7 +27,7 @@ public class VendaTests
         
         var venda = Domain.Venda.Venda.Criar(0, 1, dict);
         
-        venda.Error.ShouldBe(Error.Failure("Venda.ClienteInvalido", "O ID do cliente deve ser maior que zero"));
+        venda.Errors.First().ShouldBe(Error.Failure("Venda.ClienteInvalido", "O ID do cliente deve ser maior que zero"));
         venda.IsSuccess.ShouldBeFalse();
     }
 
@@ -50,8 +50,8 @@ public class VendaTests
         var result = venda.Value.AdicionarItem(item.Value);
         
         result.IsSuccess.ShouldBeFalse();
-        result.Error.ShouldBeOfType<Error>();
-        result.Error.Code.ShouldBe("Venda.ItemDuplicado");
+        result.Errors.First().ShouldBeOfType<Error>();
+        result.Errors.First().Code.ShouldBe("Venda.ItemDuplicado");
     }
 
     [Theory]
@@ -67,7 +67,7 @@ public class VendaTests
         var venda = Domain.Venda.Venda.Criar(1, 1, itens);
         
         venda.IsSuccess.ShouldBeFalse();
-        venda.Error.ShouldBeOfType<Error>();
+        venda.Errors.First().ShouldBeOfType<Error>();
     }
 
     [Theory]
@@ -83,7 +83,7 @@ public class VendaTests
         var venda = Domain.Venda.Venda.Criar(1, 1, itens);
 
         venda.Value.ShouldBeOfType<Domain.Venda.Venda>();
-        venda.Error.ShouldBe(Error.None);
+        venda.Errors.ShouldBeEmpty();
 
         if (status is StatusVenda.Fechada)
         {
@@ -98,8 +98,8 @@ public class VendaTests
 
         var result = venda.Value.AdicionarItem(item);
 
-        result.Error.ShouldNotBeNull();
-        result.Error.Code.ShouldBe("Venda.StatusInvalido");
+        result.Errors.First().ShouldNotBeNull();
+        result.Errors.First().Code.ShouldBe("Venda.StatusInvalido");
     }
 
     [Theory]
@@ -115,7 +115,7 @@ public class VendaTests
         var venda = Domain.Venda.Venda.Criar(1, 1, itens);
 
         venda.Value.ShouldBeOfType<Domain.Venda.Venda>();
-        venda.Error.ShouldBe(Error.None);
+        venda.Errors.ShouldBeEmpty();
 
         Result result;
 
@@ -131,7 +131,7 @@ public class VendaTests
             result = venda.Value.CancelarVenda();
         }
 
-        result.Error.ShouldNotBeNull();
+        result.Errors.First().ShouldNotBeNull();
         result.IsFailure.ShouldBeTrue();
     }
 
@@ -146,7 +146,7 @@ public class VendaTests
         var venda = Domain.Venda.Venda.Criar(1, 1, itens);
         
         venda.IsSuccess.ShouldBeTrue();
-        venda.Error.ShouldBe(Error.None);
+        venda.Errors.ShouldBeEmpty();
     }
 
     [Fact]
@@ -155,8 +155,8 @@ public class VendaTests
         var item = ItemConsignado.Criar(1, 0, 1);
         
         item.IsSuccess.ShouldBeFalse();
-        item.Error.ShouldBeOfType<Error>();
-        item.Error.Code.ShouldBe("ItemConsignado.UsuarioInvalido");
+        item.Errors.First().ShouldBeOfType<Error>();
+        item.Errors.First().Code.ShouldBe("ItemConsignado.UsuarioInvalido");
     }
 
     [Fact]
@@ -165,8 +165,8 @@ public class VendaTests
         var item = ItemConsignado.Criar(1, 1, 0);
         
         item.IsSuccess.ShouldBeFalse();
-        item.Error.ShouldBeOfType<Error>();
-        item.Error.Code.ShouldBe("ItemConsignado.QuantidadeInvalida");
+        item.Errors.First().ShouldBeOfType<Error>();
+        item.Errors.First().Code.ShouldBe("ItemConsignado.QuantidadeInvalida");
     }
 
     [Fact]
@@ -175,8 +175,8 @@ public class VendaTests
         var item = ItemConsignado.Criar(0, 1, 1);
 
         item.IsSuccess.ShouldBeFalse();
-        item.Error.ShouldBeOfType<Error>();
-        item.Error.Code.ShouldBe("ItemConsignado.LoteInvalido");
+        item.Errors.First().ShouldBeOfType<Error>();
+        item.Errors.First().Code.ShouldBe("ItemConsignado.LoteInvalido");
     }
 
     [Fact]
@@ -185,12 +185,12 @@ public class VendaTests
         var item = ItemConsignado.Criar(1, 1, 2);
 
         item.IsSuccess.ShouldBeTrue();
-        item.Error.ShouldBe(Error.None);
+        item.Errors.ShouldBeEmpty();
 
         var result = item.Value.AdicionarHistorico(1, 1, 0);
         result.IsSuccess.ShouldBeFalse();
-        result.Error.ShouldBeOfType<Error>();
-        result.Error.Code.ShouldBe("ItemConsignado.UsuarioInvalido");
+        result.Errors.First().ShouldBeOfType<Error>();
+        result.Errors.First().Code.ShouldBe("ItemConsignado.UsuarioInvalido");
     }
 
     [Fact]
@@ -199,12 +199,12 @@ public class VendaTests
         var item = ItemConsignado.Criar(1, 1, 2);
         
         item.IsSuccess.ShouldBeTrue();
-        item.Error.ShouldBe(Error.None);
+        item.Errors.ShouldBeEmpty();
 
         var result = item.Value.AdicionarHistorico(10, 1, 1);
         result.IsSuccess.ShouldBeFalse();
-        result.Error.ShouldBeOfType<Error>();
-        result.Error.Code.ShouldBe("ItemConsignado.HistoricoInvalido");
+        result.Errors.First().ShouldBeOfType<Error>();
+        result.Errors.First().Code.ShouldBe("ItemConsignado.HistoricoInvalido");
     }
 
     [Fact]
@@ -213,14 +213,14 @@ public class VendaTests
         var item = ItemConsignado.Criar(1, 1, 2);
         
         item.IsSuccess.ShouldBeTrue();
-        item.Error.ShouldBe(Error.None);
+        item.Errors.ShouldBeEmpty();
 
         item.Value.AdicionarHistorico(1, 1, 1);
         
         var result = item.Value.AdicionarHistorico(0, 2, 1);
         
         result.IsSuccess.ShouldBeTrue();
-        result.Error.ShouldBe(Error.None);
+        result.Errors.ShouldBeEmpty();
         item.Value.Devolvido.ShouldBe<uint>(0);
         item.Value.Vendido.ShouldBe<uint>(2);
     }
@@ -231,13 +231,13 @@ public class VendaTests
         var item = ItemConsignado.Criar(1, 1, 2);
 
         item.IsSuccess.ShouldBeTrue();
-        item.Error.ShouldBe(Error.None);
+        item.Errors.ShouldBeEmpty();
 
         item.Value.AdicionarHistorico(1, 1, 1);
 
         var result = item.Value.AdicionarHistorico(2, 0, 1);
         result.IsSuccess.ShouldBeTrue();
-        result.Error.ShouldBe(Error.None);
+        result.Errors.ShouldBeEmpty();
         item.Value.Vendido.ShouldBe<uint>(0);
         item.Value.Devolvido.ShouldBe<uint>(2);
         
@@ -249,13 +249,13 @@ public class VendaTests
         var item = ItemConsignado.Criar(1, 1, 5);
         
         item.IsSuccess.ShouldBeTrue();
-        item.Error.ShouldBe(Error.None);
+        item.Errors.ShouldBeEmpty();
 
         item.Value.AdicionarHistorico(2, 1, 1);
         
         var result = item.Value.AdicionarHistorico(1, 1, 1);
         result.IsSuccess.ShouldBeTrue();
-        result.Error.ShouldBe(Error.None);
+        result.Errors.ShouldBeEmpty();
 
         item.Value.EmAberto.ShouldBe<uint>(3);
     }
