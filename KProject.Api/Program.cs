@@ -1,5 +1,6 @@
 using System.Reflection;
 using KProject.Api.Extensions;
+using KProject.Application;
 using KProject.Infrastructure;
 using KProject.Infrastructure.Shared;
 using Microsoft.AspNetCore.DataProtection;
@@ -9,6 +10,7 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services
     .AddInfrastructure(builder.Configuration)
+    .AddApplication()
     .AddDataProtection()
     .PersistKeysToDbContext<AppDbContext>();
 
