@@ -2,10 +2,12 @@ using FluentValidation;
 
 namespace KProject.Application.User.Register;
 
-internal sealed class RegisterCommandValidator: AbstractValidator<RegisterCommand>
+public sealed class RegisterCommandValidator: AbstractValidator<RegisterCommand>
 {
     public RegisterCommandValidator()
     {
+        RuleLevelCascadeMode = CascadeMode.Stop;
+        
         RuleFor(c => c.Email)
             .NotEmpty()
                 .WithErrorCode("Register.EmailVazio")
