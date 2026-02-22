@@ -36,6 +36,7 @@ public static class DependencyInjection
         
             services
                 .AddIdentityCore<IdentityUser<int>>()
+                .AddErrorDescriber<ErrorDescriber>()
                 .AddSignInManager<SignInManager<IdentityUser<int>>>()
                 .AddEntityFrameworkStores<AppDbContext>();
         
