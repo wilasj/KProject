@@ -1,6 +1,6 @@
 using KProject.Application.Interfaces;
 
-namespace KProject.Application.User.Register;
+namespace KProject.Application.Usuario.Register;
 
 public class RegisterCommand: ICommand
 {

@@ -1,6 +1,6 @@
 using KProject.Api.Extensions;
 using KProject.Application.Interfaces;
-using KProject.Application.User.Register;
+using KProject.Application.Usuario.Register;
 
 namespace KProject.Api.Endpoints.Usuario;
 

@@ -1,6 +1,6 @@
 using FluentValidation;
 
-namespace KProject.Application.User.Register;
+namespace KProject.Application.Usuario.Register;
 
 public sealed class RegisterCommandValidator: AbstractValidator<RegisterCommand>
 {

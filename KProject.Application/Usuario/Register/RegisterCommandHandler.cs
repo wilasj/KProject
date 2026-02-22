@@ -3,7 +3,7 @@ using KProject.Application.Interfaces;
 using KProject.Common;
 using Microsoft.AspNetCore.Identity;
 
-namespace KProject.Application.User.Register;
+namespace KProject.Application.Usuario.Register;
 
 public class RegisterCommandHandler(UserManager<IdentityUser<int>> userManager): ICommandHandler<RegisterCommand>
 {

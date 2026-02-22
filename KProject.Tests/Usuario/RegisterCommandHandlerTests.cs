@@ -1,4 +1,4 @@
-using KProject.Application.User.Register;
+using KProject.Application.Usuario.Register;
 using KProject.Common;
 using Microsoft.AspNetCore.Identity;
 using NSubstitute;
