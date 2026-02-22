@@ -1,0 +1,41 @@
+<div class="register">
+  <h1 class="register__title">Registrar</h1>
+
+  @if (errors().length > 0) {
+    <div class="register__errors">
+      @for (error of errors(); track error.code) {
+        <span>{{ error.description }}</span>
+      }
+    </div>
+  }
+
+  <form class="register__form" [formGroup]="registerForm" (ngSubmit)="onSubmit()">
+    <div class="register__field">
+      <label for="email">Email</label>
+      <input id="email" type="email" placeholder="seu@email.com" formControlName="email"/>
+      <span class="register__field-error">
+        @if (registerForm.get('email')?.dirty) {
+          @if (registerForm.get('email')?.hasError('required')) {
+            Email é obrigatório
+          } @else if (registerForm.get('email')?.hasError('email')) {
+            Email inválido
+          }
+        }
+      </span>
+    </div>
+
+    <div class="register__field">
+      <label for="password">Senha</label>
+      <input id="password" type="password" placeholder="••••••••" formControlName="password"/>
+      <span class="register__field-error">
+        @if (registerForm.get('password')?.dirty && registerForm.get('password')?.hasError('required')) {
+          Senha é obrigatória
+        }
+      </span>
+    </div>
+
+    <button type="submit">Registrar</button>
+  </form>
+
+  <a routerLink="/login">Já tem uma conta? Faça login</a>
+</div>
