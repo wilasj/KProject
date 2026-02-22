@@ -1,16 +1,95 @@
 import { TestBed } from '@angular/core/testing';
-
+import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
+import { provideHttpClient } from '@angular/common/http';
 import { Auth } from './auth';
 
 describe('Auth', () => {
   let service: Auth;
+  let httpMock: HttpTestingController;
 
   beforeEach(() => {
-    TestBed.configureTestingModule({});
+    TestBed.configureTestingModule({
+      providers: [provideHttpClient(), provideHttpClientTesting()],
+    });
     service = TestBed.inject(Auth);
+    httpMock = TestBed.inject(HttpTestingController);
   });
 
-  it('should be created', () => {
-    expect(service).toBeTruthy();
+  afterEach(() => {
+    httpMock.verify();
+  });
+
+  describe('register()', () => {
+    it('deve retornar sucesso no 201', () => {
+      let result: any;
+      service.register('test@test.com', 'password').subscribe((r) => (result = r));
+
+      const req = httpMock.expectOne('/api/users/register');
+      expect(req.request.method).toBe('POST');
+      req.flush(null, { status: 201, statusText: 'Created' });
+
+      expect(result.success).toBe(true);
+    });
+
+    it('deve retornar falha com erros no 400', () => {
+      let result: any;
+      service.register('test@test.com', 'password').subscribe((r) => (result = r));
+
+      const req = httpMock.expectOne('/api/users/register');
+      req.flush([{ code: 'Register.EmailVazio', description: 'O email não pode estar vazio' }], {
+        status: 400,
+        statusText: 'Bad Request',
+      });
+
+      expect(result.success).toBe(false);
+      expect(result.errors).toEqual([
+        { code: 'Register.EmailVazio', description: 'O email não pode estar vazio' },
+      ]);
+    });
+  });
+
+  describe('login()', () => {
+    it('deve setar isLoggedIn como true no sucesso', () => {
+      service.login('test@test.com', 'password').subscribe();
+
+      const req = httpMock.expectOne('/api/users/login');
+      req.flush(null, { status: 200, statusText: 'OK' });
+
+      expect(service.isLoggedIn()).toBe(true);
+    });
+
+    it('deve retornar falha e nao setar isLoggedIn no erro', () => {
+      let result: any;
+      service.login('test@test.com', 'errada').subscribe((r) => (result = r));
+
+      const req = httpMock.expectOne('/api/users/login');
+      req.flush([{ code: 'Usuario.LoginFalhou', description: 'Email ou senha inválidos.' }], {
+        status: 401,
+        statusText: 'Unauthorized',
+      });
+
+      expect(result.success).toBe(false);
+      expect(service.isLoggedIn()).toBe(false);
+    });
+  });
+
+  describe('me()', () => {
+    it('deve setar isLoggedIn como true no 200', () => {
+      service.me().subscribe();
+
+      const req = httpMock.expectOne('/api/users/me');
+      req.flush(null, { status: 200, statusText: 'OK' });
+
+      expect(service.isLoggedIn()).toBe(true);
+    });
+
+    it('deve setar isLoggedIn como false no 401', () => {
+      service.me().subscribe();
+
+      const req = httpMock.expectOne('/api/users/me');
+      req.flush(null, { status: 401, statusText: 'Unauthorized' });
+
+      expect(service.isLoggedIn()).toBe(false);
+    });
   });
 });

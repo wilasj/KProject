@@ -20,6 +20,7 @@ public static class ResultExtensions
             ErrorType.Problem => TypedResults.InternalServerError(errors),
             ErrorType.NotFound => TypedResults.NotFound(errors),
             ErrorType.Conflict => TypedResults.Conflict(errors),
+            ErrorType.Unauthorized => TypedResults.Unauthorized(),
             _ => throw new ArgumentOutOfRangeException()
         };
     }

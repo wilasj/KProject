@@ -1,0 +1,41 @@
+<div class="login">
+  <h1 class="login__title">Login</h1>
+
+  @if (errors().length > 0) {
+    <div class="login__errors">
+      @for (error of errors(); track error.code) {
+        <span>{{ error.description }}</span>
+      }
+    </div>
+  }
+
+  <form class="login__form" [formGroup]="loginForm" (ngSubmit)="onSubmit()">
+    <div class="login__field">
+      <label for="email">Email</label>
+      <input id="email" type="email" placeholder="seu@email.com" formControlName="email"/>
+      <span class="login__field-error">
+        @if (loginForm.get('email')?.dirty) {
+          @if (loginForm.get('email')?.hasError('required')) {
+            Email é obrigatório
+          } @else if (loginForm.get('email')?.hasError('email')) {
+            Email inválido
+          }
+        }
+      </span>
+    </div>
+
+    <div class="login__field">
+      <label for="password">Senha</label>
+      <input id="password" type="password" placeholder="••••••••" formControlName="password"/>
+      <span class="login__field-error">
+        @if (loginForm.get('password')?.dirty && loginForm.get('password')?.hasError('required')) {
+          Senha é obrigatória
+        }
+      </span>
+    </div>
+
+    <button type="submit">Entrar</button>
+  </form>
+
+  <a routerLink="/register">Não tem uma conta? Registre-se</a>
+</div>

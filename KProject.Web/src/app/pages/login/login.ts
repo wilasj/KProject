@@ -4,37 +4,36 @@ import {Auth} from '@core/auth';
 import {FormControl, FormGroup, ReactiveFormsModule, Validators} from '@angular/forms';
 
 @Component({
-  selector: 'app-register',
+  selector: 'app-login',
   imports: [
     RouterLink,
     ReactiveFormsModule
   ],
-  templateUrl: './register.html',
-  styleUrl: './register.scss',
+  templateUrl: './login.html',
+  styleUrl: './login.scss',
 })
-export class Register {
+export class Login {
   private authService = inject(Auth);
   private router = inject(Router);
   public errors = signal<ValidationError[]>([]);
 
-  registerForm = new FormGroup({
+  loginForm = new FormGroup({
     email: new FormControl('', {nonNullable: true, validators: [Validators.required, Validators.email]}),
     password: new FormControl('', {nonNullable: true, validators: [Validators.required]}),
   });
 
-  onSubmit(){
-    if(this.registerForm.valid){
-      const {email, password} = this.registerForm.getRawValue();
+  onSubmit() {
+    if (this.loginForm.valid) {
+      const {email, password} = this.loginForm.getRawValue();
 
       this.authService
-        .register(email, password)
+        .login(email, password)
         .subscribe({
           next: (result) => {
-            if(result.success){
-              //TODO: implementar toast de sucesso aqui
-              this.router.navigate(['/login']);
-            }
-            else {
+            if (result.success) {
+              // TODO: redirecionar para dashboard quando criado
+              // this.router.navigate(['/dashboard']);
+            } else {
               this.errors.set(result.errors);
             }
           }
