@@ -1,0 +1,21 @@
+<aside class="sidebar">
+  <div class="sidebar__avatar">{{ initial }}</div>
+
+  <nav class="sidebar__nav">
+    @for (item of navItems; track item.path) {
+      <a
+        [routerLink]="item.path"
+        routerLinkActive="active"
+        class="sidebar__nav-item"
+        [attr.aria-label]="item.label"
+        [attr.title]="item.label"
+      >
+        <span class="material-symbols-outlined">{{ item.icon }}</span>
+      </a>
+    }
+  </nav>
+
+  <button class="sidebar__logout" (click)="logoutClick.emit()" aria-label="Sair" title="Sair">
+    <span class="material-symbols-outlined">logout</span>
+  </button>
+</aside>

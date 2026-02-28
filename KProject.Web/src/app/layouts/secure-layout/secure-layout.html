@@ -1,1 +1,4 @@
-<router-outlet/>
+<app-sidebar (logoutClick)="onLogout()" />
+<main class="secure-layout__main">
+  <router-outlet />
+</main>

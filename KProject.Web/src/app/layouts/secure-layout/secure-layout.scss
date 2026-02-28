@@ -1,0 +1,12 @@
+:host {
+  display: flex;
+  height: 100vh;
+  background: var(--color-primary-lightest);
+  padding: 12px;
+  gap: 12px;
+}
+
+.secure-layout__main {
+  flex: 1;
+  overflow: auto;
+}
