@@ -31,8 +31,7 @@ export class Login {
         .subscribe({
           next: (result) => {
             if (result.success) {
-              // TODO: redirecionar para dashboard quando criado
-              // this.router.navigate(['/dashboard']);
+              this.router.navigate(['/vendas']);
             } else {
               this.errors.set(result.errors);
             }
