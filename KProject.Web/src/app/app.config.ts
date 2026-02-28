@@ -1,4 +1,4 @@
-import {APP_INITIALIZER, ApplicationConfig, provideBrowserGlobalErrorListeners} from '@angular/core';
+import {ApplicationConfig, inject, provideAppInitializer, provideBrowserGlobalErrorListeners} from '@angular/core';
 import {provideRouter} from '@angular/router';
 
 import {routes} from './app.routes';
@@ -11,11 +11,9 @@ export const appConfig: ApplicationConfig = {
     provideBrowserGlobalErrorListeners(),
     provideRouter(routes),
     provideHttpClient(),
-    {
-      provide: APP_INITIALIZER,
-      useFactory: (auth: Auth) => () => firstValueFrom(auth.me()),
-      deps: [Auth],
-      multi: true
-    }
+    provideAppInitializer(() => {
+      const auth = inject(Auth);
+      return firstValueFrom(auth.me());
+    }),
   ]
 };
