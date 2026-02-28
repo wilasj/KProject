@@ -1,5 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { provideRouter } from '@angular/router';
+import { provideRouter, Router } from '@angular/router';
 import { of } from 'rxjs';
 import { Login } from '@pages/login/login';
 import { Auth } from '@core/auth';
@@ -11,6 +11,7 @@ const mockAuthService = {
 describe('Login', () => {
   let component: Login;
   let fixture: ComponentFixture<Login>;
+  let navigateSpy: ReturnType<typeof vi.spyOn>;
 
   beforeEach(async () => {
     mockAuthService.login.mockReset();
@@ -25,6 +26,7 @@ describe('Login', () => {
 
     fixture = TestBed.createComponent(Login);
     component = fixture.componentInstance;
+    navigateSpy = vi.spyOn(TestBed.inject(Router), 'navigate').mockResolvedValue(true);
     await fixture.whenStable();
   });
 
@@ -53,6 +55,15 @@ describe('Login', () => {
     component.onSubmit();
 
     expect(mockAuthService.login).toHaveBeenCalledWith('test@test.com', 'senha123');
+  });
+
+  it('deve navegar para /vendas apos login com sucesso', () => {
+    mockAuthService.login.mockReturnValue(of({ success: true }));
+    component.loginForm.setValue({ email: 'test@test.com', password: 'senha123' });
+
+    component.onSubmit();
+
+    expect(navigateSpy).toHaveBeenCalledWith(['/vendas']);
   });
 
   it('deve setar erros quando o service retornar falha', () => {
