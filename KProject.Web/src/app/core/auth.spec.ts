@@ -49,13 +49,14 @@ describe('Auth', () => {
   });
 
   describe('login()', () => {
-    it('deve setar isLoggedIn como true no sucesso', () => {
+    it('deve setar isLoggedIn e email no sucesso', () => {
       service.login('test@test.com', 'password').subscribe();
 
       const req = httpMock.expectOne('/api/users/login');
       req.flush(null, { status: 200, statusText: 'OK' });
 
       expect(service.isLoggedIn()).toBe(true);
+      expect(service.email()).toBe('test@test.com');
     });
 
     it('deve retornar falha e nao setar isLoggedIn no erro', () => {
@@ -70,6 +71,30 @@ describe('Auth', () => {
 
       expect(result.success).toBe(false);
       expect(service.isLoggedIn()).toBe(false);
+    });
+  });
+
+  describe('logout()', () => {
+    it('deve limpar isLoggedIn e email no sucesso', () => {
+      service.login('test@test.com', 'password').subscribe();
+      httpMock.expectOne('/api/users/login').flush(null, { status: 200, statusText: 'OK' });
+
+      service.logout().subscribe();
+      httpMock.expectOne('/api/users/logout').flush(null, { status: 200, statusText: 'OK' });
+
+      expect(service.isLoggedIn()).toBe(false);
+      expect(service.email()).toBeNull();
+    });
+
+    it('deve limpar isLoggedIn e email mesmo em caso de erro', () => {
+      service.login('test@test.com', 'password').subscribe();
+      httpMock.expectOne('/api/users/login').flush(null, { status: 200, statusText: 'OK' });
+
+      service.logout().subscribe();
+      httpMock.expectOne('/api/users/logout').flush(null, { status: 500, statusText: 'Error' });
+
+      expect(service.isLoggedIn()).toBe(false);
+      expect(service.email()).toBeNull();
     });
   });
 
