@@ -13,7 +13,7 @@ public class ValidationCommandHandler<TCommand>(
     public async Task<Result> Handle(TCommand command, CancellationToken token)
     {
         var validator = provider.GetService<IValidator<TCommand>>();
-        
+
         if (validator is null)
         {
             return await handler.Handle(command, token);
@@ -29,5 +29,31 @@ public class ValidationCommandHandler<TCommand>(
         var errors = result.Errors.Select(e => new Error(e.ErrorCode, e.ErrorMessage, ErrorType.Validation)).ToImmutableList();
 
         return Result.Failure(errors);
+    }
+}
+
+public class ValidationCommandHandler<TCommand, TResponse>(
+    IServiceProvider provider,
+    ICommandHandler<TCommand, TResponse> handler) : ICommandHandler<TCommand, TResponse> where TCommand : ICommand
+{
+    public async Task<Result<TResponse>> Handle(TCommand command, CancellationToken token)
+    {
+        var validator = provider.GetService<IValidator<TCommand>>();
+
+        if (validator is null)
+        {
+            return await handler.Handle(command, token);
+        }
+
+        var result = await validator.ValidateAsync(command, token);
+
+        if (result.IsValid)
+        {
+            return await handler.Handle(command, token);
+        }
+
+        var errors = result.Errors.Select(e => new Error(e.ErrorCode, e.ErrorMessage, ErrorType.Validation)).ToImmutableList();
+
+        return Result.Failure<TResponse>(errors);
     }
 }

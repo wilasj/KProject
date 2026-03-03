@@ -22,6 +22,7 @@ public static class DependencyInjection
                     .WithScopedLifetime());
         
         services.Decorate(typeof(ICommandHandler<>), typeof(ValidationCommandHandler<>));
+        services.Decorate(typeof(ICommandHandler<,>), typeof(ValidationCommandHandler<,>));
         
         return services;
     }
