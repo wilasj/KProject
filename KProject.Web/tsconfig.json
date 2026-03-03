@@ -19,7 +19,8 @@
       "@core/*": ["src/app/core/*"],
       "@pages/*": ["src/app/pages/*"],
       "@layouts/*": ["src/app/layouts/*"],
-      "@types/*": ["src/app/types/*"]
+      "@types/*": ["src/app/types/*"],
+      "@components/*": ["src/app/components/*"]
     }
   },
   "angularCompilerOptions": {

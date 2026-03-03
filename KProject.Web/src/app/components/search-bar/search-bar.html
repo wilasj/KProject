@@ -1,0 +1,8 @@
+<span class="material-symbols-outlined search-bar__icon">search</span>
+<input
+  class="search-bar__input"
+  type="text"
+  [placeholder]="placeholder()"
+  [formControl]="control"
+  (keydown)="onKeydown($event)"
+/>
