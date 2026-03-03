@@ -21,6 +21,7 @@ export const routes: Routes = [
       { path: 'vendas',    loadComponent: () => import('@pages/vendas/vendas').then(m => m.Vendas) },
       { path: 'clientes',  loadComponent: () => import('@pages/clientes/clientes').then(m => m.Clientes) },
       { path: 'estoque',   loadComponent: () => import('@pages/estoque/estoque').then(m => m.Estoque) },
+      { path: 'produtos',  loadComponent: () => import('@pages/produtos/produtos').then(m => m.Produtos) },
       { path: 'relatorios',loadComponent: () => import('@pages/relatorios/relatorios').then(m => m.Relatorios) },
     ]
   },

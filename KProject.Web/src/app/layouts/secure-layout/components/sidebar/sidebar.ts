@@ -21,6 +21,7 @@ export class Sidebar {
     { path: '/vendas',    icon: 'point_of_sale', label: 'Vendas'    },
     { path: '/clientes',  icon: 'group',         label: 'Clientes'  },
     { path: '/estoque',   icon: 'inventory_2',   label: 'Estoque'   },
+    { path: '/produtos',  icon: 'medication',    label: 'Produtos'  },
     { path: '/relatorios',icon: 'analytics',     label: 'Relatórios'},
   ];
 }
