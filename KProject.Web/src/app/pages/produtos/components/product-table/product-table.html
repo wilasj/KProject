@@ -1,0 +1,53 @@
+@if (products().length === 0) {
+  <div class="product-table__empty">
+    <span class="material-symbols-outlined">inventory_2</span>
+    <p>Nenhum produto encontrado</p>
+  </div>
+} @else {
+  <div class="product-table__list">
+    @for (product of products(); track product.id) {
+      <div class="product-table__row">
+        <div class="product-table__row-info">
+          <span class="product-table__row-name">{{ product.nome }}</span>
+          <span class="product-table__row-meta">
+            {{ product.referencia }}
+            <span class="product-table__row-dot">•</span>
+            {{ product.codigoAnvisa }}
+          </span>
+          <span class="product-table__row-date">Criado em {{ product.criadoEm | date:'dd/MM/yyyy' }}</span>
+        </div>
+        <span class="material-symbols-outlined product-table__row-arrow">chevron_right</span>
+      </div>
+    }
+  </div>
+
+  @if (totalPages() > 1) {
+    <div class="product-table__pagination">
+      <button
+        class="product-table__page-btn product-table__page-btn--prev"
+        [disabled]="currentPage() === 1"
+        (click)="goToPage(currentPage() - 1)"
+      >
+        <span class="material-symbols-outlined">chevron_left</span>
+      </button>
+
+      @for (page of pages(); track page) {
+        <button
+          class="product-table__page-btn"
+          [class.product-table__page-btn--active]="page === currentPage()"
+          (click)="goToPage(page)"
+        >
+          {{ page }}
+        </button>
+      }
+
+      <button
+        class="product-table__page-btn product-table__page-btn--next"
+        [disabled]="currentPage() === totalPages()"
+        (click)="goToPage(currentPage() + 1)"
+      >
+        <span class="material-symbols-outlined">chevron_right</span>
+      </button>
+    </div>
+  }
+}

@@ -19,7 +19,7 @@
       "@core/*": ["src/app/core/*"],
       "@pages/*": ["src/app/pages/*"],
       "@layouts/*": ["src/app/layouts/*"],
-      "@types/*": ["src/app/types/*"],
+      "@models/*": ["src/app/types/*"],
       "@components/*": ["src/app/components/*"]
     }
   },
