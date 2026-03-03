@@ -1,0 +1,40 @@
+<div class="product-drawer__header">
+  <div>
+    <h2 class="product-drawer__title">Novo Produto</h2>
+    <p class="product-drawer__subtitle">Preencha os dados do produto</p>
+  </div>
+  <button class="product-drawer__close" (click)="close.emit()" aria-label="Fechar">
+    <span class="material-symbols-outlined">close</span>
+  </button>
+</div>
+
+@if (errors().length > 0) {
+  <div class="product-drawer__errors">
+    @for (error of errors(); track error.code) {
+      <span>{{ error.description }}</span>
+    }
+  </div>
+}
+
+<form class="product-drawer__form" [formGroup]="form" (ngSubmit)="onSubmit()">
+  <div class="product-drawer__field">
+    <label for="nome">Nome</label>
+    <input id="nome" type="text" formControlName="nome" placeholder="Nome do produto" />
+  </div>
+  <div class="product-drawer__field">
+    <label for="referencia">Referência</label>
+    <input id="referencia" type="text" formControlName="referencia" placeholder="REF-001" />
+  </div>
+  <div class="product-drawer__field">
+    <label for="descricao">Descrição</label>
+    <input id="descricao" type="text" formControlName="descricao" placeholder="Descrição do produto" />
+  </div>
+  <div class="product-drawer__field">
+    <label for="codigoAnvisa">Código ANVISA</label>
+    <input id="codigoAnvisa" type="text" formControlName="codigoAnvisa" placeholder="ANVISA-001" />
+  </div>
+
+  <button type="submit" class="product-drawer__submit" [disabled]="form.invalid || saving()">
+    {{ saving() ? 'Salvando...' : 'Salvar' }}
+  </button>
+</form>
