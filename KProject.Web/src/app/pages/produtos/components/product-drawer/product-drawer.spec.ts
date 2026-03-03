@@ -2,7 +2,7 @@ import { TestBed } from '@angular/core/testing';
 import { provideHttpClient } from '@angular/common/http';
 import { provideHttpClientTesting, HttpTestingController } from '@angular/common/http/testing';
 import { ProductDrawer } from './product-drawer';
-import { describe, it, expect, beforeEach } from 'vitest';
+import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
 
 describe('ProductDrawer', () => {
   beforeEach(() => {
@@ -10,6 +10,10 @@ describe('ProductDrawer', () => {
       imports: [ProductDrawer],
       providers: [provideHttpClient(), provideHttpClientTesting()],
     });
+  });
+
+  afterEach(() => {
+    vi.useRealTimers();
   });
 
   it('deve desabilitar o botão salvar com form inválido', () => {
@@ -34,6 +38,8 @@ describe('ProductDrawer', () => {
   });
 
   it('deve emitir productCreated após POST com sucesso', () => {
+    vi.useFakeTimers();
+
     const fixture = TestBed.createComponent(ProductDrawer);
     const http = TestBed.inject(HttpTestingController);
     const component = fixture.componentInstance;
@@ -53,6 +59,10 @@ describe('ProductDrawer', () => {
     const req = http.expectOne('/api/produtos');
     req.flush({ id: 1 });
 
+    expect(component.saved()).toBe(true);
+    expect(emitted).toBe(false);
+
+    vi.advanceTimersByTime(1500);
     expect(emitted).toBe(true);
     http.verify();
   });

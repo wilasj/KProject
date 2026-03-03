@@ -1,0 +1,41 @@
+<div class="produtos__main">
+  <app-search-bar
+    placeholder="Buscar produtos..."
+    [initialValue]="initialSearch()"
+    (search)="onSearch($event)"
+  />
+
+  <div class="produtos__content">
+    <div class="produtos__toolbar">
+      <h2 class="produtos__title">Produtos</h2>
+      <button class="produtos__btn-new" (click)="drawerOpen.set(true)">
+        <span class="material-symbols-outlined">add</span>
+        Novo Produto
+      </button>
+    </div>
+
+    @if (loading()) {
+      <div class="produtos__loading">
+        <span class="material-symbols-outlined">hourglass_empty</span>
+      </div>
+    } @else {
+      <app-product-table
+        [products]="products()"
+        [total]="total()"
+        [currentPage]="currentPage()"
+        [pageSize]="pageSize"
+        (pageChange)="onPageChange($event)"
+      />
+    }
+  </div>
+</div>
+
+<aside class="produtos__drawer" [class.produtos__drawer--open]="drawerOpen()">
+  <div class="produtos__drawer-inner">
+    <app-product-drawer
+      [open]="drawerOpen()"
+      (close)="drawerOpen.set(false)"
+      (productCreated)="onProductCreated()"
+    />
+  </div>
+</aside>

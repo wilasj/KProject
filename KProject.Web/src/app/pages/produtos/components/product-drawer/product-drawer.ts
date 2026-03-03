@@ -1,4 +1,4 @@
-import { Component, inject, output, signal } from '@angular/core';
+import { Component, effect, inject, input, output, signal } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 
@@ -13,11 +13,23 @@ interface ValidationError { code: string; description: string; }
 export class ProductDrawer {
   private http = inject(HttpClient);
 
+  open = input<boolean>(false);
   close = output<void>();
   productCreated = output<void>();
 
   errors = signal<ValidationError[]>([]);
   saving = signal(false);
+  saved = signal(false);
+
+  constructor() {
+    effect(() => {
+      if (this.open()) {
+        this.form.reset();
+        this.errors.set([]);
+        this.saved.set(false);
+      }
+    });
+  }
 
   form = new FormGroup({
     nome:         new FormControl('', { nonNullable: true, validators: [Validators.required, Validators.maxLength(100)] }),
@@ -34,7 +46,8 @@ export class ProductDrawer {
     this.http.post<{ id: number }>('/api/produtos', this.form.getRawValue()).subscribe({
       next: () => {
         this.saving.set(false);
-        this.productCreated.emit();
+        this.saved.set(true);
+        setTimeout(() => this.productCreated.emit(), 1500);
       },
       error: (err: HttpErrorResponse) => {
         this.saving.set(false);

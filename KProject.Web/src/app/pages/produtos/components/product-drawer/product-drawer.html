@@ -34,7 +34,17 @@
     <input id="codigoAnvisa" type="text" formControlName="codigoAnvisa" placeholder="ANVISA-001" />
   </div>
 
-  <button type="submit" class="product-drawer__submit" [disabled]="form.invalid || saving()">
-    {{ saving() ? 'Salvando...' : 'Salvar' }}
+  <button
+    type="submit"
+    class="product-drawer__submit"
+    [class.product-drawer__submit--saved]="saved()"
+    [disabled]="form.invalid || saving() || saved()"
+  >
+    @if (saved()) {
+      <span class="material-symbols-outlined">check_circle</span>
+      Salvo!
+    } @else {
+      {{ saving() ? 'Salvando...' : 'Salvar' }}
+    }
   </button>
 </form>
