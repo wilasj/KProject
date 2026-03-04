@@ -3,7 +3,7 @@ using System.Net.Http.Json;
 using KProject.Tests.Fixtures;
 using Shouldly;
 
-namespace KProject.Tests.Usuario;
+namespace KProject.Tests.Integration.Usuario;
 
 [Collection(nameof(DatabaseCollection))]
 public class LoginEndpointTests(DatabaseFixture fixture)

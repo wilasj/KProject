@@ -4,7 +4,7 @@ using KProject.Tests.Fixtures;
 using Microsoft.EntityFrameworkCore;
 using Shouldly;
 
-namespace KProject.Tests.Produto;
+namespace KProject.Tests.Integration.Produto;
 
 [Collection(nameof(DatabaseCollection))]
 public class CriaProdutoEndpointTests(DatabaseFixture fixture)

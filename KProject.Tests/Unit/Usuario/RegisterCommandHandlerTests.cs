@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Identity;
 using NSubstitute;
 using Shouldly;
 
-namespace KProject.Tests.Usuario;
+namespace KProject.Tests.Unit.Usuario;
 
 public class RegisterCommandHandlerTests
 {

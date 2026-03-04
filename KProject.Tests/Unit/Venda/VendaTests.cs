@@ -2,7 +2,7 @@ using KProject.Common;
 using KProject.Domain.Venda;
 using Shouldly;
 
-namespace KProject.Tests.Venda;
+namespace KProject.Tests.Unit.Venda;
 
 public class VendaTests
 {

@@ -4,7 +4,7 @@ using KProject.Tests.Fixtures;
 using Microsoft.EntityFrameworkCore;
 using Shouldly;
 
-namespace KProject.Tests.Usuario;
+namespace KProject.Tests.Integration.Usuario;
 
 [Collection(nameof(DatabaseCollection))]
 public class RegisterEndpointTests(DatabaseFixture fixture)

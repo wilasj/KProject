@@ -8,7 +8,7 @@ using Microsoft.Extensions.Options;
 using NSubstitute;
 using Shouldly;
 
-namespace KProject.Tests.Usuario;
+namespace KProject.Tests.Unit.Usuario;
 
 public class LoginCommandHandlerTests
 {

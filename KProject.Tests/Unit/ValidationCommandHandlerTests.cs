@@ -7,7 +7,7 @@ using NSubstitute;
 using NSubstitute.ReturnsExtensions;
 using Shouldly;
 
-namespace KProject.Tests;
+namespace KProject.Tests.Unit;
 
 public class DummyCommand : ICommand;
 
