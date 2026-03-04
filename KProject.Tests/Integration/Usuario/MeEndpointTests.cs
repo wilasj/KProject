@@ -21,7 +21,7 @@ public class MeEndpointTests(DatabaseFixture fixture)
     }
 
     [Fact]
-    public async Task Me_DeveRetornar200_ComAutenticacao()
+    public async Task Me_DeveRetornar200_ComEmailDoUsuario()
     {
         var client = fixture.Factory.CreateClient();
         var request = new { Email = "me_autenticado@wilasj.dev", Password = "Big_password!!@21" };
@@ -33,5 +33,10 @@ public class MeEndpointTests(DatabaseFixture fixture)
 
         var body = await result.Content.ReadAsStringAsync(TestContext.Current.CancellationToken);
         result.StatusCode.ShouldBe(HttpStatusCode.OK, body);
+
+        var response = await result.Content.ReadFromJsonAsync<MeResponse>(TestContext.Current.CancellationToken);
+        response!.Email.ShouldBe("me_autenticado@wilasj.dev");
     }
+
+    private record MeResponse(string Email);
 }
