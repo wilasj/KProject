@@ -17,6 +17,9 @@ public static class DependencyInjection
                 .AddClasses(c => c.AssignableTo(typeof(ICommandHandler<>)))
                     .AsImplementedInterfaces()
                     .WithScopedLifetime()
+                .AddClasses(c => c.AssignableTo(typeof(IQueryHandler<,>)))
+                    .AsImplementedInterfaces()
+                    .WithScopedLifetime()
                 .AddClasses(c => c.AssignableTo(typeof(IValidator<>)))
                     .AsImplementedInterfaces()
                     .WithScopedLifetime());
