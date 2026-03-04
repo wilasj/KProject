@@ -20,7 +20,7 @@ public static class ResultExtensions
             ErrorType.Problem => TypedResults.InternalServerError(errors),
             ErrorType.NotFound => TypedResults.NotFound(errors),
             ErrorType.Conflict => TypedResults.Conflict(errors),
-            ErrorType.Unauthorized => TypedResults.Unauthorized(),
+            ErrorType.Unauthorized => Results.Json(errors, statusCode: StatusCodes.Status401Unauthorized),
             _ => throw new ArgumentOutOfRangeException()
         };
     }

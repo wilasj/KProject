@@ -44,7 +44,7 @@ public class LoginEndpointTests(DatabaseFixture fixture)
     }
 
     [Fact]
-    public async Task Login_DeveRetornar400_SeCredenciaisErradas()
+    public async Task Login_DeveRetornar401_SeCredenciaisErradas()
     {
         await _client.PostAsJsonAsync("/api/users/register", new
         {
@@ -60,5 +60,8 @@ public class LoginEndpointTests(DatabaseFixture fixture)
 
         var body = await result.Content.ReadAsStringAsync(TestContext.Current.CancellationToken);
         result.StatusCode.ShouldBe(HttpStatusCode.Unauthorized, body);
+
+        var errors = await result.Content.ReadFromJsonAsync<List<ErrorResponse>>(TestContext.Current.CancellationToken);
+        errors!.ShouldContain(e => e.Code == "Usuario.LoginFalhou");
     }
 }
