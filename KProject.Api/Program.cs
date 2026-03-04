@@ -22,8 +22,6 @@ var api = app.MapGroup("/api");
 
 app.MapEndpoints(api);
 
-app.MapGet("/", () => "Hello World!");
-
 //logs
 //exception handler
 
