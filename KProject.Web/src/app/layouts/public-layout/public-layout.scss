@@ -1,7 +1,24 @@
 :host {
   min-height: 100vh;
   display: flex;
-  align-items: center;
-  justify-content: center;
-  background: linear-gradient(to bottom, var(--color-primary-light), var(--color-primary-dark));
+}
+
+.public-layout__panel {
+  flex: 1;
+
+  &--left {
+    background: linear-gradient(135deg, var(--color-primary-light), var(--color-primary-dark));
+
+    @media (max-width: 768px) {
+      display: none;
+    }
+  }
+
+  &--right {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem 1.5rem;
+    background: #fff;
+  }
 }
