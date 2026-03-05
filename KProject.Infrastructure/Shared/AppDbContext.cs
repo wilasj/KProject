@@ -35,4 +35,5 @@ public sealed class AppDbContext(DbContextOptions options) : IdentityUserContext
     public DbSet<Domain.Cliente.Cliente> Clientes { get; set; }
     public DbSet<Domain.Lote.Lote> Lotes { get; set; }
     public DbSet<Domain.Estoque.Estoque> Estoques { get; set; }
+    public DbSet<Domain.Invite.Invite> Invites { get; set; }
 }
