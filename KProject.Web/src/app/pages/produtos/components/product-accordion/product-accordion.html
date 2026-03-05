@@ -1,0 +1,35 @@
+@if (expanded()) {
+  <div class="product-accordion" [class.product-accordion--split]="mode() !== 'grid'">
+    <div class="product-accordion__left">
+      @if (loading()) {
+        @for (i of [1, 2, 3, 4]; track i) {
+          <div class="lote-skeleton"></div>
+        }
+      } @else {
+        @for (lote of lotes(); track lote.id) {
+          <app-lote-card
+            [lote]="lote"
+            [selected]="selectedLote()?.id === lote.id"
+            (select)="onLoteSelect($event)"
+          />
+        }
+        <button class="product-accordion__add-btn" (click)="onAddLote()">
+          <span class="material-symbols-outlined">add</span>
+        </button>
+      }
+    </div>
+
+    @if (mode() !== 'grid') {
+      <div class="product-accordion__right">
+        @if (mode() === 'form') {
+          <!-- lote-form vem na próxima parte -->
+          <div class="product-accordion__panel-placeholder"></div>
+        }
+        @if (mode() === 'history') {
+          <!-- lote-history vem na próxima parte -->
+          <div class="product-accordion__panel-placeholder"></div>
+        }
+      </div>
+    }
+  </div>
+}
