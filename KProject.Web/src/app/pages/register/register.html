@@ -1,5 +1,6 @@
 <div class="register">
-  <h1 class="register__title">Registrar</h1>
+  <h1 class="register__title">Criar conta</h1>
+  <p class="register__subtitle">Preencha os dados para começar</p>
 
   @if (errors().length > 0) {
     <div class="register__errors">
@@ -34,8 +35,17 @@
       </span>
     </div>
 
-    <button type="submit">Registrar</button>
+    <button type="submit" [disabled]="loading()">
+      @if (loading()) {
+        <svg class="register__spinner" viewBox="0 0 24 24" fill="none">
+          <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="3" stroke-dasharray="32" stroke-dashoffset="12" stroke-linecap="round"/>
+        </svg>
+        Aguarde...
+      } @else {
+        Registrar
+      }
+    </button>
   </form>
 
-  <a routerLink="/login">Já tem uma conta? Faça login</a>
+  <a routerLink="/login">Já tem uma conta? <strong>Faça login</strong></a>
 </div>
