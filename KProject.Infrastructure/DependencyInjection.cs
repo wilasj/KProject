@@ -57,9 +57,16 @@ public static class DependencyInjection
                 })
                 .AddCookie(IdentityConstants.ApplicationScheme, options =>
                 {
-                    options.LoginPath = "/users/login";
-                    options.LogoutPath = "/users/logout";
-                    options.AccessDeniedPath = "/users/access-denied"; 
+                    options.Events.OnRedirectToLogin = ctx =>
+                    {
+                        ctx.Response.StatusCode = 401;
+                        return Task.CompletedTask;
+                    };
+                    options.Events.OnRedirectToAccessDenied = ctx =>
+                    {
+                        ctx.Response.StatusCode = 403;
+                        return Task.CompletedTask;
+                    };
                 });
 
             return services;

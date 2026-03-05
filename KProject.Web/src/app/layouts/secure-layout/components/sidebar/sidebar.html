@@ -15,7 +15,22 @@
     }
   </nav>
 
-  <button class="sidebar__logout" (click)="logoutClick.emit()" aria-label="Sair" title="Sair">
-    <span class="material-symbols-outlined">logout</span>
-  </button>
+  <div class="sidebar__bottom">
+    <button
+      class="sidebar__invite"
+      (click)="inviteOpen.set(true)"
+      aria-label="Convidar usuário"
+      title="Convidar"
+    >
+      <span class="material-symbols-outlined">person_add</span>
+    </button>
+
+    <button class="sidebar__logout" (click)="logoutClick.emit()" aria-label="Sair" title="Sair">
+      <span class="material-symbols-outlined">logout</span>
+    </button>
+  </div>
 </aside>
+
+@if (inviteOpen()) {
+  <app-invite-popup (close)="inviteOpen.set(false)" />
+}

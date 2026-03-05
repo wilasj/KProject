@@ -1,8 +1,11 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { By } from '@angular/platform-browser';
 import { provideRouter } from '@angular/router';
 import { signal } from '@angular/core';
+import { of } from 'rxjs';
 import { Sidebar } from './sidebar';
 import { Auth } from '@core/auth';
+import { InvitePopup } from '../invite-popup/invite-popup';
 
 describe('Sidebar', () => {
   let component: Sidebar;
@@ -13,7 +16,10 @@ describe('Sidebar', () => {
       imports: [Sidebar],
       providers: [
         provideRouter([]),
-        { provide: Auth, useValue: { email: signal(email) } },
+        {
+          provide: Auth,
+          useValue: { email: signal(email), criaInvite: vi.fn().mockReturnValue(of('token')) },
+        },
       ],
     }).compileComponents();
 
@@ -57,5 +63,30 @@ describe('Sidebar', () => {
     button.click();
 
     expect(emitted).toBe(true);
+  });
+
+  it('deve iniciar com inviteOpen como false', async () => {
+    await createComponent('test@test.com');
+    expect(component.inviteOpen()).toBe(false);
+  });
+
+  it('deve abrir o popup ao clicar no botao de convite', async () => {
+    await createComponent('test@test.com');
+    fixture.detectChanges();
+
+    fixture.nativeElement.querySelector('.sidebar__invite').click();
+
+    expect(component.inviteOpen()).toBe(true);
+  });
+
+  it('deve fechar o popup quando InvitePopup emitir close', async () => {
+    await createComponent('test@test.com');
+    component.inviteOpen.set(true);
+    fixture.detectChanges();
+
+    const popupInstance = fixture.debugElement.query(By.directive(InvitePopup)).componentInstance as InvitePopup;
+    popupInstance.close.emit();
+
+    expect(component.inviteOpen()).toBe(false);
   });
 });

@@ -1,0 +1,18 @@
+<div class="invite-popup__backdrop" (click)="close.emit()"></div>
+
+<div class="invite-popup__box">
+  <p class="invite-popup__label">Link de convite</p>
+
+  @if (loading()) {
+    <div class="invite-popup__skeleton"></div>
+  } @else if (inviteUrl()) {
+    <div class="invite-popup__url-row">
+      <span class="invite-popup__url">{{ inviteUrl() }}</span>
+      <button class="invite-popup__copy" (click)="copy()" [attr.aria-label]="copied() ? 'Copiado' : 'Copiar'">
+        <span class="material-symbols-outlined">{{ copied() ? 'check' : 'content_copy' }}</span>
+      </button>
+    </div>
+  } @else {
+    <p class="invite-popup__error">Erro ao gerar convite.</p>
+  }
+</div>

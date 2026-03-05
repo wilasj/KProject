@@ -1,16 +1,18 @@
-import {Component, inject, output} from '@angular/core';
+import {Component, inject, output, signal} from '@angular/core';
 import {RouterLink, RouterLinkActive} from '@angular/router';
 import {Auth} from '@core/auth';
+import {InvitePopup} from '../invite-popup/invite-popup';
 
 @Component({
   selector: 'app-sidebar',
-  imports: [RouterLink, RouterLinkActive],
+  imports: [RouterLink, RouterLinkActive, InvitePopup],
   templateUrl: './sidebar.html',
   styleUrl: './sidebar.scss',
 })
 export class Sidebar {
   private auth = inject(Auth);
   logoutClick = output<void>();
+  inviteOpen = signal(false);
 
   get initial(): string {
     const email = this.auth.email();
