@@ -68,10 +68,21 @@
     color: #bdbdbd;
   }
 
-  &__row-arrow {
+  &__row--expanded {
+    border-radius: 14px 14px 0 0;
+    border-bottom-color: transparent;
+  }
+
+  &__row-chevron {
     color: #bdbdbd;
     font-size: 1.25rem;
     flex-shrink: 0;
+    transition: transform 0.2s ease;
+
+    &--open {
+      transform: rotate(180deg);
+      color: #1a1a1a;
+    }
   }
 
   &__pagination {

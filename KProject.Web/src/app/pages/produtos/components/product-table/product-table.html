@@ -6,7 +6,11 @@
 } @else {
   <div class="product-table__list">
     @for (product of products(); track product.id) {
-      <div class="product-table__row">
+      <div
+        class="product-table__row"
+        [class.product-table__row--expanded]="expandedProductId() === product.id"
+        (click)="onToggle(product.id)"
+      >
         <div class="product-table__row-info">
           <span class="product-table__row-name">{{ product.nome }}</span>
           <span class="product-table__row-meta">
@@ -16,8 +20,15 @@
           </span>
           <span class="product-table__row-date">Criado em {{ product.criadoEm | date:'dd/MM/yyyy' }}</span>
         </div>
-        <span class="material-symbols-outlined product-table__row-arrow">chevron_right</span>
+        <span
+          class="material-symbols-outlined product-table__row-chevron"
+          [class.product-table__row-chevron--open]="expandedProductId() === product.id"
+        >keyboard_arrow_down</span>
       </div>
+      <app-product-accordion
+        [product]="product"
+        [expanded]="expandedProductId() === product.id"
+      />
     }
   </div>
 

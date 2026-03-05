@@ -1,7 +1,9 @@
 import { TestBed } from '@angular/core/testing';
+import { provideHttpClient } from '@angular/common/http';
+import { provideHttpClientTesting, HttpTestingController } from '@angular/common/http/testing';
 import { ProductTable } from './product-table';
 import { Product } from '@models/produto';
-import { describe, it, expect, beforeEach } from 'vitest';
+import { describe, it, expect, beforeEach, afterEach } from 'vitest';
 
 const mockProducts: Product[] = [
   { id: 1, nome: 'Produto A', referencia: 'REF-001', descricao: 'Desc A', codigoAnvisa: 'ANV-001', criadoEm: '2026-03-01T00:00:00Z' },
@@ -9,9 +11,17 @@ const mockProducts: Product[] = [
 ];
 
 describe('ProductTable', () => {
+  let httpTesting: HttpTestingController;
+
   beforeEach(() => {
-    TestBed.configureTestingModule({ imports: [ProductTable] });
+    TestBed.configureTestingModule({
+      imports: [ProductTable],
+      providers: [provideHttpClient(), provideHttpClientTesting()],
+    });
+    httpTesting = TestBed.inject(HttpTestingController);
   });
+
+  afterEach(() => httpTesting.verify());
 
   it('deve renderizar os produtos recebidos', () => {
     const fixture = TestBed.createComponent(ProductTable);
@@ -46,5 +56,58 @@ describe('ProductTable', () => {
     const nextBtn = fixture.nativeElement.querySelector('.product-table__page-btn--next');
     nextBtn.click();
     expect(emittedPage).toBe(2);
+  });
+
+  it('deve expandir o accordion ao clicar num row', () => {
+    const fixture = TestBed.createComponent(ProductTable);
+    fixture.componentRef.setInput('products', mockProducts);
+    fixture.componentRef.setInput('total', 2);
+    fixture.componentRef.setInput('currentPage', 1);
+    fixture.detectChanges();
+
+    fixture.nativeElement.querySelector('.product-table__row').click();
+    fixture.detectChanges();
+
+    httpTesting.expectOne('/api/produtos/1/lotes');
+    const accordion = fixture.nativeElement.querySelector('app-product-accordion .product-accordion');
+    expect(accordion).not.toBeNull();
+  });
+
+  it('deve recolher o accordion ao clicar no mesmo row', () => {
+    const fixture = TestBed.createComponent(ProductTable);
+    fixture.componentRef.setInput('products', mockProducts);
+    fixture.componentRef.setInput('total', 2);
+    fixture.componentRef.setInput('currentPage', 1);
+    fixture.detectChanges();
+
+    const row = fixture.nativeElement.querySelector('.product-table__row');
+    row.click();
+    fixture.detectChanges();
+    httpTesting.expectOne('/api/produtos/1/lotes');
+
+    row.click();
+    fixture.detectChanges();
+
+    const accordion = fixture.nativeElement.querySelector('app-product-accordion .product-accordion');
+    expect(accordion).toBeNull();
+  });
+
+  it('deve fechar accordion anterior ao expandir outro row', () => {
+    const fixture = TestBed.createComponent(ProductTable);
+    fixture.componentRef.setInput('products', mockProducts);
+    fixture.componentRef.setInput('total', 2);
+    fixture.componentRef.setInput('currentPage', 1);
+    fixture.detectChanges();
+
+    const rows = fixture.nativeElement.querySelectorAll('.product-table__row');
+    rows[0].click();
+    fixture.detectChanges();
+    httpTesting.expectOne('/api/produtos/1/lotes');
+
+    rows[1].click();
+    fixture.detectChanges();
+    httpTesting.expectOne('/api/produtos/2/lotes');
+
+    expect(fixture.componentInstance.expandedProductId()).toBe(2);
   });
 });

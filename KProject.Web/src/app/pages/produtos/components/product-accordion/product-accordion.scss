@@ -7,30 +7,29 @@
   display: flex;
   gap: 0;
   padding: 1rem;
-  background: white;
+  background: #f8f8f8;
   border: 1px solid #f0f0f0;
   border-top: none;
   border-radius: 0 0 14px 14px;
+  min-height: 220px;
 
   &__left {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
+    display: flex;
+    flex-wrap: wrap;
     gap: 0.5rem;
+    align-content: flex-start;
     flex: 1;
-    transition: flex 0.3s ease;
     min-width: 0;
   }
 
   &--split &__left {
-    grid-template-columns: repeat(2, 1fr);
-    flex: 0 0 auto;
-    width: 45%;
+    flex: 0 0 50%;
   }
 
   &__right {
     flex: 1;
     padding-left: 1rem;
-    border-left: 1px solid #f0f0f0;
+    border-left: 1px solid #e0e0e0;
     margin-left: 1rem;
     animation: slide-in 0.25s ease;
     min-width: 0;
@@ -46,7 +45,8 @@
     cursor: pointer;
     color: #22c55e;
     transition: background 0.15s ease;
-    aspect-ratio: 1;
+    height: 100px;
+    width: 100px;
 
     &:hover {
       background: #f0fdf4;
@@ -63,10 +63,11 @@
 
 .lote-skeleton {
   border-radius: 12px;
-  background: linear-gradient(90deg, #f0f0f0 25%, #e8e8e8 50%, #f0f0f0 75%);
+  background: linear-gradient(90deg, #ebebeb 25%, #e0e0e0 50%, #ebebeb 75%);
   background-size: 200% 100%;
   animation: shimmer 1.2s infinite;
-  aspect-ratio: 1;
+  height: 100px;
+  width: 100px;
 }
 
 @keyframes shimmer {
