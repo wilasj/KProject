@@ -1,0 +1,5 @@
+<button class="lote-card">
+  <span class="lote-card__number">Lote {{ lote().numero }}</span>
+  <span class="lote-card__quantity">{{ lote().quantidadeTotal }}</span>
+  <span class="lote-card__validade">val: {{ lote().validade | date:'dd/MM/yyyy' }}</span>
+</button>
