@@ -22,12 +22,14 @@
     @if (mode() !== 'grid') {
       <div class="product-accordion__right">
         @if (mode() === 'form') {
-          <!-- lote-form vem na próxima parte -->
-          <div class="product-accordion__panel-placeholder"></div>
+          <app-lote-form
+            [productId]="product().id"
+            (loteCriado)="onLoteCriado()"
+            (cancelar)="onCancelar()"
+          />
         }
         @if (mode() === 'history') {
-          <!-- lote-history vem na próxima parte -->
-          <div class="product-accordion__panel-placeholder"></div>
+          <app-lote-history [loteId]="selectedLote()!.id" />
         }
       </div>
     }

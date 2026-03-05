@@ -1,0 +1,26 @@
+@if (loading()) {
+  <div class="lote-history__skeleton"></div>
+} @else if (detail()) {
+  <div class="lote-history__header">
+    <span class="lote-history__title">Lote {{ detail()!.numero }}</span>
+    <span class="lote-history__total">{{ detail()!.quantidadeTotal }} unid.</span>
+  </div>
+
+  <div class="lote-history__list">
+    @for (mov of detail()!.historico; track mov.id) {
+      <div class="lote-history__row">
+        <span
+          class="lote-history__delta"
+          [class.lote-history__delta--positive]="mov.deltaQuantidade > 0"
+          [class.lote-history__delta--negative]="mov.deltaQuantidade < 0"
+        >
+          {{ mov.deltaQuantidade > 0 ? '+' : '' }}{{ mov.deltaQuantidade }}
+        </span>
+        <span class="lote-history__tipo">{{ tipoLabel[mov.tipo] }}</span>
+        <span class="lote-history__date">{{ mov.criadoEm | date:'dd/MM/yyyy' }}</span>
+      </div>
+    } @empty {
+      <p class="lote-history__empty">Nenhuma movimentação</p>
+    }
+  </div>
+}

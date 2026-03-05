@@ -1,0 +1,49 @@
+<div class="lote-form">
+  <div class="lote-form__fields">
+    <div class="lote-form__field">
+      <label class="lote-form__label">Número</label>
+      <input
+        class="lote-form__input"
+        type="number"
+        [ngModel]="numero()"
+        (ngModelChange)="numero.set($event)"
+        placeholder="Ex: 101"
+      />
+    </div>
+
+    <div class="lote-form__field">
+      <label class="lote-form__label">Validade</label>
+      <input
+        class="lote-form__input"
+        type="date"
+        [ngModel]="validade()"
+        (ngModelChange)="validade.set($event)"
+      />
+    </div>
+
+    <div class="lote-form__field">
+      <label class="lote-form__label">Quantidade inicial</label>
+      <input
+        class="lote-form__input"
+        type="number"
+        [ngModel]="quantidade()"
+        (ngModelChange)="quantidade.set($event)"
+        placeholder="Ex: 50"
+      />
+    </div>
+  </div>
+
+  <div class="lote-form__actions">
+    <button class="lote-form__back" type="button" (click)="onCancelar()">
+      <span class="material-symbols-outlined">arrow_back</span>
+    </button>
+    <button
+      class="lote-form__submit"
+      type="button"
+      [disabled]="submitting()"
+      (click)="onSubmit()"
+    >
+      {{ submitting() ? 'Salvando...' : 'Salvar' }}
+    </button>
+  </div>
+</div>

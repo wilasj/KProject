@@ -5,9 +5,16 @@ export interface Lote {
   quantidadeTotal: number;
 }
 
+export type TipoHistorico =
+  | 'Entrada'
+  | 'SaidaConsignacao'
+  | 'RetornoConsignacao'
+  | 'Ajuste'
+  | 'Perda';
+
 export interface StockMovement {
   id: number;
-  tipo: string;
+  tipo: TipoHistorico;
   deltaQuantidade: number;
   criadoEm: string;
 }

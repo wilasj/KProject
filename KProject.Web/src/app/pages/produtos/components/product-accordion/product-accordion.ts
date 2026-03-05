@@ -3,10 +3,12 @@ import { HttpClient } from '@angular/common/http';
 import { Product } from '@models/produto';
 import { Lote } from '@models/lote';
 import { LoteCard } from '../lote-card/lote-card';
+import { LoteForm } from '../lote-form/lote-form';
+import { LoteHistory } from '../lote-history/lote-history';
 
 @Component({
   selector: 'app-product-accordion',
-  imports: [LoteCard],
+  imports: [LoteCard, LoteForm, LoteHistory],
   templateUrl: './product-accordion.html',
   styleUrl: './product-accordion.scss',
 })
@@ -45,6 +47,15 @@ export class ProductAccordion {
       this.mode.set('history');
       this.selectedLote.set(lote);
     }
+  }
+
+  onLoteCriado() {
+    this.mode.set('grid');
+    this.loadLotes();
+  }
+
+  onCancelar() {
+    this.mode.set('grid');
   }
 
   private loadLotes() {
