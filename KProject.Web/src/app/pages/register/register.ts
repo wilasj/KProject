@@ -1,5 +1,5 @@
-import {Component, inject, signal} from '@angular/core';
-import {Router, RouterLink} from '@angular/router';
+import {Component, inject, OnInit, signal} from '@angular/core';
+import {ActivatedRoute, Router, RouterLink} from '@angular/router';
 import {Auth} from '@core/auth';
 import {FormControl, FormGroup, ReactiveFormsModule, Validators} from '@angular/forms';
 
@@ -9,16 +9,29 @@ import {FormControl, FormGroup, ReactiveFormsModule, Validators} from '@angular/
   templateUrl: './register.html',
   styleUrl: './register.scss',
 })
-export class Register {
+export class Register implements OnInit {
   private authService = inject(Auth);
   private router = inject(Router);
+  private route = inject(ActivatedRoute);
+
   public errors = signal<ValidationError[]>([]);
   public loading = signal(false);
+
+  private inviteToken = '';
 
   registerForm = new FormGroup({
     email: new FormControl('', {nonNullable: true, validators: [Validators.required, Validators.email]}),
     password: new FormControl('', {nonNullable: true, validators: [Validators.required]}),
   });
+
+  ngOnInit() {
+    const token = this.route.snapshot.queryParamMap.get('token');
+    if (!token) {
+      this.router.navigate(['/login']);
+      return;
+    }
+    this.inviteToken = token;
+  }
 
   onSubmit() {
     if (this.registerForm.valid) {
@@ -26,7 +39,7 @@ export class Register {
       this.loading.set(true);
       this.errors.set([]);
 
-      this.authService.register(email, password).subscribe({
+      this.authService.register(email, password, this.inviteToken).subscribe({
         next: (result) => {
           if (result.success) {
             this.router.navigate(['/login']);

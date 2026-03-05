@@ -23,11 +23,7 @@ public class MeEndpointTests(DatabaseFixture fixture)
     [Fact]
     public async Task Me_DeveRetornar200_ComEmailDoUsuario()
     {
-        var client = fixture.Factory.CreateClient();
-        var request = new { Email = "me_autenticado@wilasj.dev", Password = "Big_password!!@21" };
-
-        await client.PostAsJsonAsync("/api/users/register", request, TestContext.Current.CancellationToken);
-        await client.PostAsJsonAsync("/api/users/login", request, TestContext.Current.CancellationToken);
+        var client = await fixture.CriaClienteAutenticado("me_autenticado@wilasj.dev", "Big_password!!@21");
 
         var result = await client.GetAsync("/api/users/me", TestContext.Current.CancellationToken);
 

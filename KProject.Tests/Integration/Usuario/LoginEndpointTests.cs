@@ -15,10 +15,11 @@ public class LoginEndpointTests(DatabaseFixture fixture)
     [Fact]
     public async Task Login_DeveRetornar200_SeCredenciaisValidas()
     {
-        var request = new { Email = "login_valido@wilasj.dev", Password = "Big_password!!@21" };
-
-        await _client.PostAsJsonAsync("/api/users/register", request, TestContext.Current.CancellationToken);
-        var result = await _client.PostAsJsonAsync("/api/users/login", request, TestContext.Current.CancellationToken);
+        var email = "login_valido@wilasj.dev";
+        var password = "Big_password!!@21";
+        var token = await fixture.CriaInviteToken();
+        await _client.PostAsJsonAsync("/api/users/register", new { Email = email, Password = password, InviteToken = token }, TestContext.Current.CancellationToken);
+        var result = await _client.PostAsJsonAsync("/api/users/login", new { Email = email, Password = password }, TestContext.Current.CancellationToken);
 
         var body = await result.Content.ReadAsStringAsync(TestContext.Current.CancellationToken);
         result.StatusCode.ShouldBe(HttpStatusCode.OK, body);
@@ -46,10 +47,12 @@ public class LoginEndpointTests(DatabaseFixture fixture)
     [Fact]
     public async Task Login_DeveRetornar401_SeCredenciaisErradas()
     {
+        var token = await fixture.CriaInviteToken();
         await _client.PostAsJsonAsync("/api/users/register", new
         {
             Email = "credenciais_erradas@wilasj.dev",
-            Password = "Big_password!!@21"
+            Password = "Big_password!!@21",
+            InviteToken = token,
         }, TestContext.Current.CancellationToken);
 
         var result = await _client.PostAsJsonAsync("/api/users/login", new

@@ -12,17 +12,6 @@ public class CriaProdutoEndpointTests(DatabaseFixture fixture)
     private record ErrorResponse(string Code, string Description);
     private record CriaProdutoResponse(int Id);
 
-    private async Task<HttpClient> CriaClienteAutenticado(string email)
-    {
-        var client = fixture.Factory.CreateClient();
-        var credentials = new { Email = email, Password = "Big_password!!@21" };
-
-        await client.PostAsJsonAsync("/api/users/register", credentials, TestContext.Current.CancellationToken);
-        await client.PostAsJsonAsync("/api/users/login", credentials, TestContext.Current.CancellationToken);
-
-        return client;
-    }
-
     [Fact]
     public async Task CriaProduto_DeveRetornar401_SemAutenticacao()
     {
@@ -42,7 +31,7 @@ public class CriaProdutoEndpointTests(DatabaseFixture fixture)
     [Fact]
     public async Task CriaProduto_DeveRetornar201_SeCommandValido()
     {
-        var client = await CriaClienteAutenticado("cria_produto@wilasj.dev");
+        var client = await fixture.CriaClienteAutenticado("cria_produto@wilasj.dev", "Big_password!!@21");
 
         var result = await client.PostAsJsonAsync("/api/produtos", new
         {
@@ -74,7 +63,7 @@ public class CriaProdutoEndpointTests(DatabaseFixture fixture)
     public async Task CriaProduto_DeveRetornar400_SeFieldsVazios(
         string nome, string referencia, string descricao, string codigoAnvisa, string codigoEsperado)
     {
-        var client = await CriaClienteAutenticado("cria_produto_vazio@wilasj.dev");
+        var client = await fixture.CriaClienteAutenticado("cria_produto_vazio@wilasj.dev", "Big_password!!@21");
 
         var result = await client.PostAsJsonAsync("/api/produtos", new
         {
@@ -99,7 +88,7 @@ public class CriaProdutoEndpointTests(DatabaseFixture fixture)
     public async Task CriaProduto_DeveRetornar400_SeFieldsMuitoLongos(
         int nomeLen, int referenciaLen, int descricaoLen, int codigoAnvisaLen, string codigoEsperado)
     {
-        var client = await CriaClienteAutenticado("cria_produto_longo@wilasj.dev");
+        var client = await fixture.CriaClienteAutenticado("cria_produto_longo@wilasj.dev", "Big_password!!@21");
 
         var result = await client.PostAsJsonAsync("/api/produtos", new
         {

@@ -20,5 +20,10 @@ public sealed class RegisterCommandValidator: AbstractValidator<RegisterCommand>
             .NotEmpty()
                 .WithErrorCode("Register.SenhaVazia")
                 .WithMessage("A senha não pode estar vazia");
+
+        RuleFor(c => c.InviteToken)
+            .NotEmpty()
+                .WithErrorCode("Register.TokenVazio")
+                .WithMessage("O token de convite é obrigatório");
     }
 }

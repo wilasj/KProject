@@ -21,11 +21,7 @@ public class LogoutEndpointTests(DatabaseFixture fixture)
     [Fact]
     public async Task Logout_DeveRetornar200_ComAutenticacao()
     {
-        var client = fixture.Factory.CreateClient();
-        var credentials = new { Email = "logout_valido@wilasj.dev", Password = "Big_password!!@21" };
-
-        await client.PostAsJsonAsync("/api/users/register", credentials, TestContext.Current.CancellationToken);
-        await client.PostAsJsonAsync("/api/users/login", credentials, TestContext.Current.CancellationToken);
+        var client = await fixture.CriaClienteAutenticado("logout_valido@wilasj.dev", "Big_password!!@21");
 
         var result = await client.PostAsync("/api/users/logout", null, TestContext.Current.CancellationToken);
 
@@ -36,11 +32,7 @@ public class LogoutEndpointTests(DatabaseFixture fixture)
     [Fact]
     public async Task Logout_DeveRevogarSessao()
     {
-        var client = fixture.Factory.CreateClient();
-        var credentials = new { Email = "logout_sessao@wilasj.dev", Password = "Big_password!!@21" };
-
-        await client.PostAsJsonAsync("/api/users/register", credentials, TestContext.Current.CancellationToken);
-        await client.PostAsJsonAsync("/api/users/login", credentials, TestContext.Current.CancellationToken);
+        var client = await fixture.CriaClienteAutenticado("logout_sessao@wilasj.dev", "Big_password!!@21");
 
         await client.PostAsync("/api/users/logout", null, TestContext.Current.CancellationToken);
 

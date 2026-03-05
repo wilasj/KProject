@@ -22,10 +22,11 @@ describe('Auth', () => {
   describe('register()', () => {
     it('deve retornar sucesso no 201', () => {
       let result: any;
-      service.register('test@test.com', 'password').subscribe((r) => (result = r));
+      service.register('test@test.com', 'password', 'token123').subscribe((r) => (result = r));
 
       const req = httpMock.expectOne('/api/users/register');
       expect(req.request.method).toBe('POST');
+      expect(req.request.body).toEqual({ email: 'test@test.com', password: 'password', inviteToken: 'token123' });
       req.flush(null, { status: 201, statusText: 'Created' });
 
       expect(result.success).toBe(true);
@@ -33,7 +34,7 @@ describe('Auth', () => {
 
     it('deve retornar falha com erros no 400', () => {
       let result: any;
-      service.register('test@test.com', 'password').subscribe((r) => (result = r));
+      service.register('test@test.com', 'password', 'token123').subscribe((r) => (result = r));
 
       const req = httpMock.expectOne('/api/users/register');
       req.flush([{ code: 'Register.EmailVazio', description: 'O email não pode estar vazio' }], {
@@ -45,6 +46,19 @@ describe('Auth', () => {
       expect(result.errors).toEqual([
         { code: 'Register.EmailVazio', description: 'O email não pode estar vazio' },
       ]);
+    });
+  });
+
+  describe('criaInvite()', () => {
+    it('deve retornar o token recebido do servidor', () => {
+      let result: any;
+      service.criaInvite().subscribe((r) => (result = r));
+
+      const req = httpMock.expectOne('/api/invites');
+      expect(req.request.method).toBe('POST');
+      req.flush({ token: 'abc123xyz' }, { status: 200, statusText: 'OK' });
+
+      expect(result).toBe('abc123xyz');
     });
   });
 
