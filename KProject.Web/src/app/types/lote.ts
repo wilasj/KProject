@@ -19,6 +19,7 @@ export interface StockMovement {
   criadoEm: string;
 }
 
-export interface LoteDetail extends Lote {
-  historico: StockMovement[];
+export interface HistoricoPage {
+  items: StockMovement[];
+  hasMore: boolean;
 }

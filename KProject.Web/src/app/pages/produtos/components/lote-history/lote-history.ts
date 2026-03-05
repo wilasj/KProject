@@ -1,7 +1,8 @@
-import { Component, effect, inject, input, signal } from '@angular/core';
+import { Component, effect, ElementRef, inject, input, OnDestroy, signal, ViewChild } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { DatePipe } from '@angular/common';
-import { LoteDetail, TipoHistorico } from '@models/lote';
+import { forkJoin } from 'rxjs';
+import { Lote, TipoHistorico, StockMovement, HistoricoPage } from '@models/lote';
 
 const TIPO_LABEL: Record<TipoHistorico, string> = {
   Entrada:            'Entrada',
@@ -11,36 +12,123 @@ const TIPO_LABEL: Record<TipoHistorico, string> = {
   Perda:              'Perda',
 };
 
+const PAGE_SIZE = 10;
+const ROW_HEIGHT_PX = 42; // padding×2 + border + content + gap — must match SCSS
+
 @Component({
   selector: 'app-lote-history',
   imports: [DatePipe],
   templateUrl: './lote-history.html',
   styleUrl: './lote-history.scss',
 })
-export class LoteHistory {
+export class LoteHistory implements OnDestroy {
   private http = inject(HttpClient);
 
   loteId = input.required<number>();
 
-  detail = signal<LoteDetail | null>(null);
-  loading = signal(false);
+  lote = signal<Lote | null>(null);
+  historico = signal<StockMovement[]>([]);
+  loadingInitial = signal(false);
+  loadingMore = signal(false);
+  hasMore = signal(false);
   readonly tipoLabel = TIPO_LABEL;
+  readonly listHeight = `${PAGE_SIZE * ROW_HEIGHT_PX}px`;
 
-  constructor() {
-    effect(() => {
-      this.loadDetail(this.loteId());
+  showTopFog = signal(false);
+  showBottomFog = signal(false);
+
+  private page = 1;
+  private observer?: IntersectionObserver;
+  private scrollEl?: HTMLElement;
+  private sentinelEl?: Element;
+
+  @ViewChild('scrollContainer') set scrollContainer(el: ElementRef<HTMLElement> | undefined) {
+    this.scrollEl = el?.nativeElement;
+    if (el) this.updateFogs(el.nativeElement);
+    this.setupObserver();
+  }
+
+  @ViewChild('sentinel') set sentinel(el: ElementRef | undefined) {
+    this.sentinelEl = el?.nativeElement;
+    this.setupObserver();
+  }
+
+  private setupObserver() {
+    this.observer?.disconnect();
+    if (this.sentinelEl && this.scrollEl) {
+      this.observer = new IntersectionObserver(
+        entries => { if (entries[0].isIntersecting) this.loadMore(); },
+        { root: this.scrollEl },
+      );
+      this.observer.observe(this.sentinelEl);
+    }
+  }
+
+  onScroll(el: HTMLElement) {
+    this.updateFogs(el);
+  }
+
+  private refreshFogs() {
+    // defer one tick so Angular renders the new items before measuring
+    setTimeout(() => {
+      if (this.scrollEl) this.updateFogs(this.scrollEl);
     });
   }
 
-  private loadDetail(id: number) {
-    this.loading.set(true);
-    this.detail.set(null);
-    this.http.get<LoteDetail>(`/api/lotes/${id}`).subscribe({
-      next: (d) => {
-        this.detail.set(d);
-        this.loading.set(false);
+  private updateFogs(el: HTMLElement) {
+    this.showTopFog.set(el.scrollTop > 0);
+    this.showBottomFog.set(el.scrollTop + el.clientHeight < el.scrollHeight - 1);
+  }
+
+  constructor() {
+    effect(() => this.loadInitial(this.loteId()));
+  }
+
+  ngOnDestroy() {
+    this.observer?.disconnect();
+  }
+
+  loadMore() {
+    if (!this.hasMore() || this.loadingMore()) return;
+    const nextPage = this.page + 1;
+    this.loadingMore.set(true);
+    this.fetchPage(this.loteId(), nextPage).subscribe({
+      next: (res) => {
+        this.historico.update(h => [...h, ...res.items]);
+        this.hasMore.set(res.hasMore);
+        this.page = nextPage;
+        this.loadingMore.set(false);
+        this.refreshFogs();
       },
-      error: () => this.loading.set(false),
+      error: () => this.loadingMore.set(false),
+    });
+  }
+
+  private loadInitial(id: number) {
+    this.page = 1;
+    this.lote.set(null);
+    this.historico.set([]);
+    this.hasMore.set(false);
+    this.loadingInitial.set(true);
+
+    forkJoin({
+      lote: this.http.get<Lote>(`/api/lotes/${id}`),
+      page: this.fetchPage(id, 1),
+    }).subscribe({
+      next: ({ lote, page }) => {
+        this.lote.set(lote);
+        this.historico.set(page.items);
+        this.hasMore.set(page.hasMore);
+        this.loadingInitial.set(false);
+        this.refreshFogs();
+      },
+      error: () => this.loadingInitial.set(false),
+    });
+  }
+
+  private fetchPage(id: number, page: number) {
+    return this.http.get<HistoricoPage>(`/api/lotes/${id}/historico`, {
+      params: { pagina: page, tamanhoPagina: PAGE_SIZE },
     });
   }
 }
