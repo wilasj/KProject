@@ -8,6 +8,7 @@
       <PackageReference Include="FluentValidation" />
       <PackageReference Include="Microsoft.Extensions.DependencyInjection" />
       <PackageReference Include="Scrutor" />
+      <PackageReference Include="Serilog.Extensions.Hosting" />
     </ItemGroup>
 
     <ItemGroup>
