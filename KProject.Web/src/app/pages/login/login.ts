@@ -5,10 +5,7 @@ import {FormControl, FormGroup, ReactiveFormsModule, Validators} from '@angular/
 
 @Component({
   selector: 'app-login',
-  imports: [
-    RouterLink,
-    ReactiveFormsModule
-  ],
+  imports: [RouterLink, ReactiveFormsModule],
   templateUrl: './login.html',
   styleUrl: './login.scss',
 })
@@ -16,6 +13,7 @@ export class Login {
   private authService = inject(Auth);
   private router = inject(Router);
   public errors = signal<ValidationError[]>([]);
+  public loading = signal(false);
 
   loginForm = new FormGroup({
     email: new FormControl('', {nonNullable: true, validators: [Validators.required, Validators.email]}),
@@ -25,18 +23,20 @@ export class Login {
   onSubmit() {
     if (this.loginForm.valid) {
       const {email, password} = this.loginForm.getRawValue();
+      this.loading.set(true);
+      this.errors.set([]);
 
-      this.authService
-        .login(email, password)
-        .subscribe({
-          next: (result) => {
-            if (result.success) {
-              this.router.navigate(['/vendas']);
-            } else {
-              this.errors.set(result.errors);
-            }
+      this.authService.login(email, password).subscribe({
+        next: (result) => {
+          if (result.success) {
+            this.router.navigate(['/vendas']);
+          } else {
+            this.loading.set(false);
+            this.errors.set(result.errors);
           }
-        });
+        },
+        error: () => this.loading.set(false),
+      });
     }
   }
 }

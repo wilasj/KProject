@@ -1,5 +1,6 @@
 <div class="login">
-  <h1 class="login__title">Login</h1>
+  <h1 class="login__title">Entrar</h1>
+  <p class="login__subtitle">Acesse sua conta</p>
 
   @if (errors().length > 0) {
     <div class="login__errors">
@@ -34,8 +35,17 @@
       </span>
     </div>
 
-    <button type="submit">Entrar</button>
+    <button type="submit" [disabled]="loading()">
+      @if (loading()) {
+        <svg class="login__spinner" viewBox="0 0 24 24" fill="none">
+          <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="3" stroke-dasharray="32" stroke-dashoffset="12" stroke-linecap="round"/>
+        </svg>
+        Aguarde...
+      } @else {
+        Entrar
+      }
+    </button>
   </form>
 
-  <a routerLink="/register">Não tem uma conta? Registre-se</a>
+  <a routerLink="/register">Não tem uma conta? <strong>Registre-se</strong></a>
 </div>
