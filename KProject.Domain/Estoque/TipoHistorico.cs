@@ -5,6 +5,7 @@ public enum TipoHistorico
     Entrada,
     SaidaConsignacao,
     RetornoConsignacao,
-    Ajuste,
+    AjusteEntrada,
+    AjusteSaida,
     Perda,
 }
