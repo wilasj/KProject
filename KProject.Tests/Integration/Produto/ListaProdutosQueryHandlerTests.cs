@@ -4,18 +4,20 @@ using KProject.Infrastructure.Shared;
 using KProject.Tests.Fixtures;
 using Microsoft.Extensions.DependencyInjection;
 using Shouldly;
+using KProject.Common;
 
 namespace KProject.Tests.Integration.Produto;
 
 [Collection(nameof(DatabaseCollection))]
 public class ListaProdutosQueryHandlerTests(DatabaseFixture fixture)
 {
-    private async Task<PagedResult<ProdutoResponse>> Handle(ListaProdutosQuery query)
+    private async Task<Page<ProdutoResponse>> Handle(ListaProdutosQuery query)
     {
         await using var scope = fixture.Factory.Services.CreateAsyncScope();
         var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
         var handler = new ListaProdutosQueryHandler(db);
-        return await handler.Handle(query, TestContext.Current.CancellationToken);
+        var result = await handler.Handle(query, TestContext.Current.CancellationToken);
+        return result.Value;
     }
 
     private async Task SeedProdutos(params string[] nomes)

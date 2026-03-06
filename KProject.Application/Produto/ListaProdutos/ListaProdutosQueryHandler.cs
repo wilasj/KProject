@@ -1,13 +1,14 @@
 using KProject.Application.Interfaces;
 using KProject.Application.Shared;
+using KProject.Common;
 using KProject.Infrastructure.Shared;
 using Microsoft.EntityFrameworkCore;
 
 namespace KProject.Application.Produto.ListaProdutos;
 
-public class ListaProdutosQueryHandler(AppDbContext context) : IQueryHandler<ListaProdutosQuery, PagedResult<ProdutoResponse>>
+public class ListaProdutosQueryHandler(AppDbContext context) : IQueryHandler<ListaProdutosQuery, Page<ProdutoResponse>>
 {
-    public async Task<PagedResult<ProdutoResponse>> Handle(ListaProdutosQuery query, CancellationToken token)
+    public async Task<Result<Page<ProdutoResponse>>> Handle(ListaProdutosQuery query, CancellationToken token)
     {
         var spec = new ProdutoSpecification(query.Busca);
 
@@ -29,6 +30,6 @@ public class ListaProdutosQueryHandler(AppDbContext context) : IQueryHandler<Lis
             .Select(p => new ProdutoResponse(p.Id, p.Nome, p.Referencia, p.Descricao, p.CodigoAnvisa, p.CriadoEm))
             .ToListAsync(token);
 
-        return new PagedResult<ProdutoResponse>(items, total);
+        return Result.Success(new Page<ProdutoResponse>(items, total));
     }
 }

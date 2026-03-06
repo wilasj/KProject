@@ -1,4 +1,5 @@
 using KProject.Api.Endpoints.Produto;
+using KProject.Api.Extensions;
 using KProject.Application.Interfaces;
 using KProject.Application.Produto.ListaProdutos;
 using KProject.Application.Shared;
@@ -11,7 +12,7 @@ public class ListaProdutos : IEndpoint
     {
         app.MapGet("/produtos", async (
             [AsParameters] ListaProdutosRequest request,
-            IQueryHandler<ListaProdutosQuery, PagedResult<ProdutoResponse>> handler,
+            IQueryHandler<ListaProdutosQuery, Page<ProdutoResponse>> handler,
             CancellationToken token) =>
         {
             var query = new ListaProdutosQuery
@@ -23,7 +24,7 @@ public class ListaProdutos : IEndpoint
 
             var result = await handler.Handle(query, token);
 
-            return TypedResults.Ok(result);
+            return result.IsFailure ? result.ToHttpResult() : TypedResults.Ok(result.Value);
         }).RequireAuthorization();
     }
 }
