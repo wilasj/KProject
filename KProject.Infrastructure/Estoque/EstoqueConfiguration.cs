@@ -9,6 +9,8 @@ public class EstoqueConfiguration: IEntityTypeConfiguration<Domain.Estoque.Estoq
     {
         builder.HasKey(e => e.Id);
 
+        builder.Property(e => e.QuantidadeAtual).IsRequired();
+
         builder
             .HasOne<Domain.Lote.Lote>()
             .WithOne()
