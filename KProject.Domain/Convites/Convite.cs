@@ -1,3 +1,5 @@
+using KProject.Common;
+
 namespace KProject.Domain.Convites;
 
 public sealed class Convite
@@ -15,7 +17,15 @@ public sealed class Convite
         CriadoEm = DateTime.UtcNow,
     };
 
-    public void Usar() => UsadoEm = DateTime.UtcNow;
+    public Result Usar()
+    {
+        if (!Disponivel)
+            return Result.Failure(Error.Failure("Convite.JaUtilizado", "Esse convite já foi utilizado."));
+        
+        UsadoEm = DateTime.UtcNow;
+
+        return Result.Success();
+    }
 
     public bool Disponivel => UsadoEm is null;
 }

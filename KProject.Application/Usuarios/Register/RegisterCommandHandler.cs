@@ -38,7 +38,12 @@ public class RegisterCommandHandler(
             return Result.Failure(errors);
         }
 
-        convite.Usar();
+        var conviteResult = convite.Usar();
+
+        if (conviteResult.IsFailure)
+        {
+            return Result.Failure(conviteResult.Errors);       
+        }
         
         await db.SaveChangesAsync(token);
 
