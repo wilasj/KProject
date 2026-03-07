@@ -15,7 +15,7 @@ public static class ResultExtensions
 
         return result.Errors.First().Type switch
         {
-            ErrorType.Failure => TypedResults.InternalServerError(errors),
+            ErrorType.Failure => TypedResults.BadRequest(errors),
             ErrorType.Validation => TypedResults.BadRequest(errors),
             ErrorType.Problem => TypedResults.InternalServerError(errors),
             ErrorType.NotFound => TypedResults.NotFound(errors),
