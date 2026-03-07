@@ -15,7 +15,7 @@ public class EstoqueConfiguration: IEntityTypeConfiguration<Estoque>
 
         builder
             .HasOne<Lote>()
-            .WithOne()
+            .WithOne(l => l.Estoque)
             .HasForeignKey<Estoque>(l => l.LoteId)
             .OnDelete(DeleteBehavior.Restrict);
 
