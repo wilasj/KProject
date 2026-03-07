@@ -1,4 +1,10 @@
 ﻿using System.Reflection;
+using KProject.Domain.Clientes;
+using KProject.Domain.Convites;
+using KProject.Domain.Estoques;
+using KProject.Domain.Lotes;
+using KProject.Domain.Produtos;
+using KProject.Domain.Vendas;
 using Microsoft.AspNetCore.DataProtection.EntityFrameworkCore;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
@@ -30,10 +36,10 @@ public sealed class AppDbContext(DbContextOptions options) : IdentityUserContext
     }
 
     public DbSet<DataProtectionKey> DataProtectionKeys { get; set; }
-    public DbSet<Domain.Produto.Produto> Produtos { get; set; }
-    public DbSet<Domain.Venda.Venda> Vendas { get; set; }
-    public DbSet<Domain.Cliente.Cliente> Clientes { get; set; }
-    public DbSet<Domain.Lote.Lote> Lotes { get; set; }
-    public DbSet<Domain.Estoque.Estoque> Estoques { get; set; }
-    public DbSet<Domain.Convite.Convite> Convites { get; set; }
+    public DbSet<Produto> Produtos { get; set; }
+    public DbSet<Venda> Vendas { get; set; }
+    public DbSet<Cliente> Clientes { get; set; }
+    public DbSet<Lote> Lotes { get; set; }
+    public DbSet<Estoque> Estoques { get; set; }
+    public DbSet<Convite> Convites { get; set; }
 }

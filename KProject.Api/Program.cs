@@ -61,4 +61,7 @@ using (var scope = app.Services.CreateScope())
 
 await app.RunAsync();
 
-public partial class Program {}
+namespace KProject.Api
+{
+    public partial class Program {}
+}

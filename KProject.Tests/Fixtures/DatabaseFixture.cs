@@ -1,5 +1,5 @@
 using System.Net.Http.Json;
-using KProject.Domain.Convite;
+using KProject.Domain.Convites;
 using KProject.Infrastructure.Shared;
 using Microsoft.Extensions.DependencyInjection;
 using Testcontainers.PostgreSql;

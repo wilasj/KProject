@@ -1,4 +1,4 @@
-﻿namespace KProject.Application.Interfaces.Produto;
+﻿namespace KProject.Application.Interfaces.Produtos;
 
 public interface IProdutoRepository
 {

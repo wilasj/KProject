@@ -1,3 +1,4 @@
+using KProject.Api;
 using KProject.Infrastructure.Shared;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
