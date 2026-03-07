@@ -1,4 +1,5 @@
 using KProject.Domain.Convites;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
@@ -18,5 +19,10 @@ public class ConviteCOnfiguration : IEntityTypeConfiguration<Convite>
 
         builder.Property(i => i.CriadoPorId).IsRequired();
         builder.Property(i => i.CriadoEm).IsRequired();
+        
+        builder.HasOne<IdentityUser<int>>()
+            .WithMany()
+            .HasForeignKey(i => i.CriadoPorId)
+            .OnDelete(DeleteBehavior.Cascade);
     }
 }

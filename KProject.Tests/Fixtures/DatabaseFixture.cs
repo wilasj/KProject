@@ -1,6 +1,7 @@
 using System.Net.Http.Json;
 using KProject.Domain.Convites;
 using KProject.Infrastructure.Shared;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.DependencyInjection;
 using Testcontainers.PostgreSql;
 
@@ -30,11 +31,27 @@ public class DatabaseFixture: IAsyncLifetime
         await action(db);
     }
 
-    public async Task<string> CriaConviteToken()
+    public async Task<int> CriaUsuarioFixture(string email = "fixture@wilasj.dev", string password = "Big_password!!@21")
     {
         await using var scope = Factory.Services.CreateAsyncScope();
+        var userManager = scope.ServiceProvider.GetRequiredService<UserManager<IdentityUser<int>>>();
+
+        var existente = await userManager.FindByEmailAsync(email);
+        if (existente is not null)
+            return existente.Id;
+
+        var user = new IdentityUser<int> { UserName = email, Email = email };
+        await userManager.CreateAsync(user, password);
+        return user.Id;
+    }
+
+    public async Task<string> CriaConviteToken()
+    {
+        var userId = await CriaUsuarioFixture();
+
+        await using var scope = Factory.Services.CreateAsyncScope();
         var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
-        var convite = Convite.Criar(0);
+        var convite = Convite.Criar(userId);
         db.Convites.Add(convite);
         await db.SaveChangesAsync();
         return convite.Token;
