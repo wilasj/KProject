@@ -1,11 +1,11 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
-namespace KProject.Infrastructure.Invite;
+namespace KProject.Infrastructure.Convite;
 
-public class InviteConfiguration : IEntityTypeConfiguration<Domain.Invite.Invite>
+public class ConviteCOnfiguration : IEntityTypeConfiguration<Domain.Convite.Convite>
 {
-    public void Configure(EntityTypeBuilder<Domain.Invite.Invite> builder)
+    public void Configure(EntityTypeBuilder<Domain.Convite.Convite> builder)
     {
         builder.HasKey(i => i.Id);
 

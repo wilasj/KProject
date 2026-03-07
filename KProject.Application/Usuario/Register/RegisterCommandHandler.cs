@@ -13,10 +13,10 @@ public class RegisterCommandHandler(
 {
     public async Task<Result> Handle(RegisterCommand command, CancellationToken token)
     {
-        var invite = await db.Invites
-            .FirstOrDefaultAsync(i => i.Token == command.InviteToken, token);
+        var convite = await db.Convites
+            .FirstOrDefaultAsync(i => i.Token == command.ConviteToken, token);
 
-        if (invite is null || !invite.Disponivel)
+        if (convite is null || !convite.Disponivel)
             return Result.Failure(new Error(
                 "Register.TokenInvalido",
                 "O token de convite é inválido ou já foi utilizado.",
@@ -38,7 +38,7 @@ public class RegisterCommandHandler(
             return Result.Failure(errors);
         }
 
-        invite.Usar();
+        convite.Usar();
         
         await db.SaveChangesAsync(token);
 

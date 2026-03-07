@@ -1,6 +1,6 @@
-namespace KProject.Domain.Invite;
+namespace KProject.Domain.Convite;
 
-public sealed class Invite
+public sealed class Convite
 {
     public int Id { get; private set; }
     public string Token { get; private set; } = string.Empty;
@@ -8,7 +8,7 @@ public sealed class Invite
     public DateTime CriadoEm { get; private set; }
     public DateTime? UsadoEm { get; private set; }
 
-    public static Invite Criar(int criadoPorId) => new()
+    public static Convite Criar(int criadoPorId) => new()
     {
         Token = Guid.NewGuid().ToString("N"),
         CriadoPorId = criadoPorId,

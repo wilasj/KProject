@@ -17,7 +17,7 @@ public class Register: IEndpoint
             {
                 Email = registerRequest.Email,
                 Password = registerRequest.Password,
-                InviteToken = registerRequest.InviteToken,
+                ConviteToken = registerRequest.ConviteToken,
             };
 
             var result = await handler.Handle(command, token);

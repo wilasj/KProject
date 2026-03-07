@@ -17,8 +17,8 @@ public class LoginEndpointTests(DatabaseFixture fixture)
     {
         var email = "login_valido@wilasj.dev";
         var password = "Big_password!!@21";
-        var token = await fixture.CriaInviteToken();
-        await _client.PostAsJsonAsync("/api/users/register", new { Email = email, Password = password, InviteToken = token }, TestContext.Current.CancellationToken);
+        var token = await fixture.CriaConviteToken();
+        await _client.PostAsJsonAsync("/api/users/register", new { Email = email, Password = password, ConviteToken = token }, TestContext.Current.CancellationToken);
         var result = await _client.PostAsJsonAsync("/api/users/login", new { Email = email, Password = password }, TestContext.Current.CancellationToken);
 
         var body = await result.Content.ReadAsStringAsync(TestContext.Current.CancellationToken);
@@ -47,7 +47,7 @@ public class LoginEndpointTests(DatabaseFixture fixture)
     [Fact]
     public async Task Login_DeveRetornar401_SeCredenciaisErradas()
     {
-        var token = await fixture.CriaInviteToken();
+        var token = await fixture.CriaConviteToken();
         await _client.PostAsJsonAsync("/api/users/register", new
         {
             Email = "credenciais_erradas@wilasj.dev",

@@ -16,13 +16,13 @@ public class RegisterEndpointTests(DatabaseFixture fixture)
     [Fact]
     public async Task Registrar_DeveRetornar201_SeTokenValido()
     {
-        var token = await fixture.CriaInviteToken();
+        var token = await fixture.CriaConviteToken();
 
         var result = await _client.PostAsJsonAsync("/api/users/register", new
         {
             Email = "register_valido@wilasj.dev",
             Password = "Big_password!!@21",
-            InviteToken = token,
+            ConviteToken = token,
         }, TestContext.Current.CancellationToken);
 
         var body = await result.Content.ReadAsStringAsync(TestContext.Current.CancellationToken);
@@ -38,20 +38,20 @@ public class RegisterEndpointTests(DatabaseFixture fixture)
     [Fact]
     public async Task Registrar_DeveInvalidarToken_AposUso()
     {
-        var token = await fixture.CriaInviteToken();
+        var token = await fixture.CriaConviteToken();
 
         await _client.PostAsJsonAsync("/api/users/register", new
         {
             Email = "token_uso1@wilasj.dev",
             Password = "Big_password!!@21",
-            InviteToken = token,
+            ConviteToken = token,
         }, TestContext.Current.CancellationToken);
 
         var result = await _client.PostAsJsonAsync("/api/users/register", new
         {
             Email = "token_uso2@wilasj.dev",
             Password = "Big_password!!@21",
-            InviteToken = token,
+            ConviteToken = token,
         }, TestContext.Current.CancellationToken);
 
         result.StatusCode.ShouldBe(HttpStatusCode.BadRequest);
@@ -64,7 +64,7 @@ public class RegisterEndpointTests(DatabaseFixture fixture)
         {
             Email = "token_invalido@wilasj.dev",
             Password = "Big_password!!@21",
-            InviteToken = "token-inexistente",
+            ConviteToken = "token-inexistente",
         }, TestContext.Current.CancellationToken);
 
         var body = await result.Content.ReadAsStringAsync(TestContext.Current.CancellationToken);
@@ -85,7 +85,7 @@ public class RegisterEndpointTests(DatabaseFixture fixture)
         {
             Email = email,
             Password = password,
-            InviteToken = codigoEsperado == "Register.TokenVazio" ? "" : "qualquer",
+            ConviteToken = codigoEsperado == "Register.TokenVazio" ? "" : "qualquer",
         }, TestContext.Current.CancellationToken);
 
         var body = await result.Content.ReadAsStringAsync(TestContext.Current.CancellationToken);

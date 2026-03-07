@@ -1,4 +1,5 @@
 using System.Net.Http.Json;
+using KProject.Domain.Convite;
 using KProject.Infrastructure.Shared;
 using Microsoft.Extensions.DependencyInjection;
 using Testcontainers.PostgreSql;
@@ -29,21 +30,21 @@ public class DatabaseFixture: IAsyncLifetime
         await action(db);
     }
 
-    public async Task<string> CriaInviteToken()
+    public async Task<string> CriaConviteToken()
     {
         await using var scope = Factory.Services.CreateAsyncScope();
         var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
-        var invite = Domain.Invite.Invite.Criar(0);
-        db.Invites.Add(invite);
+        var convite = Convite.Criar(0);
+        db.Convites.Add(convite);
         await db.SaveChangesAsync();
-        return invite.Token;
+        return convite.Token;
     }
 
     public async Task<HttpClient> CriaClienteAutenticado(string email, string password)
     {
         var client = Factory.CreateClient();
-        var token = await CriaInviteToken();
-        await client.PostAsJsonAsync("/api/users/register", new { Email = email, Password = password, InviteToken = token });
+        var token = await CriaConviteToken();
+        await client.PostAsJsonAsync("/api/users/register", new { Email = email, Password = password, ConviteToken = token });
         await client.PostAsJsonAsync("/api/users/login", new { Email = email, Password = password });
         return client;
     }

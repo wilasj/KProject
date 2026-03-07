@@ -1,21 +1,21 @@
 using System.Security.Claims;
 using KProject.Api.Extensions;
+using KProject.Application.Convite.CriaConvite;
 using KProject.Application.Interfaces;
-using KProject.Application.Invite.CriaInvite;
 
-namespace KProject.Api.Endpoints.Invite;
+namespace KProject.Api.Endpoints.Convite;
 
-public class CriaInvite : IEndpoint
+public class CriaConvite : IEndpoint
 {
     public void MapEndpoint(IEndpointRouteBuilder app)
     {
-        app.MapPost("/invites", async (
+        app.MapPost("/convites", async (
             ClaimsPrincipal user,
-            ICommandHandler<CriaInviteCommand, string> handler,
+            ICommandHandler<CriaConviteCommand, string> handler,
             CancellationToken token) =>
         {
             var userId = int.Parse(user.FindFirstValue(ClaimTypes.NameIdentifier)!);
-            var result = await handler.Handle(new CriaInviteCommand { UsuarioId = userId }, token);
+            var result = await handler.Handle(new CriaConviteCommand { UsuarioId = userId }, token);
             return result.IsFailure ? result.ToHttpResult() : TypedResults.Ok(new { token = result.Value });
         }).RequireAuthorization();
     }
