@@ -1,6 +1,5 @@
 using KProject.Application.Interfaces;
 using KProject.Common;
-using KProject.Domain.Estoques;
 using KProject.Domain.Lotes;
 using KProject.Infrastructure.Shared;
 using Microsoft.EntityFrameworkCore;
@@ -18,25 +17,13 @@ public class CriaLoteCommandHandler(AppDbContext db) : ICommandHandler<CriaLoteC
             return Result.Failure<int>(
                 Error.NotFound("Produto.NaoEncontrado", $"Produto com ID {command.ProdutoId} não encontrado"));
 
-        var loteResult = Lote.Criar(command.ProdutoId, command.Numero, command.Validade);
+        var loteResult = Lote.Criar(command.ProdutoId, command.Numero, command.Validade, command.QuantidadeInicial);
         if (loteResult.IsFailure)
             return Result.Failure<int>(loteResult.Errors);
 
-        await using var tx = await db.Database.BeginTransactionAsync(token);
-
-        var lote = loteResult.Value;
-        db.Lotes.Add(lote);
+        db.Lotes.Add(loteResult.Value);
         await db.SaveChangesAsync(token);
 
-        var estoqueResult = Estoque.Criar(lote.Id, command.QuantidadeInicial);
-        if (estoqueResult.IsFailure)
-            return Result.Failure<int>(estoqueResult.Errors);
-
-        db.Estoques.Add(estoqueResult.Value);
-        await db.SaveChangesAsync(token);
-
-        await tx.CommitAsync(token);
-
-        return Result.Success(lote.Id);
+        return Result.Success(loteResult.Value.Id);
     }
 }

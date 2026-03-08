@@ -1,6 +1,5 @@
 using KProject.Application.Lotes.ListaLotes;
 using KProject.Common;
-using KProject.Domain.Estoques;
 using KProject.Domain.Lotes;
 using KProject.Domain.Produtos;
 using KProject.Infrastructure.Shared;
@@ -36,12 +35,8 @@ public class ListaLotesQueryHandlerTests(DatabaseFixture fixture)
 
             foreach (var (numero, validade, quantidade) in lotesData)
             {
-                var lote = Lote.Criar(produto.Id, numero, validade).Value;
+                var lote = Lote.Criar(produto.Id, numero, validade, quantidade).Value;
                 db.Lotes.Add(lote);
-                await db.SaveChangesAsync();
-
-                var estoque = Estoque.Criar(lote.Id, quantidade).Value;
-                db.Estoques.Add(estoque);
                 await db.SaveChangesAsync();
 
                 lotes.Add(lote);

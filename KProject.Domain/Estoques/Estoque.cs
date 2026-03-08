@@ -17,26 +17,12 @@ public class Estoque
         TipoHistorico.AjusteEntrada,
     ];
     
-    private Estoque(int loteId)
+    private Estoque() { }
+
+    internal Estoque(uint quantidadeInicial)
     {
-        LoteId = loteId;
-    }
-
-    public static Result<Estoque> Criar(int loteId, uint quantidadeInicial = 0)
-    {
-        if (loteId <= 0)
-            return Result.Failure<Estoque>(Error.Failure("Estoque.LoteInvalido", "O ID do lote deve ser maior que zero"));
-
-        var estoque = new Estoque(loteId);
-
-        if (quantidadeInicial <= 0)
-        {
-            return Result.Success(estoque);
-        }
-
-        var movimento = estoque.AplicarMovimento(quantidadeInicial, TipoHistorico.Entrada);
-        
-        return movimento.IsFailure ? Result.Failure<Estoque>(movimento.Errors.First()) : Result.Success(estoque);
+        if (quantidadeInicial > 0)
+            AplicarMovimento(quantidadeInicial, TipoHistorico.Entrada);
     }
 
     public Result AplicarMovimento(uint quantidade, TipoHistorico tipo)

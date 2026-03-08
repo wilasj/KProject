@@ -1,43 +1,13 @@
 using KProject.Domain.Estoques;
+using KProject.Domain.Lotes;
 using Shouldly;
 
 namespace KProject.Tests.Unit.Estoques;
 
 public class EstoqueTests
 {
-    private static Estoque CriaEstoque() => Estoque.Criar(1).Value;
-
-    [Theory]
-    [InlineData(0)]
-    [InlineData(-1)]
-    public void Criar_ComLoteInvalido_RetornaErro(int loteId)
-    {
-        var result = Estoque.Criar(loteId, 10);
-
-        result.IsFailure.ShouldBeTrue();
-        result.Errors.First().Code.ShouldBe("Estoque.LoteInvalido");
-    }
-
-    [Fact]
-    public void Criar_SemQuantidadeInicial_CriaComEstoqueZerado()
-    {
-        var result = Estoque.Criar(1);
-
-        result.IsSuccess.ShouldBeTrue();
-        result.Value.QuantidadeAtual.ShouldBe(0);
-        result.Value.Historico.ShouldBeEmpty();
-    }
-
-    [Fact]
-    public void Criar_ComQuantidadeInicial_JaTemHistoricoDeEntrada()
-    {
-        var result = Estoque.Criar(1, 10);
-
-        result.IsSuccess.ShouldBeTrue();
-        result.Value.QuantidadeAtual.ShouldBe(10);
-        result.Value.Historico.Count.ShouldBe(1);
-        result.Value.Historico.First().Tipo.ShouldBe(TipoHistorico.Entrada);
-    }
+    private static Estoque CriaEstoque() =>
+        Lote.Criar(1, 1, new DateOnly(2027, 1, 1)).Value.Estoque;
 
     [Fact]
     public void AplicarMovimento_ComQuantidadeZero_RetornaErro()
