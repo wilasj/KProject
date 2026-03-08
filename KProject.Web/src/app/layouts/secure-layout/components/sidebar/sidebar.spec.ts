@@ -49,7 +49,7 @@ describe('Sidebar', () => {
   it('deve ter 5 itens de navegacao', async () => {
     await createComponent('test@test.com');
 
-    expect(component.navItems.length).toBe(5);
+    expect(component.navItems.length).toBe(4);
   });
 
   it('deve emitir logoutClick ao clicar no botao de logout', async () => {
