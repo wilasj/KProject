@@ -35,7 +35,7 @@ public class ItemConsignadoConfiguration: IEntityTypeConfiguration<ItemConsignad
             .UsePropertyAccessMode(PropertyAccessMode.Field);
 
         builder
-            .HasIndex(i => new { i.VendaId, i.LoteId })
+            .HasIndex("VendaId", nameof(ItemConsignado.LoteId))
             .IsUnique();
     }
 }

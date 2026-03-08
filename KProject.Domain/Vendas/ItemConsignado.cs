@@ -6,8 +6,9 @@ namespace KProject.Domain.Vendas;
 public sealed class ItemConsignado
 {
     public int Id { get; private set; }
-    public int VendaId { get; private set; }
+    public Venda Venda { get; private set; } = null!;
     public int LoteId { get; private set; }
+
     private readonly List<HistoricoQuantidade> _historico = [];
     public IReadOnlyList<HistoricoQuantidade> Historico => _historico;
     public uint QuantidadeConsignada { get; private set; }

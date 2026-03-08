@@ -36,8 +36,7 @@ namespace KProject.Infrastructure.Vendas
 
             builder
                 .HasMany(i => i.Itens)
-                .WithOne()
-                .HasForeignKey(i => i.VendaId)
+                .WithOne(i => i.Venda)
                 .OnDelete(DeleteBehavior.Cascade);
 
             builder
