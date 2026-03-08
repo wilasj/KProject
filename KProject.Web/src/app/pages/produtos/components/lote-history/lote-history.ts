@@ -1,7 +1,6 @@
 import { Component, effect, ElementRef, inject, input, OnDestroy, signal, ViewChild } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { DatePipe } from '@angular/common';
-import { forkJoin } from 'rxjs';
 import { Lote, TipoHistorico, StockMovement, HistoricoPage } from '@models/lote';
 
 const TIPO_LABEL: Record<TipoHistorico, string> = {
@@ -24,9 +23,8 @@ const ROW_HEIGHT_PX = 42; // padding×2 + border + content + gap — must match 
 export class LoteHistory implements OnDestroy {
   private http = inject(HttpClient);
 
-  loteId = input.required<number>();
+  lote = input.required<Lote>();
 
-  lote = signal<Lote | null>(null);
   historico = signal<StockMovement[]>([]);
   loadingInitial = signal(false);
   loadingMore = signal(false);
@@ -81,7 +79,7 @@ export class LoteHistory implements OnDestroy {
   }
 
   constructor() {
-    effect(() => this.loadInitial(this.loteId()));
+    effect(() => this.loadInitial(this.lote().id));
   }
 
   ngOnDestroy() {
@@ -92,7 +90,7 @@ export class LoteHistory implements OnDestroy {
     if (!this.hasMore() || this.loadingMore()) return;
     const nextPage = this.page + 1;
     this.loadingMore.set(true);
-    this.fetchPage(this.loteId(), nextPage).subscribe({
+    this.fetchPage(this.lote().id, nextPage).subscribe({
       next: (res) => {
         this.historico.update(h => [...h, ...res.items]);
         this.hasMore.set(res.hasMore);
@@ -106,17 +104,12 @@ export class LoteHistory implements OnDestroy {
 
   private loadInitial(id: number) {
     this.page = 1;
-    this.lote.set(null);
     this.historico.set([]);
     this.hasMore.set(false);
     this.loadingInitial.set(true);
 
-    forkJoin({
-      lote: this.http.get<Lote>(`/api/lotes/${id}`),
-      page: this.fetchPage(id, 1),
-    }).subscribe({
-      next: ({ lote, page }) => {
-        this.lote.set(lote);
+    this.fetchPage(id, 1).subscribe({
+      next: (page) => {
         this.historico.set(page.items);
         this.hasMore.set(page.hasMore);
         this.loadingInitial.set(false);

@@ -1,9 +1,9 @@
 @if (loadingInitial()) {
   <div class="lote-history__skeleton"></div>
-} @else if (lote()) {
+} @else {
   <div class="lote-history__header">
-    <span class="lote-history__title">Lote {{ lote()!.numero }}</span>
-    <span class="lote-history__total">{{ lote()!.quantidadeTotal }} unid.</span>
+    <span class="lote-history__title">Lote {{ lote().numero }}</span>
+    <span class="lote-history__total">{{ lote().quantidadeTotal }} unid.</span>
   </div>
 
   <div class="lote-history__scroll-wrapper">

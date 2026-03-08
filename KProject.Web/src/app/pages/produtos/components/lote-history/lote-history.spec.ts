@@ -40,29 +40,26 @@ describe('LoteHistory', () => {
 
   afterEach(() => httpTesting.verify());
 
-  function setup(loteId = 1) {
+  function setup(lote = mockLote) {
     const fixture = TestBed.createComponent(LoteHistory);
-    fixture.componentRef.setInput('loteId', loteId);
+    fixture.componentRef.setInput('lote', lote);
     fixture.detectChanges();
     return fixture;
   }
 
   function flush(fixture: ReturnType<typeof setup>) {
-    httpTesting.expectOne(`/api/lotes/1`).flush(mockLote);
-    httpTesting.expectOne('/api/lotes/1/historico?pagina=1&tamanhoPagina=20').flush(mockPage1);
+    httpTesting.expectOne('/api/lotes/1/historico?pagina=1&tamanhoPagina=10').flush(mockPage1);
     fixture.detectChanges();
   }
 
-  it('deve fazer duas requisições ao inicializar', () => {
+  it('deve fazer uma requisição ao inicializar', () => {
     setup();
-    httpTesting.expectOne('/api/lotes/1');
-    httpTesting.expectOne('/api/lotes/1/historico?pagina=1&tamanhoPagina=20');
+    httpTesting.expectOne('/api/lotes/1/historico?pagina=1&tamanhoPagina=10');
   });
 
   it('deve exibir skeleton enquanto carrega', () => {
     const fixture = setup();
-    httpTesting.expectOne('/api/lotes/1');
-    httpTesting.expectOne('/api/lotes/1/historico?pagina=1&tamanhoPagina=20');
+    httpTesting.expectOne('/api/lotes/1/historico?pagina=1&tamanhoPagina=10');
 
     expect(fixture.nativeElement.querySelector('.lote-history__skeleton')).not.toBeNull();
   });
@@ -90,7 +87,7 @@ describe('LoteHistory', () => {
     fixture.componentInstance.loadMore();
     fixture.detectChanges();
 
-    httpTesting.expectOne('/api/lotes/1/historico?pagina=2&tamanhoPagina=20').flush(mockPage2);
+    httpTesting.expectOne('/api/lotes/1/historico?pagina=2&tamanhoPagina=10').flush(mockPage2);
     fixture.detectChanges();
 
     const rows = fixture.nativeElement.querySelectorAll('.lote-history__row');
@@ -99,23 +96,22 @@ describe('LoteHistory', () => {
 
   it('não deve carregar mais quando hasMore é false', () => {
     const fixture = setup();
-    httpTesting.expectOne('/api/lotes/1').flush(mockLote);
-    httpTesting.expectOne('/api/lotes/1/historico?pagina=1&tamanhoPagina=20').flush({ ...mockPage1, hasMore: false });
+    httpTesting.expectOne('/api/lotes/1/historico?pagina=1&tamanhoPagina=10').flush({ ...mockPage1, hasMore: false });
     fixture.detectChanges();
 
     fixture.componentInstance.loadMore();
-    httpTesting.expectNone('/api/lotes/1/historico?pagina=2&tamanhoPagina=20');
+    httpTesting.expectNone('/api/lotes/1/historico?pagina=2&tamanhoPagina=10');
   });
 
   it('deve reiniciar ao mudar de lote', () => {
     const fixture = setup();
     flush(fixture);
 
-    fixture.componentRef.setInput('loteId', 2);
+    const lote2: Lote = { ...mockLote, id: 2, numero: 202 };
+    fixture.componentRef.setInput('lote', lote2);
     fixture.detectChanges();
 
-    httpTesting.expectOne('/api/lotes/2').flush({ ...mockLote, id: 2 });
-    httpTesting.expectOne('/api/lotes/2/historico?pagina=1&tamanhoPagina=20').flush({ items: [], hasMore: false });
+    httpTesting.expectOne('/api/lotes/2/historico?pagina=1&tamanhoPagina=10').flush({ items: [], hasMore: false });
     fixture.detectChanges();
 
     expect(fixture.nativeElement.querySelectorAll('.lote-history__row').length).toBe(0);

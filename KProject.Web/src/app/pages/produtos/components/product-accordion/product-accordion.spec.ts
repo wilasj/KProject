@@ -90,6 +90,7 @@ describe('ProductAccordion', () => {
 
     fixture.nativeElement.querySelector('app-lote-card').click();
     fixture.detectChanges();
+    httpTesting.expectOne('/api/lotes/1/historico?pagina=1&tamanhoPagina=10').flush({ items: [], hasMore: false });
 
     expect(fixture.componentInstance.mode()).toBe('history');
     expect(fixture.componentInstance.selectedLote()?.id).toBe(1);
@@ -105,6 +106,8 @@ describe('ProductAccordion', () => {
 
     const card = fixture.nativeElement.querySelector('app-lote-card');
     card.click();
+    fixture.detectChanges();
+    httpTesting.expectOne('/api/lotes/1/historico?pagina=1&tamanhoPagina=10').flush({ items: [], hasMore: false });
     fixture.detectChanges();
     card.click();
     fixture.detectChanges();
@@ -122,6 +125,8 @@ describe('ProductAccordion', () => {
     fixture.detectChanges();
 
     fixture.nativeElement.querySelector('app-lote-card').click();
+    fixture.detectChanges();
+    httpTesting.expectOne('/api/lotes/1/historico?pagina=1&tamanhoPagina=10').flush({ items: [], hasMore: false });
     fixture.detectChanges();
 
     fixture.componentRef.setInput('expanded', false);
