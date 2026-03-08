@@ -1,4 +1,6 @@
-﻿using KProject.Infrastructure.Shared;
+﻿using KProject.Application.Interfaces;
+using KProject.Application.Shared;
+using KProject.Infrastructure.Shared;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -24,6 +26,14 @@ public static class DependencyInjection
 
                 options.UseNpgsql(connectionString).UseSnakeCaseNamingConvention();
             });
+
+            services.AddScoped<IUnitOfWork>(sp => sp.GetRequiredService<AppDbContext>());
+
+            services.Scan(s => s
+                .FromAssembliesOf(typeof(AppDbContext))
+                .AddClasses(c => c.Where(t => t.Name.EndsWith("Repository")))
+                    .AsImplementedInterfaces()
+                    .WithScopedLifetime());
 
             return services;
         }

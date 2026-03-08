@@ -1,20 +1,20 @@
 using System.Collections.Immutable;
+using KProject.Application.Convites;
 using KProject.Application.Interfaces;
+using KProject.Application.Interfaces.Convites;
 using KProject.Common;
-using KProject.Infrastructure.Shared;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.EntityFrameworkCore;
 
 namespace KProject.Application.Usuarios.Register;
 
 public class RegisterCommandHandler(
     UserManager<IdentityUser<int>> userManager,
-    AppDbContext db) : ICommandHandler<RegisterCommand>
+    IConviteRepository convites,
+    IUnitOfWork unitOfWork) : ICommandHandler<RegisterCommand>
 {
     public async Task<Result> Handle(RegisterCommand command, CancellationToken token)
     {
-        var convite = await db.Convites
-            .FirstOrDefaultAsync(i => i.Token == command.ConviteToken, token);
+        var convite = await convites.FindByTokenAsync(command.ConviteToken, token);
 
         if (convite is null || !convite.Disponivel)
             return Result.Failure(new Error(
@@ -41,11 +41,9 @@ public class RegisterCommandHandler(
         var conviteResult = convite.Usar();
 
         if (conviteResult.IsFailure)
-        {
-            return Result.Failure(conviteResult.Errors);       
-        }
-        
-        await db.SaveChangesAsync(token);
+            return Result.Failure(conviteResult.Errors);
+
+        await unitOfWork.SaveChangesAsync(token);
 
         return Result.Success();
     }

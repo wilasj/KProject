@@ -1,11 +1,11 @@
 ﻿using KProject.Application.Interfaces;
+using KProject.Application.Interfaces.Produtos;
 using KProject.Common;
 using KProject.Domain.Produtos;
-using KProject.Infrastructure.Shared;
 
 namespace KProject.Application.Produtos.CriaProduto;
 
-public class CriaProdutoCommandHandler(AppDbContext context): ICommandHandler<CriaProdutoCommand, int>
+public class CriaProdutoCommandHandler(IProdutoRepository produtoRepository, IUnitOfWork unitOfWork): ICommandHandler<CriaProdutoCommand, int>
 {
     public async Task<Result<int>> Handle(CriaProdutoCommand command, CancellationToken token)
     {
@@ -19,10 +19,9 @@ public class CriaProdutoCommandHandler(AppDbContext context): ICommandHandler<Cr
             return Result.Failure<int>(result.Errors);
         }
         
-        var produto = await context.Produtos.AddAsync(result.Value, token);
-        
-        await context.SaveChangesAsync(token);
-        
-        return Result.Success(produto.Entity.Id);       
+        await produtoRepository.AddAsync(result.Value, token);
+        await unitOfWork.SaveChangesAsync(token);
+
+        return Result.Success(result.Value.Id);
     }
 }

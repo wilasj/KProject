@@ -1,17 +1,19 @@
 using KProject.Application.Interfaces;
+using KProject.Application.Interfaces.Lotes;
+using KProject.Application.Interfaces.Produtos;
 using KProject.Common;
 using KProject.Domain.Lotes;
-using KProject.Infrastructure.Shared;
-using Microsoft.EntityFrameworkCore;
 
 namespace KProject.Application.Lotes.CriaLote;
 
-public class CriaLoteCommandHandler(AppDbContext db) : ICommandHandler<CriaLoteCommand, int>
+public class CriaLoteCommandHandler(
+    IProdutoRepository produtos,
+    ILoteRepository lotes,
+    IUnitOfWork unitOfWork) : ICommandHandler<CriaLoteCommand, int>
 {
     public async Task<Result<int>> Handle(CriaLoteCommand command, CancellationToken token)
     {
-        var produtoExiste = await db.Produtos
-            .AnyAsync(p => p.Id == command.ProdutoId, token);
+        var produtoExiste = await produtos.ExistsAsync(command.ProdutoId, token);
 
         if (!produtoExiste)
             return Result.Failure<int>(
@@ -21,8 +23,8 @@ public class CriaLoteCommandHandler(AppDbContext db) : ICommandHandler<CriaLoteC
         if (loteResult.IsFailure)
             return Result.Failure<int>(loteResult.Errors);
 
-        db.Lotes.Add(loteResult.Value);
-        await db.SaveChangesAsync(token);
+        await lotes.AddAsync(loteResult.Value, token);
+        await unitOfWork.SaveChangesAsync(token);
 
         return Result.Success(loteResult.Value.Id);
     }

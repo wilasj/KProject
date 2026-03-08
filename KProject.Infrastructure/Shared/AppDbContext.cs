@@ -1,4 +1,5 @@
 ﻿using System.Reflection;
+using KProject.Application.Interfaces;
 using KProject.Domain.Clientes;
 using KProject.Domain.Convites;
 using KProject.Domain.Estoques;
@@ -12,7 +13,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace KProject.Infrastructure.Shared;
 
-public sealed class AppDbContext(DbContextOptions options) : IdentityUserContext<IdentityUser<int>, int>(options), IDataProtectionKeyContext
+public sealed class AppDbContext(DbContextOptions options) : IdentityUserContext<IdentityUser<int>, int>(options), IDataProtectionKeyContext, IUnitOfWork
 {
     protected override void OnModelCreating(ModelBuilder builder)
     {
@@ -34,6 +35,8 @@ public sealed class AppDbContext(DbContextOptions options) : IdentityUserContext
         modelBuilder.Entity<IdentityUserClaim<int>>().ToTable("asp_net_user_claims");
 
     }
+
+    Task IUnitOfWork.SaveChangesAsync(CancellationToken token) => SaveChangesAsync(token);
 
     public DbSet<DataProtectionKey> DataProtectionKeys { get; set; }
     public DbSet<Produto> Produtos { get; set; }
