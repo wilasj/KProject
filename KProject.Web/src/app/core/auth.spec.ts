@@ -26,7 +26,7 @@ describe('Auth', () => {
 
       const req = httpMock.expectOne('/api/users/register');
       expect(req.request.method).toBe('POST');
-      expect(req.request.body).toEqual({ email: 'test@test.com', password: 'password', inviteToken: 'token123' });
+      expect(req.request.body).toEqual({ email: 'test@test.com', password: 'password', conviteToken: 'token123' });
       req.flush(null, { status: 201, statusText: 'Created' });
 
       expect(result.success).toBe(true);
@@ -54,7 +54,7 @@ describe('Auth', () => {
       let result: any;
       service.criaInvite().subscribe((r) => (result = r));
 
-      const req = httpMock.expectOne('/api/invites');
+      const req = httpMock.expectOne('/api/convites');
       expect(req.request.method).toBe('POST');
       req.flush({ token: 'abc123xyz' }, { status: 200, statusText: 'OK' });
 

@@ -10,15 +10,15 @@ export class Auth {
   public isLoggedIn = signal<boolean>(false);
   public email = signal<string | null>(null);
 
-  register(email: string, password: string, inviteToken: string): Observable<Result<void>>{
-    return this.httpClient.post<Result<void>>('/api/users/register', {email, password, inviteToken}).pipe(
+  register(email: string, password: string, conviteToken: string): Observable<Result<void>>{
+    return this.httpClient.post<Result<void>>('/api/users/register', {email, password, conviteToken}).pipe(
       map(() => ({success: true as const})),
       catchError((err: HttpErrorResponse) => of({success: false as const, errors: err.error}))
     );
   }
 
   criaInvite(): Observable<string> {
-    return this.httpClient.post<{ token: string }>('/api/invites', {}).pipe(
+    return this.httpClient.post<{ token: string }>('/api/convites', {}).pipe(
       map(res => res.token)
     );
   }
