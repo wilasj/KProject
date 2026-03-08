@@ -35,9 +35,10 @@ export class Auth {
   }
 
   me(): Observable<void> {
-    return this.httpClient.get<void>('/api/users/me').pipe(
-      map(() => {
+    return this.httpClient.get<{ email: string }>('/api/users/me').pipe(
+      map((res) => {
         this.isLoggedIn.set(true);
+        this.email.set(res.email);
       }),
       catchError(() => {
         this.isLoggedIn.set(false);

@@ -113,13 +113,14 @@ describe('Auth', () => {
   });
 
   describe('me()', () => {
-    it('deve setar isLoggedIn como true no 200', () => {
+    it('deve setar isLoggedIn e email no 200', () => {
       service.me().subscribe();
 
       const req = httpMock.expectOne('/api/users/me');
-      req.flush(null, { status: 200, statusText: 'OK' });
+      req.flush({ email: 'test@test.com' }, { status: 200, statusText: 'OK' });
 
       expect(service.isLoggedIn()).toBe(true);
+      expect(service.email()).toBe('test@test.com');
     });
 
     it('deve setar isLoggedIn como false no 401', () => {
