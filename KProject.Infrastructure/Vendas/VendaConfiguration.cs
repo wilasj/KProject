@@ -43,7 +43,7 @@ namespace KProject.Infrastructure.Vendas
                 .Navigation(i => i.Itens)
                 .UsePropertyAccessMode(PropertyAccessMode.Field);
             
-            builder.HasOne<Cliente>()
+            builder.HasOne(v => v.Cliente)
                 .WithMany()
                 .HasForeignKey(v => v.ClienteId)
                 .OnDelete(DeleteBehavior.Restrict);
