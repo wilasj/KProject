@@ -1,0 +1,11 @@
+<div class="sale-drawer__header">
+    <h2 class="sale-drawer__title">
+        @if (saleId()) { Venda #{{ saleId() }} } @else { Venda }
+    </h2>
+    <button class="sale-drawer__close" (click)="close.emit()" aria-label="Fechar">
+        <span class="material-symbols-outlined">close</span>
+    </button>
+</div>
+<div class="sale-drawer__body">
+    <p class="sale-drawer__placeholder">Detalhes da venda em breve.</p>
+</div>

@@ -1,0 +1,60 @@
+@if (sales().length === 0) {
+    <div class="sale-table__empty">
+        <span class="material-symbols-outlined">receipt_long</span>
+        <p>Nenhuma venda encontrada</p>
+    </div>
+} @else {
+    <div class="sale-table__list">
+        @for (sale of sales(); track sale.id) {
+            <div class="sale-table__row" (click)="saleSelect.emit(sale.id)">
+                <div class="sale-table__row-info">
+                    <div class="sale-table__row-title">
+                        <span class="sale-table__row-name">Venda #{{ sale.id }}</span>
+                        <span class="sale-table__badge sale-table__badge--{{ sale.status.toLowerCase() }}">
+              {{ sale.status }}
+            </span>
+                    </div>
+                    <span class="sale-table__row-meta">
+            {{ sale.clienteNome }}
+                        <span class="sale-table__row-dot">•</span>
+                        {{ sale.criadaEm | date:'dd/MM/yyyy' }}
+          </span>
+                </div>
+                <div class="sale-table__row-right">
+                    <span class="sale-table__row-count">{{ sale.totalItens }} produtos</span>
+                    <span class="material-symbols-outlined sale-table__row-chevron">chevron_right</span>
+                </div>
+            </div>
+        }
+    </div>
+
+    @if (totalPages() > 1) {
+        <div class="sale-table__pagination">
+            <button
+                class="sale-table__page-btn sale-table__page-btn--prev"
+                [disabled]="currentPage() === 1"
+                (click)="goToPage(currentPage() - 1)"
+            >
+                <span class="material-symbols-outlined">chevron_left</span>
+            </button>
+
+            @for (page of pages(); track page) {
+                <button
+                    class="sale-table__page-btn"
+                    [class.sale-table__page-btn--active]="page === currentPage()"
+                    (click)="goToPage(page)"
+                >
+                    {{ page }}
+                </button>
+            }
+
+            <button
+                class="sale-table__page-btn sale-table__page-btn--next"
+                [disabled]="currentPage() === totalPages()"
+                (click)="goToPage(currentPage() + 1)"
+            >
+                <span class="material-symbols-outlined">chevron_right</span>
+            </button>
+        </div>
+    }
+}

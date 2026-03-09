@@ -1,0 +1,41 @@
+<div class="vendas__main">
+    <app-search-bar
+        placeholder="Buscar vendas..."
+        [initialValue]="initialSearch()"
+        (search)="onSearch($event)"
+    />
+
+    <div class="vendas__content">
+        <div class="vendas__toolbar">
+            <h2 class="vendas__title">Vendas</h2>
+            <button class="vendas__btn-new" (click)="selectedSaleId.set(null)">
+                <span class="material-symbols-outlined">add</span>
+                Nova Venda
+            </button>
+        </div>
+
+        @if (loading()) {
+            <div class="vendas__loading">
+                <span class="material-symbols-outlined">hourglass_empty</span>
+            </div>
+        } @else {
+            <app-sale-table
+                [sales]="sales()"
+                [total]="total()"
+                [currentPage]="currentPage()"
+                [pageSize]="pageSize"
+                (pageChange)="onPageChange($event)"
+                (saleSelect)="onSaleSelect($event)"
+            />
+        }
+    </div>
+</div>
+
+<aside class="vendas__drawer" [class.vendas__drawer--open]="selectedSaleId() !== null">
+    <div class="vendas__drawer-inner">
+        <app-sale-drawer
+            [saleId]="selectedSaleId()"
+            (close)="selectedSaleId.set(null)"
+        />
+    </div>
+</aside>
