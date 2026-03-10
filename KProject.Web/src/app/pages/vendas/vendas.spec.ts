@@ -86,12 +86,12 @@ describe('Vendas', () => {
         expect(fixture.nativeElement.querySelector('.vendas__drawer--open')).not.toBeNull();
     });
 
-    it('deve fechar o drawer ao limpar o selectedSaleId', () => {
+    it('deve fechar o drawer ao chamar closeDrawer', () => {
         const fixture = setup();
         flush(fixture);
         fixture.componentInstance.onSaleSelect(1042);
         fixture.detectChanges();
-        fixture.componentInstance.selectedSaleId.set(null);
+        fixture.componentInstance.closeDrawer();
         fixture.detectChanges();
         expect(fixture.nativeElement.querySelector('.vendas__drawer--open')).toBeNull();
     });

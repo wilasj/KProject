@@ -23,6 +23,7 @@ export class Vendas implements OnInit {
     total = signal(0);
     currentPage = signal(1);
     loading = signal(false);
+    drawerOpen = signal(false);
     selectedSaleId = signal<number | null>(null);
     initialSearch = signal('');
 
@@ -50,8 +51,19 @@ export class Vendas implements OnInit {
         });
     }
 
+    openNewSale() {
+        this.selectedSaleId.set(null);
+        this.drawerOpen.set(true);
+    }
+
     onSaleSelect(id: number) {
         this.selectedSaleId.set(id);
+        this.drawerOpen.set(true);
+    }
+
+    closeDrawer() {
+        this.drawerOpen.set(false);
+        this.selectedSaleId.set(null);
     }
 
     private fetchSales(search: string, page: number) {

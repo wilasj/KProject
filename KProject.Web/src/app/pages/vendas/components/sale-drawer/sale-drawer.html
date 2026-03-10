@@ -1,11 +1,236 @@
 <div class="sale-drawer__header">
-    <h2 class="sale-drawer__title">
-        @if (saleId()) { Venda #{{ saleId() }} } @else { Venda }
-    </h2>
+    <div>
+        <h2 class="sale-drawer__title">Nova Venda</h2>
+        <p class="sale-drawer__subtitle">Adicione os itens e selecione o cliente</p>
+    </div>
     <button class="sale-drawer__close" (click)="close.emit()" aria-label="Fechar">
         <span class="material-symbols-outlined">close</span>
     </button>
 </div>
+
 <div class="sale-drawer__body">
-    <p class="sale-drawer__placeholder">Detalhes da venda em breve.</p>
+    <div class="sale-drawer__total-card">
+        <span class="sale-drawer__total-label">
+            <span class="material-symbols-outlined">stacks</span>
+            TOTAL
+        </span>
+        <span class="sale-drawer__total-value">{{ totalItems() }}</span>
+    </div>
+
+    <div class="sale-drawer__client">
+        <button
+            class="sale-drawer__client-btn"
+            [class.sale-drawer__client-btn--selected]="selectedClient() !== null"
+            (click)="openClientDropdown()"
+        >
+            <span class="material-symbols-outlined">person</span>
+            {{ selectedClient()?.nome ?? 'Selecionar cliente' }}
+        </button>
+
+        @if (clientDropdownOpen()) {
+            <div class="sale-drawer__client-dropdown">
+                <input
+                    class="sale-drawer__client-search"
+                    placeholder="Buscar cliente..."
+                    [value]="clientSearchTerm()"
+                    (input)="onClientSearchInput($event)"
+                    autofocus
+                />
+                <div class="sale-drawer__client-list">
+                    @for (client of filteredClients(); track client.id) {
+                        <button class="sale-drawer__client-item" (click)="selectClient(client)">
+                            {{ client.nome }}
+                        </button>
+                    } @empty {
+                        <span class="sale-drawer__client-empty">Nenhum cliente encontrado</span>
+                    }
+                </div>
+            </div>
+        }
+    </div>
+
+    @if (mode() !== 'idle') {
+        <div class="sale-drawer__search-bar">
+            <button class="sale-drawer__chip-close" (click)="cancelSearch()" aria-label="Cancelar">
+                <span class="material-symbols-outlined">close</span>
+            </button>
+
+            @if (mode() === 'searching-product') {
+                <input
+                    class="sale-drawer__product-input"
+                    placeholder="Nome do produto..."
+                    [value]="productSearchTerm()"
+                    (input)="onProductSearchInput($event)"
+                    autofocus
+                />
+            }
+
+            @if (mode() === 'selecting-lot') {
+                <span class="sale-drawer__chip-text">{{ selectedProduct()?.nome }}</span>
+            }
+
+            @if (mode() === 'configuring-item') {
+                <span class="sale-drawer__chip-text">{{ selectedProduct()?.nome }}</span>
+                <span class="sale-drawer__chip-sep"></span>
+                <span class="sale-drawer__chip-lot">Lote {{ selectedLot()?.numero }}</span>
+                <span class="sale-drawer__chip-qty">{{ itemQuantity() }}/{{ effectiveLotAvailable() }}</span>
+                <div class="sale-drawer__qty-controls">
+                    <button
+                        class="sale-drawer__qty-btn sale-drawer__qty-btn--minus"
+                        (click)="decrementQty()"
+                        [disabled]="itemQuantity() === 0"
+                        aria-label="Diminuir"
+                    >
+                        <span class="material-symbols-outlined">remove</span>
+                    </button>
+                    <button
+                        class="sale-drawer__qty-btn sale-drawer__qty-btn--plus"
+                        (click)="incrementQty()"
+                        [disabled]="itemQuantity() === effectiveLotAvailable()"
+                        aria-label="Aumentar"
+                    >
+                        <span class="material-symbols-outlined">add</span>
+                    </button>
+                </div>
+            }
+        </div>
+    }
+
+    @if (mode() === 'searching-product') {
+        @if (productsLoading()) {
+            <div class="sale-drawer__loading">
+                <span class="material-symbols-outlined sale-drawer__spinner">progress_activity</span>
+            </div>
+        } @else {
+            <div class="sale-drawer__product-list">
+                @for (product of products(); track product.id) {
+                    <button class="sale-drawer__product-item" (click)="selectProduct(product)">
+                        <span class="sale-drawer__product-name">{{ product.nome }}</span>
+                        <span class="sale-drawer__product-lots">
+                            {{ product.totalLotes }} {{ product.totalLotes === 1 ? 'lote' : 'lotes' }}
+                        </span>
+                    </button>
+                } @empty {
+                    <span class="sale-drawer__empty">Nenhum produto encontrado</span>
+                }
+            </div>
+        }
+    }
+
+    @if (mode() === 'selecting-lot') {
+        @if (lotsLoading()) {
+            <div class="sale-drawer__loading">
+                <span class="material-symbols-outlined sale-drawer__spinner">progress_activity</span>
+            </div>
+        } @else {
+            <div class="sale-drawer__lot-grid">
+                @for (lot of lots(); track lot.id) {
+                    <button
+                        class="sale-drawer__lot-card"
+                        [class.sale-drawer__lot-card--depleted]="effectiveQtyForLot(lot) === 0"
+                        [disabled]="effectiveQtyForLot(lot) === 0"
+                        (click)="selectLot(lot)"
+                    >
+                        <span class="sale-drawer__lot-number">Lote {{ lot.numero }}</span>
+                        <span class="sale-drawer__lot-qty">{{ effectiveQtyForLot(lot) }}</span>
+                    </button>
+                }
+            </div>
+        }
+    }
+
+    @if (mode() === 'configuring-item') {
+        <div class="sale-drawer__patient-fields">
+            <div class="sale-drawer__field">
+                <label class="sale-drawer__label">Nome do paciente</label>
+                <input
+                    class="sale-drawer__input"
+                    type="text"
+                    placeholder="Nome completo"
+                    [value]="patientName()"
+                    (input)="onPatientNameInput($event)"
+                    autofocus
+                />
+            </div>
+            <div class="sale-drawer__field">
+                <label class="sale-drawer__label">CPF</label>
+                <input
+                    class="sale-drawer__input"
+                    type="text"
+                    placeholder="000.000.000-00"
+                    [value]="patientCpf()"
+                    (input)="onPatientCpfInput($event)"
+                    maxlength="14"
+                />
+            </div>
+        </div>
+
+        @if (itemQuantity() > 0) {
+            <button class="sale-drawer__add-btn" [disabled]="!canAdd()" (click)="addItem()">
+                {{ addButtonLabel() }}
+            </button>
+        }
+    }
+
+    @if (mode() === 'idle') {
+        <button class="sale-drawer__plus-btn" (click)="openProductSearch()" aria-label="Adicionar produto">
+            <span class="material-symbols-outlined">add</span>
+        </button>
+
+        @if (items().length > 0) {
+            <div class="sale-drawer__items-header">
+                <span class="sale-drawer__items-title">Itens adicionados</span>
+                <span class="sale-drawer__items-count">
+                    {{ items().length }} {{ items().length === 1 ? 'item' : 'itens' }}
+                </span>
+            </div>
+
+            <div class="sale-drawer__items-list">
+                @for (item of items(); track $index) {
+                    <div class="sale-drawer__item-card">
+                        <div class="sale-drawer__item-info">
+                            <span class="sale-drawer__item-name">{{ item.productName }}</span>
+                            <div class="sale-drawer__item-meta">
+                                <span>Lote {{ item.lotNumber }}</span>
+                                <span class="sale-drawer__item-dot">·</span>
+                                <span>{{ item.quantity }}/{{ item.lotAvailable }}</span>
+                                <span class="sale-drawer__item-dot">·</span>
+                                <span>{{ item.patientName }}</span>
+                            </div>
+                        </div>
+                        <button
+                            class="sale-drawer__item-remove"
+                            (click)="removeItem($index)"
+                            aria-label="Remover item"
+                        >
+                            <span class="material-symbols-outlined">close</span>
+                        </button>
+                    </div>
+                }
+            </div>
+        }
+    }
 </div>
+
+@if (items().length > 0 && mode() === 'idle') {
+    <div class="sale-drawer__footer">
+        <button
+            class="sale-drawer__save-btn"
+            [class.sale-drawer__save-btn--saving]="saveState() === 'saving'"
+            [class.sale-drawer__save-btn--saved]="saveState() === 'saved'"
+            [disabled]="!canSave()"
+            (click)="saveSale()"
+        >
+            @if (saveState() === 'saving') {
+                <span class="material-symbols-outlined sale-drawer__spinner">progress_activity</span>
+                Salvando...
+            } @else if (saveState() === 'saved') {
+                <span class="material-symbols-outlined">check</span>
+                Salvo
+            } @else {
+                <span class="material-symbols-outlined">save</span>
+                Salvar venda
+            }
+        </button>
+    </div>
+}
