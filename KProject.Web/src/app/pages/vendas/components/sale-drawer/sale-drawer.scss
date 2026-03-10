@@ -5,6 +5,17 @@
 }
 
 .sale-drawer {
+    &__close,
+    &__chip-close,
+    &__qty-btn,
+    &__plus-btn,
+    &__item-remove,
+    &__save-btn {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
     &__header {
         display: flex;
         align-items: flex-start;
@@ -28,9 +39,6 @@
     }
 
     &__close {
-        display: flex;
-        align-items: center;
-        justify-content: center;
         width: 2rem;
         height: 2rem;
         border: none;
@@ -39,7 +47,6 @@
         color: #9e9e9e;
         border-radius: 6px;
         flex-shrink: 0;
-        transition: color 0.15s ease, background 0.15s ease;
 
         &:hover { color: #1a1a1a; background: #f5f5f5; }
 
@@ -55,7 +62,6 @@
         gap: 0.75rem;
     }
 
-    // Total card
     &__total-card {
         background: #f9fafb;
         border: 1.5px solid #e8e8e8;
@@ -87,10 +93,7 @@
         line-height: 1;
     }
 
-    // Client selector
-    &__client {
-        position: relative;
-    }
+    &__client { position: relative; }
 
     &__client-btn {
         display: flex;
@@ -105,16 +108,10 @@
         font-size: 0.875rem;
         color: #9e9e9e;
         text-align: left;
-        transition: border-color 0.15s ease;
 
         span { font-size: 1.125rem; }
 
-        &--selected {
-            border-style: solid;
-            border-color: #e8e8e8;
-            color: #1a1a1a;
-        }
-
+        &--selected { border-style: solid; border-color: #e8e8e8; color: #1a1a1a; }
         &:hover { border-color: #b0b0b0; }
     }
 
@@ -139,16 +136,11 @@
         outline: none;
         font-size: 0.875rem;
         color: #1a1a1a;
-        background: white;
-        box-sizing: border-box;
 
         &::placeholder { color: #b0b0b0; }
     }
 
-    &__client-list {
-        max-height: 180px;
-        overflow-y: auto;
-    }
+    &__client-list { max-height: 180px; overflow-y: auto; }
 
     &__client-item {
         display: block;
@@ -160,7 +152,6 @@
         font-size: 0.875rem;
         color: #1a1a1a;
         text-align: left;
-        transition: background 0.1s ease;
 
         &:hover { background: #f9fafb; }
     }
@@ -172,7 +163,6 @@
         color: #b0b0b0;
     }
 
-    // Search bar (all non-idle states)
     &__search-bar {
         display: flex;
         align-items: center;
@@ -180,15 +170,11 @@
         padding: 0.5rem 0.625rem;
         border: 1.5px solid #22c55e;
         border-radius: 10px;
-        background: white;
         min-height: 2.75rem;
         overflow: hidden;
     }
 
     &__chip-close {
-        display: flex;
-        align-items: center;
-        justify-content: center;
         width: 1.375rem;
         height: 1.375rem;
         background: #22c55e;
@@ -197,9 +183,6 @@
         cursor: pointer;
         color: white;
         flex-shrink: 0;
-        transition: background 0.15s ease;
-
-        &:hover { background: #16a34a; }
 
         span { font-size: 0.875rem; }
     }
@@ -234,19 +217,15 @@
         flex-shrink: 0;
     }
 
-    &__chip-lot {
+    &__chip-lot,
+    &__chip-qty {
         font-size: 0.8125rem;
-        color: #6b7280;
         white-space: nowrap;
         flex-shrink: 0;
     }
 
-    &__chip-qty {
-        font-size: 0.8125rem;
-        color: #9e9e9e;
-        white-space: nowrap;
-        flex-shrink: 0;
-    }
+    &__chip-lot { color: #6b7280; }
+    &__chip-qty { color: #9e9e9e; }
 
     &__qty-controls {
         display: flex;
@@ -257,15 +236,11 @@
     }
 
     &__qty-btn {
-        display: flex;
-        align-items: center;
-        justify-content: center;
         width: 1.75rem;
         height: 1.75rem;
         border: none;
         border-radius: 50%;
         cursor: pointer;
-        transition: opacity 0.15s ease;
 
         span { font-size: 1rem; }
 
@@ -275,7 +250,6 @@
         &--plus  { background: #dcfce7; color: #22c55e; }
     }
 
-    // Product list
     &__product-list {
         border: 1px solid #e8e8e8;
         border-radius: 10px;
@@ -290,17 +264,12 @@
         padding: 0.75rem 1rem;
         border: none;
         border-bottom: 1px solid #f5f5f5;
-        background: white;
         cursor: pointer;
         font-size: 0.875rem;
-        text-align: left;
-        transition: background 0.1s ease;
 
         &:last-child { border-bottom: none; }
         &:hover { background: #f9fafb; }
     }
-
-    &__product-name { color: #1a1a1a; }
 
     &__product-lots {
         color: #9e9e9e;
@@ -308,7 +277,6 @@
         flex-shrink: 0;
     }
 
-    // Lot grid
     &__lot-grid {
         display: flex;
         flex-wrap: wrap;
@@ -327,51 +295,22 @@
         border-radius: 12px;
         background: white;
         cursor: pointer;
-        transition: border-color 0.15s ease, box-shadow 0.15s ease;
+        transition: border-color 0.15s ease;
 
-        &:hover {
-            border-color: #22c55e;
-            box-shadow: 0 0 0 2px rgba(34, 197, 94, 0.1);
-        }
+        &:hover { border-color: #22c55e; }
+
+        &--depleted { opacity: 0.4; cursor: not-allowed; pointer-events: none; }
     }
 
-    &__lot-card--depleted {
-        opacity: 0.4;
-        cursor: not-allowed;
-        pointer-events: none;
-    }
+    &__lot-number { font-size: 0.6875rem; color: #9e9e9e; font-weight: 500; }
 
-    &__lot-number {
-        font-size: 0.6875rem;
-        color: #9e9e9e;
-        font-weight: 500;
-    }
+    &__lot-qty { font-size: 1.5rem; font-weight: 700; color: #1a1a1a; line-height: 1; }
 
-    &__lot-qty {
-        font-size: 1.5rem;
-        font-weight: 700;
-        color: #1a1a1a;
-        line-height: 1;
-    }
+    &__patient-fields { display: flex; flex-direction: column; gap: 0.625rem; }
 
-    // Patient fields
-    &__patient-fields {
-        display: flex;
-        flex-direction: column;
-        gap: 0.625rem;
-    }
+    &__field { display: flex; flex-direction: column; gap: 0.25rem; }
 
-    &__field {
-        display: flex;
-        flex-direction: column;
-        gap: 0.25rem;
-    }
-
-    &__label {
-        font-size: 0.75rem;
-        font-weight: 500;
-        color: #9e9e9e;
-    }
+    &__label { font-size: 0.75rem; font-weight: 500; color: #9e9e9e; }
 
     &__input {
         padding: 0.5rem 0.75rem;
@@ -381,15 +320,12 @@
         color: #1a1a1a;
         background: white;
         outline: none;
-        transition: border-color 0.15s ease;
         width: 100%;
-        box-sizing: border-box;
 
         &:focus { border-color: #1a1a1a; }
         &::placeholder { color: #c0c0c0; }
     }
 
-    // Add item button
     &__add-btn {
         width: 100%;
         padding: 0.75rem;
@@ -400,21 +336,12 @@
         font-size: 0.875rem;
         font-weight: 500;
         cursor: pointer;
-        transition: background 0.15s ease, border-color 0.15s ease;
 
-        &:hover:not(:disabled) {
-            background: #dcfce7;
-            border-color: #86efac;
-        }
-
+        &:hover:not(:disabled) { background: #dcfce7; border-color: #86efac; }
         &:disabled { opacity: 0.45; cursor: not-allowed; }
     }
 
-    // Plus button (idle)
     &__plus-btn {
-        display: flex;
-        align-items: center;
-        justify-content: center;
         width: 2.5rem;
         height: 2.5rem;
         border: 1.5px solid #22c55e;
@@ -422,39 +349,19 @@
         background: white;
         cursor: pointer;
         color: #22c55e;
-        transition: background 0.15s ease, box-shadow 0.15s ease;
 
-        &:hover {
-            background: #f0fdf4;
-            box-shadow: 0 0 0 3px rgba(34, 197, 94, 0.1);
-        }
+        &:hover { background: #f0fdf4; }
 
         span { font-size: 1.25rem; }
     }
 
-    // Items list (idle)
-    &__items-header {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-    }
+    &__items-header { display: flex; align-items: center; justify-content: space-between; }
 
-    &__items-title {
-        font-size: 0.875rem;
-        font-weight: 500;
-        color: #1a1a1a;
-    }
+    &__items-title { font-size: 0.875rem; font-weight: 500; color: #1a1a1a; }
 
-    &__items-count {
-        font-size: 0.8125rem;
-        color: #9e9e9e;
-    }
+    &__items-count { font-size: 0.8125rem; color: #9e9e9e; }
 
-    &__items-list {
-        display: flex;
-        flex-direction: column;
-        gap: 0.5rem;
-    }
+    &__items-list { display: flex; flex-direction: column; gap: 0.5rem; }
 
     &__item-card {
         display: flex;
@@ -466,10 +373,7 @@
         border-radius: 10px;
     }
 
-    &__item-info {
-        flex: 1;
-        min-width: 0;
-    }
+    &__item-info { flex: 1; min-width: 0; }
 
     &__item-name {
         display: block;
@@ -493,9 +397,6 @@
     &__item-dot { color: #d0d0d0; }
 
     &__item-remove {
-        display: flex;
-        align-items: center;
-        justify-content: center;
         width: 1.5rem;
         height: 1.5rem;
         border: none;
@@ -504,14 +405,12 @@
         color: #c0c0c0;
         border-radius: 4px;
         flex-shrink: 0;
-        transition: color 0.15s ease, background 0.15s ease;
 
         &:hover { color: #ef4444; background: #fef2f2; }
 
         span { font-size: 0.875rem; }
     }
 
-    // Loading / empty
     &__loading {
         display: flex;
         justify-content: center;
@@ -529,7 +428,6 @@
         font-size: 0.8125rem;
     }
 
-    // Footer
     &__footer {
         padding: 0.875rem 1.25rem;
         border-top: 1px solid #f0f0f0;
@@ -537,9 +435,6 @@
     }
 
     &__save-btn {
-        display: flex;
-        align-items: center;
-        justify-content: center;
         gap: 0.5rem;
         width: 100%;
         padding: 0.875rem;
@@ -561,12 +456,9 @@
         &--saved  { background: #22c55e !important; cursor: default; }
     }
 
-    &__spinner {
-        animation: sd-spin 0.8s linear infinite;
-    }
+    &__spinner { animation: sd-spin 0.8s linear infinite; }
 }
 
 @keyframes sd-spin {
-    from { transform: rotate(0deg); }
-    to   { transform: rotate(360deg); }
+    to { transform: rotate(360deg); }
 }
