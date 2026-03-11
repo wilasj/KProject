@@ -114,10 +114,10 @@ export class SaleDrawer implements OnDestroy {
                 distinctUntilChanged(),
                 switchMap(term => {
                     this.productsLoading.set(true);
-                    return this.http.get<ProductOption[]>('/api/produtos', { params: { busca: term } });
+                    return this.http.get<{ items: ProductOption[] }>('/api/produtos', { params: { busca: term } });
                 })
             ).subscribe({
-                next: products => { this.products.set(products); this.productsLoading.set(false); },
+                next: res => { this.products.set(res.items); this.productsLoading.set(false); },
                 error: () => this.productsLoading.set(false),
             })
         );
@@ -168,8 +168,11 @@ export class SaleDrawer implements OnDestroy {
     openProductSearch() {
         this.mode.set('searching-product');
         this.productsLoading.set(true);
-        this.http.get<ProductOption[]>('/api/produtos', { params: { busca: '' } }).subscribe({
-            next: products => { this.products.set(products); this.productsLoading.set(false); },
+        this.http.get<{ items: ProductOption[] }>('/api/produtos', { params: { busca: '' } }).subscribe({
+            next: res => {
+                this.products.set(res.items);
+                this.productsLoading.set(false);
+            },
             error: () => this.productsLoading.set(false),
         });
     }

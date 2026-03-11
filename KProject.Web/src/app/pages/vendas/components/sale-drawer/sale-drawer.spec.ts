@@ -105,7 +105,7 @@ describe('SaleDrawer', () => {
         fixture.nativeElement.querySelector('.sale-drawer__plus-btn').click();
         fixture.detectChanges();
 
-        httpTesting.expectOne(r => r.url === '/api/produtos').flush(MOCK_PRODUCTS);
+        httpTesting.expectOne(r => r.url === '/api/produtos').flush({ items: MOCK_PRODUCTS });
         fixture.detectChanges();
 
         expect(fixture.componentInstance.mode()).toBe('searching-product');
@@ -119,7 +119,7 @@ describe('SaleDrawer', () => {
 
         fixture.nativeElement.querySelector('.sale-drawer__plus-btn').click();
         fixture.detectChanges();
-        httpTesting.expectOne(r => r.url === '/api/produtos').flush(MOCK_PRODUCTS);
+        httpTesting.expectOne(r => r.url === '/api/produtos').flush({ items: MOCK_PRODUCTS });
         fixture.detectChanges();
 
         fixture.nativeElement.querySelector('.sale-drawer__product-item').click();
@@ -139,7 +139,7 @@ describe('SaleDrawer', () => {
 
         fixture.nativeElement.querySelector('.sale-drawer__plus-btn').click();
         fixture.detectChanges();
-        httpTesting.expectOne(r => r.url === '/api/produtos').flush(MOCK_PRODUCTS);
+        httpTesting.expectOne(r => r.url === '/api/produtos').flush({ items: MOCK_PRODUCTS });
         fixture.detectChanges();
         fixture.nativeElement.querySelector('.sale-drawer__product-item').click();
         fixture.detectChanges();
@@ -262,7 +262,7 @@ describe('SaleDrawer', () => {
         // Abre novamente o mesmo produto/lote para Lua
         fixture.nativeElement.querySelector('.sale-drawer__plus-btn').click();
         fixture.detectChanges();
-        httpTesting.expectOne(r => r.url === '/api/produtos').flush(MOCK_PRODUCTS);
+        httpTesting.expectOne(r => r.url === '/api/produtos').flush({ items: MOCK_PRODUCTS });
         fixture.detectChanges();
         fixture.nativeElement.querySelector('.sale-drawer__product-item').click();
         fixture.detectChanges();
@@ -315,7 +315,7 @@ describe('SaleDrawer', () => {
         // Reabre e chega na tela de lotes
         fixture.nativeElement.querySelector('.sale-drawer__plus-btn').click();
         fixture.detectChanges();
-        httpTesting.expectOne(r => r.url === '/api/produtos').flush(MOCK_PRODUCTS);
+        httpTesting.expectOne(r => r.url === '/api/produtos').flush({ items: MOCK_PRODUCTS });
         fixture.detectChanges();
         fixture.nativeElement.querySelector('.sale-drawer__product-item').click();
         fixture.detectChanges();
@@ -333,7 +333,7 @@ describe('SaleDrawer', () => {
 
         fixture.nativeElement.querySelector('.sale-drawer__plus-btn').click();
         fixture.detectChanges();
-        httpTesting.expectOne(r => r.url === '/api/produtos').flush(MOCK_PRODUCTS);
+        httpTesting.expectOne(r => r.url === '/api/produtos').flush({ items: MOCK_PRODUCTS });
         fixture.detectChanges();
 
         fixture.nativeElement.querySelector('.sale-drawer__chip-close').click();
@@ -411,9 +411,9 @@ function abrirAteConfiguracao(fixture: ReturnType<typeof TestBed.createComponent
     const httpTesting = TestBed.inject(HttpTestingController);
     fixture.nativeElement.querySelector('.sale-drawer__plus-btn').click();
     fixture.detectChanges();
-    httpTesting.expectOne(r => r.url === '/api/produtos').flush([
+    httpTesting.expectOne(r => r.url === '/api/produtos').flush({ items: [
         { id: 1, nome: 'Camiseta Basica Branca', totalLotes: 2 },
-    ]);
+    ] });
     fixture.detectChanges();
     fixture.nativeElement.querySelector('.sale-drawer__product-item').click();
     fixture.detectChanges();
