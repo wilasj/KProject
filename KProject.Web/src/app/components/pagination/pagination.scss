@@ -1,0 +1,42 @@
+:host {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.25rem;
+    padding-top: 0.5rem;
+}
+
+.pagination {
+    &__page-btn {
+        width: 2rem;
+        height: 2rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border: 1px solid #e0e0e0;
+        border-radius: 6px;
+        background: white;
+        font-size: 0.875rem;
+        color: #555;
+        cursor: pointer;
+        transition: background 0.15s ease, border-color 0.15s ease, color 0.15s ease;
+
+        &:hover:not(:disabled) {
+            background: #f5f5f5;
+            border-color: #ccc;
+        }
+
+        &:disabled { opacity: 0.4; cursor: not-allowed; }
+
+        &--active {
+            background: #1a1a1a;
+            border-color: #1a1a1a;
+            color: white;
+        }
+
+        &--prev,
+        &--next {
+            span { font-size: 1.125rem; }
+        }
+    }
+}

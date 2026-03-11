@@ -28,33 +28,10 @@
         }
     </div>
 
-    @if (totalPages() > 1) {
-        <div class="sale-table__pagination">
-            <button
-                class="sale-table__page-btn sale-table__page-btn--prev"
-                [disabled]="currentPage() === 1"
-                (click)="goToPage(currentPage() - 1)"
-            >
-                <span class="material-symbols-outlined">chevron_left</span>
-            </button>
-
-            @for (page of pages(); track page) {
-                <button
-                    class="sale-table__page-btn"
-                    [class.sale-table__page-btn--active]="page === currentPage()"
-                    (click)="goToPage(page)"
-                >
-                    {{ page }}
-                </button>
-            }
-
-            <button
-                class="sale-table__page-btn sale-table__page-btn--next"
-                [disabled]="currentPage() === totalPages()"
-                (click)="goToPage(currentPage() + 1)"
-            >
-                <span class="material-symbols-outlined">chevron_right</span>
-            </button>
-        </div>
-    }
+    <app-pagination
+        [total]="total()"
+        [current]="currentPage()"
+        [pageSize]="pageSize()"
+        (pageChange)="pageChange.emit($event)"
+    />
 }

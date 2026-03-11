@@ -68,7 +68,7 @@ describe('SaleTable', () => {
         let emittedPage: number | undefined;
         fixture.componentInstance.pageChange.subscribe((p: number) => emittedPage = p);
 
-        fixture.nativeElement.querySelector('.sale-table__page-btn--next').click();
+        fixture.nativeElement.querySelector('.pagination__page-btn--next').click();
         expect(emittedPage).toBe(2);
     });
 });

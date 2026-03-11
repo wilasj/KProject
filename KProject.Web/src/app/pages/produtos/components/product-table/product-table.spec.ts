@@ -53,7 +53,7 @@ describe('ProductTable', () => {
     let emittedPage: number | undefined;
     fixture.componentInstance.pageChange.subscribe((p: number) => emittedPage = p);
 
-    const nextBtn = fixture.nativeElement.querySelector('.product-table__page-btn--next');
+    const nextBtn = fixture.nativeElement.querySelector('.pagination__page-btn--next');
     nextBtn.click();
     expect(emittedPage).toBe(2);
   });

@@ -1,0 +1,27 @@
+@if (totalPages() > 1) {
+    <button
+        class="pagination__page-btn pagination__page-btn--prev"
+        [disabled]="current() === 1"
+        (click)="goToPage(current() - 1)"
+    >
+        <span class="material-symbols-outlined">chevron_left</span>
+    </button>
+
+    @for (page of pages(); track page) {
+        <button
+            class="pagination__page-btn"
+            [class.pagination__page-btn--active]="page === current()"
+            (click)="goToPage(page)"
+        >
+            {{ page }}
+        </button>
+    }
+
+    <button
+        class="pagination__page-btn pagination__page-btn--next"
+        [disabled]="current() === totalPages()"
+        (click)="goToPage(current() + 1)"
+    >
+        <span class="material-symbols-outlined">chevron_right</span>
+    </button>
+}
