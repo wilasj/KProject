@@ -146,8 +146,8 @@ export class SaleDrawer implements OnDestroy {
         if (!this.clientDropdownOpen()) {
             this.clientDropdownOpen.set(true);
             if (this.allClients().length === 0) {
-                this.http.get<ClientOption[]>('/api/clientes').subscribe({
-                    next: clients => this.allClients.set(clients),
+                this.http.get<{ items: ClientOption[] }>('/api/clientes').subscribe({
+                    next: res => this.allClients.set(res.items),
                 });
             }
         } else {
