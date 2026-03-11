@@ -172,40 +172,9 @@ describe('SaleDrawer', () => {
 
         abrirAteConfiguracao(fixture);
         comp.itemQuantity.set(2);
-        comp.patientCpf.set('123.456.789-00');
         fixture.detectChanges();
 
         expect(comp.canAdd()).toBe(false);
-    });
-
-    it('não deve permitir adicionar sem CPF completo', () => {
-        const fixture = TestBed.createComponent(SaleDrawer);
-        const comp = fixture.componentInstance;
-        fixture.detectChanges();
-
-        abrirAteConfiguracao(fixture);
-        comp.itemQuantity.set(2);
-        comp.patientName.set('Will');
-        comp.patientCpf.set('123.456');
-        fixture.detectChanges();
-
-        expect(comp.canAdd()).toBe(false);
-    });
-
-    it('deve formatar CPF corretamente enquanto o usuário digita', () => {
-        const fixture = TestBed.createComponent(SaleDrawer);
-        const comp = fixture.componentInstance;
-        fixture.detectChanges();
-
-        abrirAteConfiguracao(fixture);
-        fixture.detectChanges();
-
-        const input = fixture.nativeElement.querySelector('input[maxlength="14"]');
-        input.value = '12345678900';
-        input.dispatchEvent(new Event('input'));
-        fixture.detectChanges();
-
-        expect(comp.patientCpf()).toBe('123.456.789-00');
     });
 
     it('deve adicionar item à lista e voltar ao modo idle', () => {
@@ -216,7 +185,6 @@ describe('SaleDrawer', () => {
         abrirAteConfiguracao(fixture);
         comp.itemQuantity.set(3);
         comp.patientName.set('Will');
-        comp.patientCpf.set('123.456.789-00');
         fixture.detectChanges();
 
         fixture.nativeElement.querySelector('.sale-drawer__add-btn').click();
@@ -226,7 +194,6 @@ describe('SaleDrawer', () => {
         expect(comp.items().length).toBe(1);
         expect(comp.items()[0].quantity).toBe(3);
         expect(comp.items()[0].patientName).toBe('Will');
-        expect(comp.items()[0].patientCpf).toBe('12345678900');
         expect(comp.totalItems()).toBe(3);
     });
 
@@ -238,7 +205,6 @@ describe('SaleDrawer', () => {
         abrirAteConfiguracao(fixture);
         comp.itemQuantity.set(1);
         comp.patientName.set('Lua');
-        comp.patientCpf.set('987.654.321-00');
         comp.addItem();
         fixture.detectChanges();
 
@@ -255,7 +221,6 @@ describe('SaleDrawer', () => {
         abrirAteConfiguracao(fixture);
         comp.itemQuantity.set(4);
         comp.patientName.set('Will');
-        comp.patientCpf.set('111.111.111-11');
         comp.addItem();
         fixture.detectChanges();
 
@@ -284,7 +249,6 @@ describe('SaleDrawer', () => {
         abrirAteConfiguracao(fixture);
         comp.itemQuantity.set(3);
         comp.patientName.set('Will');
-        comp.patientCpf.set('111.111.111-11');
         comp.addItem();
         fixture.detectChanges();
 
@@ -308,7 +272,6 @@ describe('SaleDrawer', () => {
         abrirAteConfiguracao(fixture);
         comp.itemQuantity.set(5);
         comp.patientName.set('Will');
-        comp.patientCpf.set('111.111.111-11');
         comp.addItem();
         fixture.detectChanges();
 
@@ -350,7 +313,6 @@ describe('SaleDrawer', () => {
         abrirAteConfiguracao(fixture);
         comp.itemQuantity.set(2);
         comp.patientName.set('Will');
-        comp.patientCpf.set('123.456.789-00');
         comp.addItem();
         fixture.detectChanges();
 
@@ -371,7 +333,6 @@ describe('SaleDrawer', () => {
         abrirAteConfiguracao(fixture);
         comp.itemQuantity.set(1);
         comp.patientName.set('Will');
-        comp.patientCpf.set('123.456.789-00');
         comp.addItem();
         fixture.detectChanges();
 
@@ -387,7 +348,6 @@ describe('SaleDrawer', () => {
         abrirAteConfiguracao(fixture);
         comp.itemQuantity.set(1);
         comp.patientName.set('Will');
-        comp.patientCpf.set('123.456.789-00');
         comp.addItem();
         fixture.detectChanges();
 

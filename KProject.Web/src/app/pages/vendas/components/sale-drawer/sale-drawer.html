@@ -152,17 +152,6 @@
                     autofocus
                 />
             </div>
-            <div class="sale-drawer__field">
-                <label class="sale-drawer__label">CPF</label>
-                <input
-                    class="sale-drawer__input"
-                    type="text"
-                    placeholder="000.000.000-00"
-                    [value]="patientCpf()"
-                    (input)="onPatientCpfInput($event)"
-                    maxlength="14"
-                />
-            </div>
         </div>
 
         @if (itemQuantity() > 0) {

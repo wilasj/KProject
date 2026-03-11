@@ -17,7 +17,6 @@ interface SaleItem {
     lotAvailable: number;
     quantity: number;
     patientName: string;
-    patientCpf: string;
 }
 
 @Component({
@@ -63,7 +62,6 @@ export class SaleDrawer implements OnDestroy {
     selectedLot = signal<LotOption | null>(null);
     itemQuantity = signal(0);
     patientName = signal('');
-    patientCpf = signal('');
 
     consumedByLot = computed(() => {
         const map = new Map<number, number>();
@@ -83,15 +81,11 @@ export class SaleDrawer implements OnDestroy {
         return lot.quantidadeTotal - (this.consumedByLot().get(lot.id) ?? 0);
     }
 
-    canAdd = computed(() => {
-        const cpfDigits = this.patientCpf().replace(/\D/g, '');
-        return (
-            this.itemQuantity() > 0 &&
-            this.itemQuantity() <= this.effectiveLotAvailable() &&
-            this.patientName().trim().length > 0 &&
-            cpfDigits.length === 11
-        );
-    });
+    canAdd = computed(() =>
+        this.itemQuantity() > 0 &&
+        this.itemQuantity() <= this.effectiveLotAvailable() &&
+        this.patientName().trim().length > 0
+    );
 
     addButtonLabel = computed(() => {
         const qty = this.itemQuantity();
@@ -138,7 +132,6 @@ export class SaleDrawer implements OnDestroy {
         this.selectedLot.set(null);
         this.itemQuantity.set(0);
         this.patientName.set('');
-        this.patientCpf.set('');
         this.items.set([]);
     }
 
@@ -197,7 +190,6 @@ export class SaleDrawer implements OnDestroy {
         this.selectedLot.set(lot);
         this.itemQuantity.set(0);
         this.patientName.set('');
-        this.patientCpf.set('');
         this.mode.set('configuring-item');
     }
 
@@ -211,20 +203,6 @@ export class SaleDrawer implements OnDestroy {
 
     onPatientNameInput(event: Event) {
         this.patientName.set((event.target as HTMLInputElement).value);
-    }
-
-    onPatientCpfInput(event: Event) {
-        const formatted = this.formatCpf((event.target as HTMLInputElement).value);
-        this.patientCpf.set(formatted);
-        (event.target as HTMLInputElement).value = formatted;
-    }
-
-    private formatCpf(value: string): string {
-        const d = value.replace(/\D/g, '').slice(0, 11);
-        if (d.length <= 3) return d;
-        if (d.length <= 6) return `${d.slice(0, 3)}.${d.slice(3)}`;
-        if (d.length <= 9) return `${d.slice(0, 3)}.${d.slice(3, 6)}.${d.slice(6)}`;
-        return `${d.slice(0, 3)}.${d.slice(3, 6)}.${d.slice(6, 9)}-${d.slice(9)}`;
     }
 
     addItem() {
@@ -242,7 +220,6 @@ export class SaleDrawer implements OnDestroy {
                 lotAvailable: lot.quantidadeTotal,
                 quantity: this.itemQuantity(),
                 patientName: this.patientName(),
-                patientCpf: this.patientCpf().replace(/\D/g, ''),
             },
         ]);
         this.mode.set('idle');
@@ -252,7 +229,6 @@ export class SaleDrawer implements OnDestroy {
         this.products.set([]);
         this.itemQuantity.set(0);
         this.patientName.set('');
-        this.patientCpf.set('');
     }
 
     removeItem(index: number) {
@@ -276,7 +252,6 @@ export class SaleDrawer implements OnDestroy {
                 loteId: i.lotId,
                 quantidade: i.quantity,
                 pacienteNome: i.patientName,
-                pacienteCpf: i.patientCpf,
             })),
         };
         this.http.post('/api/vendas', body).subscribe({
