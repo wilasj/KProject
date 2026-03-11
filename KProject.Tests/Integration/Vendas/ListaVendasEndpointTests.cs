@@ -2,6 +2,7 @@ using System.Net;
 using System.Net.Http.Json;
 using KProject.Application.Shared;
 using KProject.Application.Vendas.ListaVendas;
+using KProject.Domain.Clientes;
 using KProject.Domain.Lotes;
 using KProject.Domain.Produtos;
 using KProject.Domain.Vendas;
@@ -41,12 +42,7 @@ public class ListaVendasEndpointTests(DatabaseFixture fixture)
         return vendaId;
     }
 
-    private static Domain.Clientes.Cliente CriaCliente(string nome)
-    {
-        var cliente = (Domain.Clientes.Cliente)Activator.CreateInstance(typeof(Domain.Clientes.Cliente), nonPublic: true)!;
-        typeof(Domain.Clientes.Cliente).GetProperty("Nome")!.SetValue(cliente, nome);
-        return cliente;
-    }
+    private static Cliente CriaCliente(string nome) => Cliente.Criar(nome);
 
     [Fact]
     public async Task ListaVendas_DeveRetornar401_SemAutenticacao()
