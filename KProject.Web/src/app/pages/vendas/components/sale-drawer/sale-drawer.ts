@@ -62,6 +62,8 @@ export class SaleDrawer implements OnDestroy {
     selectedLot = signal<LotOption | null>(null);
     itemQuantity = signal(0);
     patientName = signal('');
+    recentPatients = signal<string[]>([]);
+    patientDropdownOpen = signal(false);
 
     consumedByLot = computed(() => {
         const map = new Map<number, number>();
@@ -75,6 +77,13 @@ export class SaleDrawer implements OnDestroy {
         const lot = this.selectedLot();
         if (!lot) return 0;
         return lot.quantidadeTotal - (this.consumedByLot().get(lot.id) ?? 0);
+    });
+
+    filteredRecentPatients = computed(() => {
+        const term = this.patientName().toLowerCase();
+        return term
+            ? this.recentPatients().filter(n => n.toLowerCase().includes(term))
+            : this.recentPatients();
     });
 
     effectiveQtyForLot(lot: LotOption): number {
@@ -132,6 +141,8 @@ export class SaleDrawer implements OnDestroy {
         this.selectedLot.set(null);
         this.itemQuantity.set(0);
         this.patientName.set('');
+        this.recentPatients.set([]);
+        this.patientDropdownOpen.set(false);
         this.items.set([]);
     }
 
@@ -205,6 +216,19 @@ export class SaleDrawer implements OnDestroy {
         this.patientName.set((event.target as HTMLInputElement).value);
     }
 
+    onPatientNameFocus() {
+        if (this.recentPatients().length > 0) this.patientDropdownOpen.set(true);
+    }
+
+    onPatientNameBlur() {
+        this.patientDropdownOpen.set(false);
+    }
+
+    selectRecentPatient(name: string) {
+        this.patientName.set(name);
+        this.patientDropdownOpen.set(false);
+    }
+
     addItem() {
         const product = this.selectedProduct();
         const lot = this.selectedLot();
@@ -227,6 +251,9 @@ export class SaleDrawer implements OnDestroy {
         this.selectedLot.set(null);
         this.productSearchTerm.set('');
         this.products.set([]);
+        if (!this.recentPatients().includes(this.patientName())) {
+            this.recentPatients.update(names => [...names, this.patientName()]);
+        }
         this.itemQuantity.set(0);
         this.patientName.set('');
     }

@@ -141,7 +141,7 @@
 
     @if (mode() === 'configuring-item') {
         <div class="sale-drawer__patient-fields">
-            <div class="sale-drawer__field">
+            <div class="sale-drawer__field sale-drawer__field--relative">
                 <label class="sale-drawer__label">Nome do paciente</label>
                 <input
                     class="sale-drawer__input"
@@ -149,8 +149,23 @@
                     placeholder="Nome completo"
                     [value]="patientName()"
                     (input)="onPatientNameInput($event)"
+                    (focus)="onPatientNameFocus()"
+                    (blur)="onPatientNameBlur()"
                     autofocus
                 />
+                @if (patientDropdownOpen() && filteredRecentPatients().length > 0) {
+                    <div class="sale-drawer__patient-dropdown">
+                        @for (name of filteredRecentPatients(); track name) {
+                            <button
+                                class="sale-drawer__patient-option"
+                                (mousedown)="$event.preventDefault()"
+                                (click)="selectRecentPatient(name)"
+                            >
+                                {{ name }}
+                            </button>
+                        }
+                    </div>
+                }
             </div>
         </div>
 

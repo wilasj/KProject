@@ -364,6 +364,112 @@ describe('SaleDrawer', () => {
 
         expect(comp.saveState()).toBe('saved');
     });
+
+    it('não deve abrir dropdown no primeiro item (sem pacientes recentes)', () => {
+        const fixture = TestBed.createComponent(SaleDrawer);
+        const comp = fixture.componentInstance;
+        fixture.detectChanges();
+
+        abrirAteConfiguracao(fixture);
+        comp.onPatientNameFocus();
+
+        expect(comp.patientDropdownOpen()).toBe(false);
+    });
+
+    it('deve salvar nome do paciente após addItem', () => {
+        const fixture = TestBed.createComponent(SaleDrawer);
+        const comp = fixture.componentInstance;
+        fixture.detectChanges();
+
+        abrirAteConfiguracao(fixture);
+        comp.itemQuantity.set(1);
+        comp.patientName.set('Ana');
+        comp.addItem();
+
+        expect(comp.recentPatients()).toContain('Ana');
+    });
+
+    it('não deve duplicar nomes em recentPatients', () => {
+        const fixture = TestBed.createComponent(SaleDrawer);
+        const comp = fixture.componentInstance;
+        fixture.detectChanges();
+
+        abrirAteConfiguracao(fixture);
+        comp.itemQuantity.set(1);
+        comp.patientName.set('Ana');
+        comp.addItem();
+        fixture.detectChanges();
+
+        abrirAteConfiguracao(fixture);
+        comp.itemQuantity.set(1);
+        comp.patientName.set('Ana');
+        comp.addItem();
+
+        expect(comp.recentPatients().filter(n => n === 'Ana').length).toBe(1);
+    });
+
+    it('deve abrir dropdown no segundo item', () => {
+        const fixture = TestBed.createComponent(SaleDrawer);
+        const comp = fixture.componentInstance;
+        fixture.detectChanges();
+
+        abrirAteConfiguracao(fixture);
+        comp.itemQuantity.set(1);
+        comp.patientName.set('Ana');
+        comp.addItem();
+        fixture.detectChanges(); // necessário para re-renderizar o botão "+" em modo idle
+
+        abrirAteConfiguracao(fixture);
+        comp.onPatientNameFocus();
+
+        expect(comp.patientDropdownOpen()).toBe(true);
+    });
+
+    it('deve preencher patientName ao selecionar paciente recente', () => {
+        const fixture = TestBed.createComponent(SaleDrawer);
+        const comp = fixture.componentInstance;
+        fixture.detectChanges();
+
+        abrirAteConfiguracao(fixture);
+        comp.itemQuantity.set(1);
+        comp.patientName.set('Ana');
+        comp.addItem();
+        fixture.detectChanges(); // necessário para re-renderizar o botão "+" em modo idle
+
+        abrirAteConfiguracao(fixture);
+        comp.selectRecentPatient('Ana');
+
+        expect(comp.patientName()).toBe('Ana');
+        expect(comp.patientDropdownOpen()).toBe(false);
+    });
+
+    it('deve limpar recentPatients no reset', () => {
+        const fixture = TestBed.createComponent(SaleDrawer);
+        const comp = fixture.componentInstance;
+        fixture.detectChanges();
+
+        abrirAteConfiguracao(fixture);
+        comp.itemQuantity.set(1);
+        comp.patientName.set('Ana');
+        comp.addItem();
+
+        fixture.componentRef.setInput('open', false);
+        fixture.componentRef.setInput('open', true);
+        TestBed.flushEffects();
+
+        expect(comp.recentPatients()).toEqual([]);
+    });
+
+    it('deve filtrar pacientes recentes pelo texto digitado', () => {
+        const fixture = TestBed.createComponent(SaleDrawer);
+        const comp = fixture.componentInstance;
+        fixture.detectChanges();
+
+        comp.recentPatients.set(['Ana', 'Bruno']);
+        comp.patientName.set('an');
+
+        expect(comp.filteredRecentPatients()).toEqual(['Ana']);
+    });
 });
 
 // Utilitário: abre o drawer até o estado configuring-item (produto 1, lote 1)
