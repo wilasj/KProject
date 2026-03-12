@@ -8,7 +8,7 @@ public sealed class ItemConsignado
     public int Id { get; private set; }
     public Venda Venda { get; private set; } = null!;
     public int LoteId { get; private set; }
-
+    public string PacienteNome { get; private set; } = string.Empty;
     private readonly List<HistoricoQuantidade> _historico = [];
     public IReadOnlyList<HistoricoQuantidade> Historico => _historico;
     public uint QuantidadeConsignada { get; private set; }
@@ -22,14 +22,15 @@ public sealed class ItemConsignado
     {
     }
     
-    private ItemConsignado(int loteId, int usuarioId, uint quantidadeConsignada)
+    private ItemConsignado(int loteId, int usuarioId, string pacienteNome, uint quantidadeConsignada)
     {
         LoteId = loteId;
         QuantidadeConsignada = quantidadeConsignada;
+        PacienteNome = pacienteNome;
         _historico.Add(new HistoricoQuantidade { AlteradoEm = DateTime.UtcNow, AlteradoPor = usuarioId, Vendido = 0, Devolvido = 0 });
     }
 
-    public static Result<ItemConsignado> Criar(int loteId, int usuarioId, uint quantidadeConsignada)
+    public static Result<ItemConsignado> Criar(int loteId, int usuarioId, string pacienteNome, uint quantidadeConsignada)
     {
         if (usuarioId <= 0)
         {
@@ -45,8 +46,13 @@ public sealed class ItemConsignado
         {
             return Result.Failure<ItemConsignado>(Error.Failure("ItemConsignado.LoteInvalido", "Lote inválido"));
         }
+
+        if (string.IsNullOrEmpty(pacienteNome))
+        {
+            return Result.Failure<ItemConsignado>(Error.Failure("ItemConsignado.PacienteInvalido", "O nome do paciente nao pode estar vazio"));
+        }
         
-        var item = new ItemConsignado(loteId, usuarioId, quantidadeConsignada);
+        var item = new ItemConsignado(loteId, usuarioId, pacienteNome, quantidadeConsignada);
         
         return Result.Success(item);
     }

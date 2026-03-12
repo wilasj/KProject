@@ -25,6 +25,11 @@ public class ItemConsignadoConfiguration: IEntityTypeConfiguration<ItemConsignad
             .IsRequired();
 
         builder
+            .Property(i => i.PacienteNome)
+            .IsRequired()
+            .HasMaxLength(200);
+
+        builder
             .HasMany(i => i.Historico)
             .WithOne()
             .HasForeignKey(i => i.ItemConsignadoId)
@@ -35,7 +40,7 @@ public class ItemConsignadoConfiguration: IEntityTypeConfiguration<ItemConsignad
             .UsePropertyAccessMode(PropertyAccessMode.Field);
 
         builder
-            .HasIndex("VendaId", nameof(ItemConsignado.LoteId))
+            .HasIndex("VendaId", nameof(ItemConsignado.LoteId), nameof(ItemConsignado.PacienteNome))
             .IsUnique();
     }
 }

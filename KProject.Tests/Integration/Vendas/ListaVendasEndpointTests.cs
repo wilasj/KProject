@@ -32,7 +32,7 @@ public class ListaVendasEndpointTests(DatabaseFixture fixture)
             db.Lotes.Add(lote);
             await db.SaveChangesAsync();
 
-            var venda = Venda.Criar(cliente.Id, usuarioId, new Dictionary<int, uint> { { lote.Id, 5 } }).Value;
+            var venda = Venda.Criar(cliente.Id, usuarioId, new Dictionary<(int, string), uint> { { (lote.Id, "Paciente"), 5u } }).Value;
             db.Vendas.Add(venda);
             await db.SaveChangesAsync();
 
@@ -106,8 +106,8 @@ public class ListaVendasEndpointTests(DatabaseFixture fixture)
             db.Lotes.Add(lote);
             await db.SaveChangesAsync();
 
-            db.Vendas.Add(Venda.Criar(clienteA.Id, usuarioId, new Dictionary<int, uint> { { lote.Id, 2 } }).Value);
-            db.Vendas.Add(Venda.Criar(clienteB.Id, usuarioId, new Dictionary<int, uint> { { lote.Id, 3 } }).Value);
+            db.Vendas.Add(Venda.Criar(clienteA.Id, usuarioId, new Dictionary<(int, string), uint> { { (lote.Id, "Paciente"), 2u } }).Value);
+            db.Vendas.Add(Venda.Criar(clienteB.Id, usuarioId, new Dictionary<(int, string), uint> { { (lote.Id, "Paciente"), 3u } }).Value);
             await db.SaveChangesAsync();
         });
 

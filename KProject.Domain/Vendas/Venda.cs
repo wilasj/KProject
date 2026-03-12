@@ -23,7 +23,7 @@ public sealed class Venda
     }
 
     //TODO: A melhor forma de fazer isso eh realmente usando um int pro loteId? Nao daria pra gente usar uma tupla pra especificar mais essa variavel?
-    public static Result<Venda> Criar(int clienteId, int criadaPor, Dictionary<int, uint> novosItens)
+    public static Result<Venda> Criar(int clienteId, int criadaPor, Dictionary<(int LoteId, string PacienteNome), uint> novosItens)
     {
         if (clienteId == 0)
         {
@@ -42,11 +42,11 @@ public sealed class Venda
         return addResult.IsFailure ? Result.Failure<Venda>(addResult.Errors.First()) : Result.Success(venda);
     }
 
-    private Result AdicionarItens(Dictionary<int, uint> novosItens, int criadoPor)
+    private Result AdicionarItens(Dictionary<(int LoteId, string PacienteNome), uint> novosItens, int criadoPor)
     {
-        foreach (var (loteId, quantidadeConsignada) in novosItens)
+        foreach (var (item, quantidadeConsignada) in novosItens)
         {
-            var itemResult = ItemConsignado.Criar(loteId, criadoPor, quantidadeConsignada);
+            var itemResult = ItemConsignado.Criar(item.LoteId, criadoPor, item.PacienteNome, quantidadeConsignada);
             
             if (itemResult.IsFailure)
             {
@@ -66,7 +66,7 @@ public sealed class Venda
             return Result.Failure(Error.Failure("Venda.StatusInvalido", "A venda não pode ser alterada quando status é cancelado/fechado"));
         }
 
-        if (_itens.Any(i => i.LoteId == item.LoteId))
+        if (_itens.Any(i => i.LoteId == item.LoteId && i.PacienteNome.Equals(item.PacienteNome, StringComparison.OrdinalIgnoreCase)))
         {
             return Result.Failure(Error.Failure("Venda.ItemDuplicado", "O item já existe na venda"));
         }
