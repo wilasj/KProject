@@ -36,7 +36,7 @@
     color: #1a1a1a;
     background: white;
     outline: none;
-    transition: border-color 0.15s ease;
+    transition: border-color var(--transition-base);
     width: 100%;
     box-sizing: border-box;
 
@@ -65,7 +65,7 @@
     cursor: pointer;
     color: #9e9e9e;
     flex-shrink: 0;
-    transition: border-color 0.15s ease, color 0.15s ease;
+    transition: border-color var(--transition-base), color var(--transition-base);
 
     &:hover { border-color: #ccc; color: #1a1a1a; }
 
@@ -82,7 +82,7 @@
     font-size: 0.875rem;
     font-weight: 500;
     cursor: pointer;
-    transition: opacity 0.15s ease;
+    transition: opacity var(--transition-base);
 
     &:disabled { opacity: 0.5; cursor: not-allowed; }
   }

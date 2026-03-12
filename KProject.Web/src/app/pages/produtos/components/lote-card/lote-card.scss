@@ -16,7 +16,7 @@
   width: 100px;
   height: 100px;
   text-align: center;
-  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+  transition: border-color var(--transition-base), box-shadow var(--transition-base);
 
   &:hover {
     border-color: #ccc;
