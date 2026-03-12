@@ -3,6 +3,25 @@
   height: 100%;
 }
 
+%sidebar-icon-btn {
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 12px;
+  color: var(--sidebar-icon-color);
+  transition: background 0.15s ease, color 0.15s ease;
+
+  .material-symbols-outlined { font-size: 22px; }
+}
+
+%sidebar-btn-reset {
+  background: none;
+  border: none;
+  cursor: pointer;
+}
+
 .sidebar {
   --sidebar-bg:          #ffffff;
   --sidebar-avatar-bg:   var(--color-primary-darkest);
@@ -52,19 +71,8 @@
   }
 
   &__nav-item {
-    width: 40px;
-    height: 40px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    border-radius: 12px;
-    color: var(--sidebar-icon-color);
+    @extend %sidebar-icon-btn;
     text-decoration: none;
-    transition: background 0.15s ease, color 0.15s ease;
-
-    .material-symbols-outlined {
-      font-size: 22px;
-    }
 
     &.active {
       background: var(--sidebar-active-bg);
@@ -86,19 +94,8 @@
   }
 
   &__invite {
-    width: 40px;
-    height: 40px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    border-radius: 12px;
-    color: var(--sidebar-icon-color);
-    background: none;
-    border: none;
-    cursor: pointer;
-    transition: background 0.15s ease, color 0.15s ease;
-
-    .material-symbols-outlined { font-size: 22px; }
+    @extend %sidebar-icon-btn;
+    @extend %sidebar-btn-reset;
 
     &:hover {
       background: var(--sidebar-hover-bg);
@@ -107,22 +104,9 @@
   }
 
   &__logout {
-    width: 40px;
-    height: 40px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    border-radius: 12px;
-    color: var(--sidebar-icon-color);
-    background: none;
-    border: none;
-    cursor: pointer;
-    transition: background 0.15s ease, color 0.15s ease;
+    @extend %sidebar-icon-btn;
+    @extend %sidebar-btn-reset;
     flex-shrink: 0;
-
-    .material-symbols-outlined {
-      font-size: 22px;
-    }
 
     &:hover {
       background: var(--sidebar-logout-hover);
