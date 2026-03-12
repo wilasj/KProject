@@ -19,7 +19,7 @@
         font-size: 0.875rem;
         color: #555;
         cursor: pointer;
-        transition: background 0.15s ease, border-color 0.15s ease, color 0.15s ease;
+        transition: background var(--transition-base), border-color var(--transition-base), color var(--transition-base);
 
         &:hover:not(:disabled) {
             background: #f5f5f5;

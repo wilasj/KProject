@@ -73,7 +73,7 @@
     color: #9e9e9e;
     padding: 0;
     flex-shrink: 0;
-    transition: color 0.15s ease;
+    transition: color var(--transition-base);
 
     &:hover { color: #1a1a1a; }
 

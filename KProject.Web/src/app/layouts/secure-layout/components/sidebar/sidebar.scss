@@ -11,7 +11,7 @@
   justify-content: center;
   border-radius: 12px;
   color: var(--sidebar-icon-color);
-  transition: background 0.15s ease, color 0.15s ease;
+  transition: background var(--transition-base), color var(--transition-base);
 
   .material-symbols-outlined { font-size: 22px; }
 }
