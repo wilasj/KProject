@@ -1,2 +1,2 @@
-@use '../auth-form' as *;
+@use 'auth-form' as *;
 @include auth-form('login');

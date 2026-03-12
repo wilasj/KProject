@@ -1,2 +1,2 @@
-@use '../../../drawer' as *;
+@use 'drawer' as *;
 @include drawer-component('client-drawer');
