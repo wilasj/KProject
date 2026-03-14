@@ -7,5 +7,6 @@ namespace KProject.Application.Interfaces.Clientes;
 public interface IClienteRepository
 {
     Task AddAsync(Cliente cliente, CancellationToken token = default);
+    Task<bool> ExistsAsync(int id, CancellationToken token = default);
     Task<Page<ClienteResponse>> GetPagedAsync(string? busca, int page, int pageSize, CancellationToken token = default);
 }

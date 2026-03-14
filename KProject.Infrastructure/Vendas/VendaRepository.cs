@@ -9,6 +9,9 @@ namespace KProject.Infrastructure.Vendas;
 
 public class VendaRepository(AppDbContext db) : IVendaRepository
 {
+    public async Task AddAsync(Venda venda, CancellationToken token = default) =>
+        await db.Vendas.AddAsync(venda, token);
+
     public async Task<Page<VendaResponse>> GetPagedAsync(string? busca, int page, int pageSize, CancellationToken token = default)
     {
         var spec = new VendaSpecification(busca);

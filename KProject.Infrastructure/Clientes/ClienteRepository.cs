@@ -12,6 +12,9 @@ public class ClienteRepository(AppDbContext db) : IClienteRepository
     public async Task AddAsync(Cliente cliente, CancellationToken token = default) =>
         await db.Clientes.AddAsync(cliente, token);
 
+    public async Task<bool> ExistsAsync(int id, CancellationToken token = default) =>
+        await db.Clientes.AnyAsync(c => c.Id == id, token);
+
     public async Task<Page<ClienteResponse>> GetPagedAsync(string? busca, int page, int pageSize, CancellationToken token = default)
     {
         var spec = new ClienteSpecification(busca);
