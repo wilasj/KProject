@@ -36,6 +36,7 @@
         <app-sale-drawer
             [open]="drawerOpen()"
             [saleId]="selectedSaleId()"
+            (saleCreated)="onSaleCreated()"
             (close)="closeDrawer()"
         />
     </div>

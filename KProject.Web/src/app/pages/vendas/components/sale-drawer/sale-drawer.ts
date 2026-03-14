@@ -30,6 +30,7 @@ export class SaleDrawer implements OnDestroy {
     saleId = input<number | null>(null);
     open = input<boolean>(false);
     close = output<void>();
+    saleCreated = output<void>();
 
     mode = signal<DrawerMode>('idle');
     saveState = signal<SaveState>('idle');
@@ -284,6 +285,7 @@ export class SaleDrawer implements OnDestroy {
         this.http.post('/api/vendas', body).subscribe({
             next: () => {
                 this.saveState.set('saved');
+                this.saleCreated.emit();
                 setTimeout(() => this.close.emit(), 1500);
             },
             error: () => this.saveState.set('idle'),

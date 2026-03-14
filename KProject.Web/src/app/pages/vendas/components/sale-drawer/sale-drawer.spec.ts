@@ -365,6 +365,53 @@ describe('SaleDrawer', () => {
         expect(comp.saveState()).toBe('saved');
     });
 
+    it('deve emitir saleCreated imediatamente ao salvar com sucesso', () => {
+        const fixture = TestBed.createComponent(SaleDrawer);
+        const comp = fixture.componentInstance;
+        fixture.detectChanges();
+
+        comp.selectedClient.set({ id: 1, nome: 'Maria Silva' });
+        abrirAteConfiguracao(fixture);
+        comp.itemQuantity.set(1);
+        comp.patientName.set('Will');
+        comp.addItem();
+        fixture.detectChanges();
+
+        let created = false;
+        comp.saleCreated.subscribe(() => (created = true));
+
+        fixture.nativeElement.querySelector('.sale-drawer__save-btn').click();
+        httpTesting.expectOne(r => r.url === '/api/vendas' && r.method === 'POST').flush({ id: 99 });
+        fixture.detectChanges();
+
+        expect(created).toBe(true);
+    });
+
+    it('não deve emitir saleCreated quando o save falha', () => {
+        const fixture = TestBed.createComponent(SaleDrawer);
+        const comp = fixture.componentInstance;
+        fixture.detectChanges();
+
+        comp.selectedClient.set({ id: 1, nome: 'Maria Silva' });
+        abrirAteConfiguracao(fixture);
+        comp.itemQuantity.set(1);
+        comp.patientName.set('Will');
+        comp.addItem();
+        fixture.detectChanges();
+
+        let created = false;
+        comp.saleCreated.subscribe(() => (created = true));
+
+        fixture.nativeElement.querySelector('.sale-drawer__save-btn').click();
+        httpTesting.expectOne(r => r.url === '/api/vendas' && r.method === 'POST').flush(
+            { status: 400 }, { status: 400, statusText: 'Bad Request' }
+        );
+        fixture.detectChanges();
+
+        expect(created).toBe(false);
+        expect(comp.saveState()).toBe('idle');
+    });
+
     it('não deve abrir dropdown no primeiro item (sem pacientes recentes)', () => {
         const fixture = TestBed.createComponent(SaleDrawer);
         const comp = fixture.componentInstance;

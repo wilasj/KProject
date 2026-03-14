@@ -128,4 +128,11 @@ describe('Vendas', () => {
             queryParams: expect.objectContaining({ pagina: 3 }),
         }));
     });
+
+    it('deve refazer o fetch ao chamar onSaleCreated', () => {
+        const fixture = setup();
+        flush(fixture);
+        fixture.componentInstance.onSaleCreated();
+        httpMock.expectOne(r => r.url === '/api/vendas').flush(mockResponse);
+    });
 });
