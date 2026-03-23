@@ -82,7 +82,7 @@ public class ListaVendasEndpointTests(DatabaseFixture fixture)
         var body = await result.Content.ReadAsStringAsync(TestContext.Current.CancellationToken);
         result.StatusCode.ShouldBe(HttpStatusCode.OK, body);
 
-        var page = await result.Content.ReadFromJsonAsync<Page<VendaResponse>>(TestContext.Current.CancellationToken);
+        var page = await result.Content.ReadFromJsonAsync<Page<VendaResponse>>(DatabaseFixture.JsonOptions, TestContext.Current.CancellationToken);
         page!.Total.ShouldBeGreaterThan(0);
     }
 
@@ -118,7 +118,7 @@ public class ListaVendasEndpointTests(DatabaseFixture fixture)
         var body = await result.Content.ReadAsStringAsync(TestContext.Current.CancellationToken);
         result.StatusCode.ShouldBe(HttpStatusCode.OK, body);
 
-        var page = await result.Content.ReadFromJsonAsync<Page<VendaResponse>>(TestContext.Current.CancellationToken);
+        var page = await result.Content.ReadFromJsonAsync<Page<VendaResponse>>(DatabaseFixture.JsonOptions, TestContext.Current.CancellationToken);
         page!.Items.ShouldAllBe(v => v.ClienteNome.ToLower().Contains("farmácia"));
     }
 }

@@ -1,4 +1,6 @@
 using System.Net.Http.Json;
+using System.Text.Json;
+using System.Text.Json.Serialization;
 using KProject.Domain.Convites;
 using KProject.Infrastructure.Shared;
 using Microsoft.AspNetCore.Identity;
@@ -11,6 +13,12 @@ public class DatabaseFixture: IAsyncLifetime
 {
     private readonly PostgreSqlContainer _container = new PostgreSqlBuilder("postgres:17").Build();
     public ApiFactory Factory { get; private set; } = null!;
+
+    public static readonly JsonSerializerOptions JsonOptions = new()
+    {
+        PropertyNameCaseInsensitive = true,
+        Converters = { new JsonStringEnumConverter() }
+    };
 
     public async ValueTask InitializeAsync()
     {
