@@ -1,240 +1,410 @@
-<div class="sale-drawer__header">
-    <div>
-        <h2 class="sale-drawer__title">Nova Venda</h2>
-        <p class="sale-drawer__subtitle">Adicione os itens e selecione o cliente</p>
-    </div>
-    <button class="sale-drawer__close" (click)="close.emit()" aria-label="Fechar">
-        <span class="material-symbols-outlined">close</span>
-    </button>
-</div>
-
-<div class="sale-drawer__body">
-    <div class="sale-drawer__total-card">
-        <span class="sale-drawer__total-label">
-            <span class="material-symbols-outlined">stacks</span>
-            TOTAL
-        </span>
-        <span class="sale-drawer__total-value">{{ totalItems() }}</span>
-    </div>
-
-    <div class="sale-drawer__client">
-        <button
-            class="sale-drawer__client-btn"
-            [class.sale-drawer__client-btn--selected]="selectedClient() !== null"
-            (click)="openClientDropdown()"
-        >
-            <span class="material-symbols-outlined">person</span>
-            {{ selectedClient()?.nome ?? 'Selecionar cliente' }}
+@if (saleId() === null) {
+    <div class="sale-drawer__header">
+        <div>
+            <h2 class="sale-drawer__title">Nova Venda</h2>
+            <p class="sale-drawer__subtitle">Adicione os itens e selecione o cliente</p>
+        </div>
+        <button class="sale-drawer__close" (click)="close.emit()" aria-label="Fechar">
+            <span class="material-symbols-outlined">close</span>
         </button>
-
-        @if (clientDropdownOpen()) {
-            <div class="sale-drawer__client-dropdown">
-                <input
-                    class="sale-drawer__client-search"
-                    placeholder="Buscar cliente..."
-                    [value]="clientSearchTerm()"
-                    (input)="onClientSearchInput($event)"
-                    autofocus
-                />
-                <div class="sale-drawer__client-list">
-                    @for (client of filteredClients(); track client.id) {
-                        <button class="sale-drawer__client-item" (click)="selectClient(client)">
-                            {{ client.nome }}
-                        </button>
-                    } @empty {
-                        <span class="sale-drawer__client-empty">Nenhum cliente encontrado</span>
-                    }
-                </div>
-            </div>
-        }
     </div>
 
-    @if (mode() !== 'idle') {
-        <div class="sale-drawer__search-bar">
-            <button class="sale-drawer__chip-close" (click)="cancelSearch()" aria-label="Cancelar">
-                <span class="material-symbols-outlined">close</span>
+    <div class="sale-drawer__body">
+        <div class="sale-drawer__total-card">
+            <span class="sale-drawer__total-label">
+                <span class="material-symbols-outlined">stacks</span>
+                TOTAL
+            </span>
+            <span class="sale-drawer__total-value">{{ totalItems() }}</span>
+        </div>
+
+        <div class="sale-drawer__client">
+            <button
+                class="sale-drawer__client-btn"
+                [class.sale-drawer__client-btn--selected]="selectedClient() !== null"
+                (click)="openClientDropdown()"
+            >
+                <span class="material-symbols-outlined">person</span>
+                {{ selectedClient()?.nome ?? 'Selecionar cliente' }}
             </button>
 
-            @if (mode() === 'searching-product') {
-                <input
-                    class="sale-drawer__product-input"
-                    placeholder="Nome do produto..."
-                    [value]="productSearchTerm()"
-                    (input)="onProductSearchInput($event)"
-                    autofocus
-                />
-            }
-
-            @if (mode() === 'selecting-lot') {
-                <span class="sale-drawer__chip-text">{{ selectedProduct()?.nome }}</span>
-            }
-
-            @if (mode() === 'configuring-item') {
-                <span class="sale-drawer__chip-text">{{ selectedProduct()?.nome }}</span>
-                <span class="sale-drawer__chip-sep"></span>
-                <span class="sale-drawer__chip-lot">Lote {{ selectedLot()?.numero }}</span>
-                <span class="sale-drawer__chip-qty">{{ itemQuantity() }}/{{ effectiveLotAvailable() }}</span>
-                <div class="sale-drawer__qty-controls">
-                    <button
-                        class="sale-drawer__qty-btn sale-drawer__qty-btn--minus"
-                        (click)="decrementQty()"
-                        [disabled]="itemQuantity() === 0"
-                        aria-label="Diminuir"
-                    >
-                        <span class="material-symbols-outlined">remove</span>
-                    </button>
-                    <button
-                        class="sale-drawer__qty-btn sale-drawer__qty-btn--plus"
-                        (click)="incrementQty()"
-                        [disabled]="itemQuantity() === effectiveLotAvailable()"
-                        aria-label="Aumentar"
-                    >
-                        <span class="material-symbols-outlined">add</span>
-                    </button>
+            @if (clientDropdownOpen()) {
+                <div class="sale-drawer__client-dropdown">
+                    <input
+                        class="sale-drawer__client-search"
+                        placeholder="Buscar cliente..."
+                        [value]="clientSearchTerm()"
+                        (input)="onClientSearchInput($event)"
+                        autofocus
+                    />
+                    <div class="sale-drawer__client-list">
+                        @for (client of filteredClients(); track client.id) {
+                            <button class="sale-drawer__client-item" (click)="selectClient(client)">
+                                {{ client.nome }}
+                            </button>
+                        } @empty {
+                            <span class="sale-drawer__client-empty">Nenhum cliente encontrado</span>
+                        }
+                    </div>
                 </div>
             }
         </div>
-    }
 
-    @if (mode() === 'searching-product') {
-        @if (productsLoading()) {
-            <div class="sale-drawer__loading">
-                <span class="material-symbols-outlined sale-drawer__spinner">progress_activity</span>
-            </div>
-        } @else {
-            <div class="sale-drawer__product-list">
-                @for (product of products(); track product.id) {
-                    <button class="sale-drawer__product-item" (click)="selectProduct(product)">
-                        <span class="sale-drawer__product-name">{{ product.nome }}</span>
-                        <span class="sale-drawer__product-lots">
-                            {{ product.totalLotes }} {{ product.totalLotes === 1 ? 'lote' : 'lotes' }}
-                        </span>
-                    </button>
-                } @empty {
-                    <span class="sale-drawer__empty">Nenhum produto encontrado</span>
+        @if (mode() !== 'idle') {
+            <div class="sale-drawer__search-bar">
+                <button class="sale-drawer__chip-close" (click)="cancelSearch()" aria-label="Cancelar">
+                    <span class="material-symbols-outlined">close</span>
+                </button>
+
+                @if (mode() === 'searching-product') {
+                    <input
+                        class="sale-drawer__product-input"
+                        placeholder="Nome do produto..."
+                        [value]="productSearchTerm()"
+                        (input)="onProductSearchInput($event)"
+                        autofocus
+                    />
+                }
+
+                @if (mode() === 'selecting-lot') {
+                    <span class="sale-drawer__chip-text">{{ selectedProduct()?.nome }}</span>
+                }
+
+                @if (mode() === 'configuring-item') {
+                    <span class="sale-drawer__chip-text">{{ selectedProduct()?.nome }}</span>
+                    <span class="sale-drawer__chip-sep"></span>
+                    <span class="sale-drawer__chip-lot">Lote {{ selectedLot()?.numero }}</span>
+                    <span class="sale-drawer__chip-qty">{{ itemQuantity() }}/{{ effectiveLotAvailable() }}</span>
+                    <div class="sale-drawer__qty-controls">
+                        <button
+                            class="sale-drawer__qty-btn sale-drawer__qty-btn--minus"
+                            (click)="decrementQty()"
+                            [disabled]="itemQuantity() === 0"
+                            aria-label="Diminuir"
+                        >
+                            <span class="material-symbols-outlined">remove</span>
+                        </button>
+                        <button
+                            class="sale-drawer__qty-btn sale-drawer__qty-btn--plus"
+                            (click)="incrementQty()"
+                            [disabled]="itemQuantity() === effectiveLotAvailable()"
+                            aria-label="Aumentar"
+                        >
+                            <span class="material-symbols-outlined">add</span>
+                        </button>
+                    </div>
                 }
             </div>
         }
-    }
 
-    @if (mode() === 'selecting-lot') {
-        @if (lotsLoading()) {
-            <div class="sale-drawer__loading">
-                <span class="material-symbols-outlined sale-drawer__spinner">progress_activity</span>
-            </div>
-        } @else {
-            <div class="sale-drawer__lot-grid">
-                @for (lot of lots(); track lot.id) {
-                    <button
-                        class="sale-drawer__lot-card"
-                        [class.sale-drawer__lot-card--depleted]="effectiveQtyForLot(lot) === 0"
-                        [disabled]="effectiveQtyForLot(lot) === 0"
-                        (click)="selectLot(lot)"
-                    >
-                        <span class="sale-drawer__lot-number">Lote {{ lot.numero }}</span>
-                        <span class="sale-drawer__lot-qty">{{ effectiveQtyForLot(lot) }}</span>
-                    </button>
-                }
-            </div>
+        @if (mode() === 'searching-product') {
+            @if (productsLoading()) {
+                <div class="sale-drawer__loading">
+                    <span class="material-symbols-outlined sale-drawer__spinner">progress_activity</span>
+                </div>
+            } @else {
+                <div class="sale-drawer__product-list">
+                    @for (product of products(); track product.id) {
+                        <button class="sale-drawer__product-item" (click)="selectProduct(product)">
+                            <span class="sale-drawer__product-name">{{ product.nome }}</span>
+                            <span class="sale-drawer__product-lots">
+                                {{ product.totalLotes }} {{ product.totalLotes === 1 ? 'lote' : 'lotes' }}
+                            </span>
+                        </button>
+                    } @empty {
+                        <span class="sale-drawer__empty">Nenhum produto encontrado</span>
+                    }
+                </div>
+            }
         }
-    }
 
-    @if (mode() === 'configuring-item') {
-        <div class="sale-drawer__patient-fields">
-            <div class="sale-drawer__field sale-drawer__field--relative">
-                <label class="sale-drawer__label">Nome do paciente</label>
-                <input
-                    class="sale-drawer__input"
-                    type="text"
-                    placeholder="Nome completo"
-                    [value]="patientName()"
-                    (input)="onPatientNameInput($event)"
-                    (focus)="onPatientNameFocus()"
-                    (blur)="onPatientNameBlur()"
-                    autofocus
-                />
-                @if (patientDropdownOpen() && filteredRecentPatients().length > 0) {
-                    <div class="sale-drawer__patient-dropdown">
-                        @for (name of filteredRecentPatients(); track name) {
+        @if (mode() === 'selecting-lot') {
+            @if (lotsLoading()) {
+                <div class="sale-drawer__loading">
+                    <span class="material-symbols-outlined sale-drawer__spinner">progress_activity</span>
+                </div>
+            } @else {
+                <div class="sale-drawer__lot-grid">
+                    @for (lot of lots(); track lot.id) {
+                        <button
+                            class="sale-drawer__lot-card"
+                            [class.sale-drawer__lot-card--depleted]="effectiveQtyForLot(lot) === 0"
+                            [disabled]="effectiveQtyForLot(lot) === 0"
+                            (click)="selectLot(lot)"
+                        >
+                            <span class="sale-drawer__lot-number">Lote {{ lot.numero }}</span>
+                            <span class="sale-drawer__lot-qty">{{ effectiveQtyForLot(lot) }}</span>
+                        </button>
+                    }
+                </div>
+            }
+        }
+
+        @if (mode() === 'configuring-item') {
+            <div class="sale-drawer__patient-fields">
+                <div class="sale-drawer__field sale-drawer__field--relative">
+                    <label class="sale-drawer__label">Nome do paciente</label>
+                    <input
+                        class="sale-drawer__input"
+                        type="text"
+                        placeholder="Nome completo"
+                        [value]="patientName()"
+                        (input)="onPatientNameInput($event)"
+                        (focus)="onPatientNameFocus()"
+                        (blur)="onPatientNameBlur()"
+                        autofocus
+                    />
+                    @if (patientDropdownOpen() && filteredRecentPatients().length > 0) {
+                        <div class="sale-drawer__patient-dropdown">
+                            @for (name of filteredRecentPatients(); track name) {
+                                <button
+                                    class="sale-drawer__patient-option"
+                                    (mousedown)="$event.preventDefault()"
+                                    (click)="selectRecentPatient(name)"
+                                >
+                                    {{ name }}
+                                </button>
+                            }
+                        </div>
+                    }
+                </div>
+            </div>
+
+            @if (itemQuantity() > 0) {
+                <button class="sale-drawer__add-btn" [disabled]="!canAdd()" (click)="addItem()">
+                    {{ addButtonLabel() }}
+                </button>
+            }
+        }
+
+        @if (mode() === 'idle') {
+            <button class="sale-drawer__plus-btn" (click)="openProductSearch()" aria-label="Adicionar produto">
+                <span class="material-symbols-outlined">add</span>
+            </button>
+
+            @if (items().length > 0) {
+                <div class="sale-drawer__items-header">
+                    <span class="sale-drawer__items-title">Itens adicionados</span>
+                    <span class="sale-drawer__items-count">
+                        {{ items().length }} {{ items().length === 1 ? 'item' : 'itens' }}
+                    </span>
+                </div>
+
+                <div class="sale-drawer__items-list">
+                    @for (item of items(); track $index) {
+                        <div class="sale-drawer__item-card">
+                            <div class="sale-drawer__item-info">
+                                <span class="sale-drawer__item-name">{{ item.productName }}</span>
+                                <div class="sale-drawer__item-meta">
+                                    <span>Lote {{ item.lotNumber }}</span>
+                                    <span class="sale-drawer__item-dot">·</span>
+                                    <span>{{ item.quantity }}/{{ item.lotAvailable }}</span>
+                                    <span class="sale-drawer__item-dot">·</span>
+                                    <span>{{ item.patientName }}</span>
+                                </div>
+                            </div>
                             <button
-                                class="sale-drawer__patient-option"
-                                (mousedown)="$event.preventDefault()"
-                                (click)="selectRecentPatient(name)"
+                                class="sale-drawer__item-remove"
+                                (click)="removeItem($index)"
+                                aria-label="Remover item"
                             >
-                                {{ name }}
+                                <span class="material-symbols-outlined">close</span>
                             </button>
+                        </div>
+                    }
+                </div>
+            }
+        }
+    </div>
+
+    @if (items().length > 0 && mode() === 'idle') {
+        <div class="sale-drawer__footer">
+            <button
+                class="sale-drawer__save-btn"
+                [class.sale-drawer__save-btn--saving]="saveState() === 'saving'"
+                [class.sale-drawer__save-btn--saved]="saveState() === 'saved'"
+                [disabled]="!canSave()"
+                (click)="saveSale()"
+            >
+                @if (saveState() === 'saving') {
+                    <span class="material-symbols-outlined sale-drawer__spinner">progress_activity</span>
+                    Salvando...
+                } @else if (saveState() === 'saved') {
+                    <span class="material-symbols-outlined">check</span>
+                    Salvo
+                } @else {
+                    <span class="material-symbols-outlined">save</span>
+                    Salvar venda
+                }
+            </button>
+        </div>
+    }
+
+} @else {
+    @if (saleLoading()) {
+        <div class="sale-drawer__loading sale-drawer__loading--full">
+            <span class="material-symbols-outlined sale-drawer__spinner">progress_activity</span>
+        </div>
+    } @else if (saleError()) {
+        <div class="sale-drawer__error-state">
+            <span class="material-symbols-outlined">error</span>
+            <p>Não foi possível carregar a venda.</p>
+        </div>
+        <button class="sale-drawer__close sale-drawer__close--abs" (click)="close.emit()" aria-label="Fechar">
+            <span class="material-symbols-outlined">close</span>
+        </button>
+    } @else if (saleDetail(); as detail) {
+
+        <div class="sale-drawer__header">
+            <div>
+                <div class="sale-drawer__title-row">
+                    <h2 class="sale-drawer__title">Venda #{{ detail.id }}</h2>
+                    <span class="sale-drawer__status-badge sale-drawer__status-badge--{{ detail.status.toLowerCase() }}">
+                        {{ detail.status }}
+                    </span>
+                </div>
+                <p class="sale-drawer__subtitle">
+                    Feito por: {{ detail.criadaPor }}&nbsp;&bull;&nbsp;Mod. em: {{ detail.modificadaEm | date:'dd/MM/yyyy' }}
+                </p>
+            </div>
+            <button class="sale-drawer__close" (click)="close.emit()" aria-label="Fechar">
+                <span class="material-symbols-outlined">close</span>
+            </button>
+        </div>
+
+        <div class="sale-drawer__body">
+
+            <div class="sale-drawer__client-readonly">
+                <span class="material-symbols-outlined">person</span>
+                {{ detail.clienteNome }}
+            </div>
+
+            <div class="sale-drawer__stats-row">
+                <div class="sale-drawer__stat-card">
+                    <span class="sale-drawer__stat-label">
+                        <span class="material-symbols-outlined">stacks</span>
+                        Total
+                    </span>
+                    <span class="sale-drawer__stat-value">{{ totalConsignado() }}</span>
+                </div>
+                <div class="sale-drawer__stat-card sale-drawer__stat-card--vendidos">
+                    <span class="sale-drawer__stat-label">
+                        <span class="material-symbols-outlined">package_2</span>
+                        Vendidos
+                    </span>
+                    <span class="sale-drawer__stat-value">{{ totalVendido() }}</span>
+                </div>
+                <div class="sale-drawer__stat-card">
+                    <span class="sale-drawer__stat-label">
+                        <span class="material-symbols-outlined">undo</span>
+                        Devolvidos
+                    </span>
+                    <span class="sale-drawer__stat-value">{{ totalDevolvido() }}</span>
+                </div>
+            </div>
+
+            <div class="sale-drawer__view-header">
+                <span class="sale-drawer__items-title">Itens da Venda</span>
+                <span class="sale-drawer__items-count">{{ editableItems().length }} produtos</span>
+            </div>
+
+            <div class="sale-drawer__accordion-list">
+                @for (item of editableItems(); track item.original.id; let i = $index) {
+                    <div class="sale-drawer__accordion" [class.sale-drawer__accordion--expanded]="expandedItemId() === item.original.id">
+
+                        <button class="sale-drawer__accordion-header" (click)="toggleItem(item.original.id)">
+                            <div class="sale-drawer__accordion-title">
+                                <span class="sale-drawer__accordion-name">{{ item.original.produtoNome }}</span>
+                                @if (isItemDirty(item)) {
+                                    <span class="sale-drawer__dirty-dot" aria-label="Modificado"></span>
+                                }
+                            </div>
+                            <div class="sale-drawer__accordion-meta">
+                                <span class="sale-drawer__meta-item">Total: {{ item.original.quantidadeConsignada }}</span>
+                                <span class="sale-drawer__meta-item sale-drawer__meta-item--vend" [class.sale-drawer__meta-item--vend-active]="item.vendido > 0">Vend: {{ item.vendido }}</span>
+                                <span class="sale-drawer__meta-item">Dev: {{ item.devolvido }}</span>
+                                <span class="sale-drawer__meta-item">Rest: {{ emAberto(item) }}</span>
+                            </div>
+                            <span class="material-symbols-outlined sale-drawer__accordion-chevron">
+                                {{ expandedItemId() === item.original.id ? 'expand_less' : 'expand_more' }}
+                            </span>
+                        </button>
+
+                        @if (expandedItemId() === item.original.id) {
+                            <div class="sale-drawer__accordion-body">
+                                <div class="sale-drawer__counter-group">
+                                    <span class="sale-drawer__counter-label">Vendidos</span>
+                                    <div class="sale-drawer__counter">
+                                        <button
+                                            class="sale-drawer__qty-btn sale-drawer__qty-btn--minus"
+                                            (click)="decrementVendido(i)"
+                                            [disabled]="isReadOnly() || item.vendido === 0"
+                                            aria-label="Diminuir vendidos"
+                                        >
+                                            <span class="material-symbols-outlined">remove</span>
+                                        </button>
+                                        <span class="sale-drawer__counter-value">{{ item.vendido }}</span>
+                                        <button
+                                            class="sale-drawer__qty-btn sale-drawer__qty-btn--plus"
+                                            (click)="incrementVendido(i)"
+                                            [disabled]="isReadOnly() || item.vendido >= item.original.quantidadeConsignada - item.devolvido"
+                                            aria-label="Aumentar vendidos"
+                                        >
+                                            <span class="material-symbols-outlined">add</span>
+                                        </button>
+                                    </div>
+                                </div>
+                                <div class="sale-drawer__counter-group">
+                                    <span class="sale-drawer__counter-label">Devolvidos</span>
+                                    <div class="sale-drawer__counter">
+                                        <button
+                                            class="sale-drawer__qty-btn sale-drawer__qty-btn--minus"
+                                            (click)="decrementDevolvido(i)"
+                                            [disabled]="isReadOnly() || item.devolvido === 0"
+                                            aria-label="Diminuir devolvidos"
+                                        >
+                                            <span class="material-symbols-outlined">remove</span>
+                                        </button>
+                                        <span class="sale-drawer__counter-value">{{ item.devolvido }}</span>
+                                        <button
+                                            class="sale-drawer__qty-btn sale-drawer__qty-btn--plus"
+                                            (click)="incrementDevolvido(i)"
+                                            [disabled]="isReadOnly() || item.devolvido >= item.original.quantidadeConsignada - item.vendido"
+                                            aria-label="Aumentar devolvidos"
+                                        >
+                                            <span class="material-symbols-outlined">add</span>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
                         }
                     </div>
                 }
             </div>
+
         </div>
 
-        @if (itemQuantity() > 0) {
-            <button class="sale-drawer__add-btn" [disabled]="!canAdd()" (click)="addItem()">
-                {{ addButtonLabel() }}
-            </button>
-        }
-    }
-
-    @if (mode() === 'idle') {
-        <button class="sale-drawer__plus-btn" (click)="openProductSearch()" aria-label="Adicionar produto">
-            <span class="material-symbols-outlined">add</span>
-        </button>
-
-        @if (items().length > 0) {
-            <div class="sale-drawer__items-header">
-                <span class="sale-drawer__items-title">Itens adicionados</span>
-                <span class="sale-drawer__items-count">
-                    {{ items().length }} {{ items().length === 1 ? 'item' : 'itens' }}
-                </span>
-            </div>
-
-            <div class="sale-drawer__items-list">
-                @for (item of items(); track $index) {
-                    <div class="sale-drawer__item-card">
-                        <div class="sale-drawer__item-info">
-                            <span class="sale-drawer__item-name">{{ item.productName }}</span>
-                            <div class="sale-drawer__item-meta">
-                                <span>Lote {{ item.lotNumber }}</span>
-                                <span class="sale-drawer__item-dot">·</span>
-                                <span>{{ item.quantity }}/{{ item.lotAvailable }}</span>
-                                <span class="sale-drawer__item-dot">·</span>
-                                <span>{{ item.patientName }}</span>
-                            </div>
-                        </div>
-                        <button
-                            class="sale-drawer__item-remove"
-                            (click)="removeItem($index)"
-                            aria-label="Remover item"
-                        >
-                            <span class="material-symbols-outlined">close</span>
-                        </button>
-                    </div>
-                }
+        @if (canSaveEdits()) {
+            <div class="sale-drawer__footer">
+                <button
+                    class="sale-drawer__save-btn"
+                    [class.sale-drawer__save-btn--saving]="saveState() === 'saving'"
+                    [class.sale-drawer__save-btn--saved]="saveState() === 'saved'"
+                    (click)="saveEdits()"
+                >
+                    @if (saveState() === 'saving') {
+                        <span class="material-symbols-outlined sale-drawer__spinner">progress_activity</span>
+                        Salvando...
+                    } @else if (saveState() === 'saved') {
+                        <span class="material-symbols-outlined">check</span>
+                        Salvo
+                    } @else {
+                        <span class="material-symbols-outlined">save</span>
+                        Salvar alterações
+                    }
+                </button>
             </div>
         }
-    }
-</div>
 
-@if (items().length > 0 && mode() === 'idle') {
-    <div class="sale-drawer__footer">
-        <button
-            class="sale-drawer__save-btn"
-            [class.sale-drawer__save-btn--saving]="saveState() === 'saving'"
-            [class.sale-drawer__save-btn--saved]="saveState() === 'saved'"
-            [disabled]="!canSave()"
-            (click)="saveSale()"
-        >
-            @if (saveState() === 'saving') {
-                <span class="material-symbols-outlined sale-drawer__spinner">progress_activity</span>
-                Salvando...
-            } @else if (saveState() === 'saved') {
-                <span class="material-symbols-outlined">check</span>
-                Salvo
-            } @else {
-                <span class="material-symbols-outlined">save</span>
-                Salvar venda
-            }
-        </button>
-    </div>
+    }
 }

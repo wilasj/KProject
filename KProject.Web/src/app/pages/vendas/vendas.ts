@@ -65,6 +65,10 @@ export class Vendas implements OnInit {
         this.fetchSales(this.initialSearch(), this.currentPage());
     }
 
+    onSaleUpdated() {
+        this.fetchSales(this.initialSearch(), this.currentPage());
+    }
+
     closeDrawer() {
         this.drawerOpen.set(false);
         this.selectedSaleId.set(null);

@@ -1,6 +1,8 @@
 import { Component, computed, effect, inject, input, OnDestroy, output, signal } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
+import { DatePipe } from '@angular/common';
 import { debounceTime, distinctUntilChanged, Subject, Subscription, switchMap } from 'rxjs';
+import { SaleDetail, SaleItemDetail } from '@models/venda';
 
 type DrawerMode = 'idle' | 'searching-product' | 'selecting-lot' | 'configuring-item';
 type SaveState = 'idle' | 'saving' | 'saved';
@@ -19,10 +21,17 @@ interface SaleItem {
     patientName: string;
 }
 
+interface EditableItem {
+    original: SaleItemDetail;
+    vendido: number;
+    devolvido: number;
+}
+
 @Component({
     selector: 'app-sale-drawer',
     templateUrl: './sale-drawer.html',
     styleUrl: './sale-drawer.scss',
+    imports: [DatePipe],
 })
 export class SaleDrawer implements OnDestroy {
     private http = inject(HttpClient);
@@ -31,9 +40,11 @@ export class SaleDrawer implements OnDestroy {
     open = input<boolean>(false);
     close = output<void>();
     saleCreated = output<void>();
+    saleUpdated = output<void>();
 
     mode = signal<DrawerMode>('idle');
     saveState = signal<SaveState>('idle');
+
 
     // Client
     clientDropdownOpen = signal(false);
@@ -107,9 +118,47 @@ export class SaleDrawer implements OnDestroy {
     totalItems = computed(() => this.items().reduce((sum, i) => sum + i.quantity, 0));
     canSave = computed(() => this.items().length > 0 && this.selectedClient() !== null && this.saveState() === 'idle');
 
+
+    saleDetail     = signal<SaleDetail | null>(null);
+    saleLoading    = signal(false);
+    saleError      = signal(false);
+    editableItems  = signal<EditableItem[]>([]);
+    expandedItemId = signal<number | null>(null);
+
+    totalConsignado = computed(() => this.editableItems().reduce((s, i) => s + i.original.quantidadeConsignada, 0));
+    totalVendido    = computed(() => this.editableItems().reduce((s, i) => s + i.vendido, 0));
+    totalDevolvido  = computed(() => this.editableItems().reduce((s, i) => s + i.devolvido, 0));
+
+    dirtyItems = computed(() =>
+        this.editableItems().filter(i => i.vendido !== i.original.vendido || i.devolvido !== i.original.devolvido)
+    );
+    isDirty = computed(() => this.dirtyItems().length > 0);
+    canSaveEdits = computed(() =>
+        this.isDirty() &&
+        this.saveState() === 'idle' &&
+        this.saleDetail()?.status === 'Aberta'
+    );
+
+    isItemDirty(item: EditableItem): boolean {
+        return item.vendido !== item.original.vendido || item.devolvido !== item.original.devolvido;
+    }
+
+    emAberto(item: EditableItem): number {
+        return item.original.quantidadeConsignada - item.vendido - item.devolvido;
+    }
+
+    isReadOnly = computed(() => this.saleDetail()?.status !== 'Aberta');
+
+
     constructor() {
         effect(() => {
-            if (this.open()) this.reset();
+            if (!this.open()) return;
+            const id = this.saleId();
+            if (id === null) {
+                this.reset();
+            } else {
+                this.loadSaleDetail(id);
+            }
         });
 
         this.subs.add(
@@ -128,6 +177,7 @@ export class SaleDrawer implements OnDestroy {
     }
 
     ngOnDestroy() { this.subs.unsubscribe(); }
+
 
     private reset() {
         this.mode.set('idle');
@@ -286,6 +336,90 @@ export class SaleDrawer implements OnDestroy {
             next: () => {
                 this.saveState.set('saved');
                 this.saleCreated.emit();
+                setTimeout(() => this.close.emit(), 1500);
+            },
+            error: () => this.saveState.set('idle'),
+        });
+    }
+
+    private loadSaleDetail(id: number) {
+        this.saleDetail.set(null);
+        this.editableItems.set([]);
+        this.expandedItemId.set(null);
+        this.saleError.set(false);
+        this.saveState.set('idle');
+        this.saleLoading.set(true);
+
+        this.http.get<SaleDetail>(`/api/vendas/${id}`).subscribe({
+            next: detail => {
+                this.saleDetail.set(detail);
+                this.editableItems.set(detail.itens.map(item => ({
+                    original: item,
+                    vendido: item.vendido,
+                    devolvido: item.devolvido,
+                })));
+                this.saleLoading.set(false);
+            },
+            error: () => {
+                this.saleLoading.set(false);
+                this.saleError.set(true);
+            },
+        });
+    }
+
+    toggleItem(id: number) {
+        this.expandedItemId.update(current => current === id ? null : id);
+    }
+
+    incrementVendido(index: number) {
+        this.editableItems.update(items => {
+            const item = items[index];
+            const max = item.original.quantidadeConsignada - item.devolvido;
+            if (item.vendido >= max) return items;
+            return items.map((it, i) => i === index ? { ...it, vendido: it.vendido + 1 } : it);
+        });
+    }
+
+    decrementVendido(index: number) {
+        this.editableItems.update(items => {
+            const item = items[index];
+            if (item.vendido <= 0) return items;
+            return items.map((it, i) => i === index ? { ...it, vendido: it.vendido - 1 } : it);
+        });
+    }
+
+    incrementDevolvido(index: number) {
+        this.editableItems.update(items => {
+            const item = items[index];
+            const max = item.original.quantidadeConsignada - item.vendido;
+            if (item.devolvido >= max) return items;
+            return items.map((it, i) => i === index ? { ...it, devolvido: it.devolvido + 1 } : it);
+        });
+    }
+
+    decrementDevolvido(index: number) {
+        this.editableItems.update(items => {
+            const item = items[index];
+            if (item.devolvido <= 0) return items;
+            return items.map((it, i) => i === index ? { ...it, devolvido: it.devolvido - 1 } : it);
+        });
+    }
+
+    saveEdits() {
+        if (!this.canSaveEdits()) return;
+        this.saveState.set('saving');
+        const id = this.saleId()!;
+        const body = {
+            itens: this.editableItems().map(i => ({
+                id: i.original.id,
+                vendido: i.vendido,
+                devolvido: i.devolvido,
+            })),
+        };
+        this.http.patch(`/api/vendas/${id}`, body).subscribe({
+            next: () => {
+                this.saveState.set('saved');
+                this.saleUpdated.emit();
                 setTimeout(() => this.close.emit(), 1500);
             },
             error: () => this.saveState.set('idle'),

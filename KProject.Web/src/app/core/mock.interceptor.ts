@@ -161,6 +161,43 @@ export const mockInterceptor: HttpInterceptorFn = (req, next) => {
         return of(new HttpResponse({status: 200, body: {items, hasMore}})).pipe(delay(randomDelay()));
     }
 
+    const vendaDetalheMatch = req.url.match(/^\/api\/vendas\/(\d+)$/);
+    if (vendaDetalheMatch && req.method === 'GET') {
+        const id = Number(vendaDetalheMatch[1]);
+        const body = id === 1042
+            ? {
+                id: 1042,
+                status: 'Aberta',
+                criadaEm: '2026-02-27T10:00:00Z',
+                modificadaEm: '2026-02-27T10:00:00Z',
+                criadaPor: 'Admin',
+                clienteNome: 'Maria Silva',
+                itens: [
+                    {id: 1, produtoNome: 'Camiseta Basica Branca P', loteNumero: 1, pacienteNome: 'Paciente A', quantidadeConsignada: 10, vendido: 8, devolvido: 1},
+                    {id: 2, produtoNome: 'Calca Jeans Slim M',       loteNumero: 1, pacienteNome: 'Paciente B', quantidadeConsignada: 5,  vendido: 4, devolvido: 0},
+                    {id: 3, produtoNome: 'Vestido Floral G',          loteNumero: 2, pacienteNome: 'Paciente C', quantidadeConsignada: 8,  vendido: 5, devolvido: 2},
+                    {id: 4, produtoNome: 'Blusa Moletom Cinza GG',   loteNumero: 1, pacienteNome: 'Paciente D', quantidadeConsignada: 6,  vendido: 3, devolvido: 1},
+                    {id: 5, produtoNome: 'Saia Midi Preta M',         loteNumero: 1, pacienteNome: 'Paciente E', quantidadeConsignada: 4,  vendido: 2, devolvido: 0},
+                ],
+              }
+            : {
+                id,
+                status: 'Aberta',
+                criadaEm: '2026-01-01T10:00:00Z',
+                modificadaEm: '2026-01-01T10:00:00Z',
+                criadaPor: 'Admin',
+                clienteNome: 'Cliente Generico',
+                itens: [
+                    {id: 99, produtoNome: 'Produto Generico', loteNumero: 1, pacienteNome: 'Paciente X', quantidadeConsignada: 5, vendido: 3, devolvido: 1},
+                ],
+              };
+        return of(new HttpResponse({status: 200, body})).pipe(delay(randomDelay()));
+    }
+
+    if (vendaDetalheMatch && req.method === 'PATCH') {
+        return of(new HttpResponse({status: 200})).pipe(delay(randomDelay()));
+    }
+
     if (req.url === '/api/vendas' && req.method === 'GET') {
         const pagina = Number(req.params.get('pagina') ?? 1);
         const tamanhoPagina = Number(req.params.get('tamanhoPagina') ?? 10);
