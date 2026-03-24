@@ -14,6 +14,7 @@ describe('ProductTable', () => {
   let httpTesting: HttpTestingController;
 
   beforeEach(() => {
+    TestBed.resetTestingModule();
     TestBed.configureTestingModule({
       imports: [ProductTable],
       providers: [provideHttpClient(), provideHttpClientTesting()],

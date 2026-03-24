@@ -19,6 +19,7 @@ describe('Clientes', () => {
   let httpMock: HttpTestingController;
 
   beforeEach(() => {
+    TestBed.resetTestingModule();
     TestBed.configureTestingModule({
       imports: [Clientes],
       providers: [

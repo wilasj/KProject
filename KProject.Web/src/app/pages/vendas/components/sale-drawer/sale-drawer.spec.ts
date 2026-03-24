@@ -23,6 +23,7 @@ describe('SaleDrawer', () => {
     let httpTesting: HttpTestingController;
 
     beforeEach(() => {
+        TestBed.resetTestingModule();
         TestBed.configureTestingModule({
             imports: [SaleDrawer],
             providers: [provideHttpClient(), provideHttpClientTesting()],

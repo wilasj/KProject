@@ -8,6 +8,8 @@ describe('authGuard', () => {
   const mockRoute = {} as ActivatedRouteSnapshot;
   const mockState = {} as RouterStateSnapshot;
 
+  beforeEach(() => TestBed.resetTestingModule());
+
   it('deve retornar true quando logado', () => {
     TestBed.configureTestingModule({
       providers: [

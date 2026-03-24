@@ -8,6 +8,8 @@ describe('publicGuard', () => {
   const mockRoute = {} as ActivatedRouteSnapshot;
   const mockState = {} as RouterStateSnapshot;
 
+  beforeEach(() => TestBed.resetTestingModule());
+
   it('deve retornar true quando nao logado', () => {
     TestBed.configureTestingModule({
       providers: [{ provide: Auth, useValue: { isLoggedIn: signal(false) } }],

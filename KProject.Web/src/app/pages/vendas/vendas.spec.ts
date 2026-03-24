@@ -7,6 +7,12 @@ import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
 import { Vendas } from './vendas';
 import { SalesResponse } from '@models/venda';
 
+const mockSaleDetail = {
+    id: 1042, status: 'Aberta', criadaEm: '2026-02-27T10:00:00Z',
+    modificadaEm: '2026-02-27T10:00:00Z', criadaPor: 'Admin',
+    clienteNome: 'Maria Silva', totalConsignado: 0, totalVendido: 0, totalDevolvido: 0, itens: [],
+};
+
 const mockResponse: SalesResponse = {
     items: [
         { id: 1042, clienteNome: 'Maria Silva',  criadaEm: '2026-02-27T10:00:00Z', status: 'Aberta',  totalItens: 8 },
@@ -19,6 +25,7 @@ describe('Vendas', () => {
     let httpMock: HttpTestingController;
 
     beforeEach(() => {
+        TestBed.resetTestingModule();
         TestBed.configureTestingModule({
             imports: [Vendas],
             providers: [
@@ -82,6 +89,8 @@ describe('Vendas', () => {
         flush(fixture);
         fixture.componentInstance.onSaleSelect(1042);
         fixture.detectChanges();
+        httpMock.expectOne(r => r.url === '/api/vendas/1042').flush(mockSaleDetail);
+        fixture.detectChanges();
         expect(fixture.componentInstance.selectedSaleId()).toBe(1042);
         expect(fixture.nativeElement.querySelector('.vendas__drawer--open')).not.toBeNull();
     });
@@ -90,6 +99,8 @@ describe('Vendas', () => {
         const fixture = setup();
         flush(fixture);
         fixture.componentInstance.onSaleSelect(1042);
+        fixture.detectChanges();
+        httpMock.expectOne(r => r.url === '/api/vendas/1042').flush(mockSaleDetail);
         fixture.detectChanges();
         fixture.componentInstance.closeDrawer();
         fixture.detectChanges();

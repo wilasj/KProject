@@ -6,15 +6,14 @@ import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
 
 describe('ProductDrawer', () => {
   beforeEach(() => {
+    TestBed.resetTestingModule();
     TestBed.configureTestingModule({
       imports: [ProductDrawer],
       providers: [provideHttpClient(), provideHttpClientTesting()],
     });
   });
 
-  afterEach(() => {
-    vi.useRealTimers();
-  });
+  afterEach(() => vi.useRealTimers());
 
   it('deve desabilitar o botão salvar com form inválido', () => {
     const fixture = TestBed.createComponent(ProductDrawer);

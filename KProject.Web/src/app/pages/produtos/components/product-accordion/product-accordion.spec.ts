@@ -24,6 +24,7 @@ describe('ProductAccordion', () => {
   let httpTesting: HttpTestingController;
 
   beforeEach(() => {
+    TestBed.resetTestingModule();
     TestBed.configureTestingModule({
       imports: [ProductAccordion],
       providers: [provideHttpClient(), provideHttpClientTesting()],

@@ -12,6 +12,8 @@ describe('InvitePopup', () => {
     mockAuth.criaInvite.mockReset();
   });
 
+  beforeEach(() => TestBed.resetTestingModule());
+
   async function setup() {
     await TestBed.configureTestingModule({
       imports: [InvitePopup],

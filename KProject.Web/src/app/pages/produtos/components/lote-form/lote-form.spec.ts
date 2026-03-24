@@ -8,6 +8,7 @@ describe('LoteForm', () => {
   let httpTesting: HttpTestingController;
 
   beforeEach(() => {
+    TestBed.resetTestingModule();
     TestBed.configureTestingModule({
       imports: [LoteForm],
       providers: [provideHttpClient(), provideHttpClientTesting()],

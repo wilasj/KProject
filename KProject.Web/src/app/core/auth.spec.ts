@@ -8,6 +8,7 @@ describe('Auth', () => {
   let httpMock: HttpTestingController;
 
   beforeEach(() => {
+    TestBed.resetTestingModule();
     TestBed.configureTestingModule({
       providers: [provideHttpClient(), provideHttpClientTesting()],
     });
@@ -15,9 +16,7 @@ describe('Auth', () => {
     httpMock = TestBed.inject(HttpTestingController);
   });
 
-  afterEach(() => {
-    httpMock.verify();
-  });
+  afterEach(() => httpMock.verify());
 
   describe('register()', () => {
     it('deve retornar sucesso no 201', () => {

@@ -32,6 +32,8 @@ async function setup(token: string | null) {
 }
 
 describe('Register', () => {
+  beforeEach(() => TestBed.resetTestingModule());
+
   describe('sem token na URL', () => {
     it('deve redirecionar para /login', async () => {
       const { navigateSpy } = await setup(null);

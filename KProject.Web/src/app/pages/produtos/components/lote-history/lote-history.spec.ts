@@ -26,6 +26,7 @@ describe('LoteHistory', () => {
   let httpTesting: HttpTestingController;
 
   beforeEach(() => {
+    TestBed.resetTestingModule();
     (window as unknown as Record<string, unknown>)['IntersectionObserver'] = class {
       observe() {}
       disconnect() {}

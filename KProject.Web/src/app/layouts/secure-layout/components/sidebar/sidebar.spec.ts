@@ -11,6 +11,8 @@ describe('Sidebar', () => {
   let component: Sidebar;
   let fixture: ComponentFixture<Sidebar>;
 
+  beforeEach(() => TestBed.resetTestingModule());
+
   const createComponent = async (email: string | null) => {
     await TestBed.configureTestingModule({
       imports: [Sidebar],
