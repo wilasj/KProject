@@ -195,7 +195,12 @@ export const mockInterceptor: HttpInterceptorFn = (req, next) => {
     }
 
     if (vendaDetalheMatch && req.method === 'PATCH') {
-        return of(new HttpResponse({status: 200})).pipe(delay(randomDelay()));
+        return of(new HttpResponse({status: 204})).pipe(delay(randomDelay()));
+    }
+
+    const vendaActionMatch = req.url.match(/^\/api\/vendas\/(\d+)\/(close|cancel)$/);
+    if (vendaActionMatch && req.method === 'POST') {
+        return of(new HttpResponse({status: 204})).pipe(delay(randomDelay()));
     }
 
     if (req.url === '/api/vendas' && req.method === 'GET') {

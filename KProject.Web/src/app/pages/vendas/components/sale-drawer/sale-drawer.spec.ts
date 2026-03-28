@@ -710,7 +710,7 @@ describe('SaleDrawer', () => {
         req.flush({});
     });
 
-    it('deve emitir saleUpdated após PATCH bem-sucedido', () => {
+    it('deve emitir saleUpdated e atualizar originals após PATCH bem-sucedido', () => {
         const fixture = abrirViewEdit();
         const comp = fixture.componentInstance;
 
@@ -727,6 +727,8 @@ describe('SaleDrawer', () => {
 
         expect(comp.saveState()).toBe('saved');
         expect(updated).toBe(true);
+        expect(comp.isDirty()).toBe(false);
+        expect(comp.editableItems()[1].original.vendido).toBe(5);
     });
 
     it('deve resetar saveState para idle após erro no PATCH', () => {
@@ -744,6 +746,86 @@ describe('SaleDrawer', () => {
         fixture.detectChanges();
 
         expect(comp.saveState()).toBe('idle');
+    });
+
+    it('deve disparar POST /close e recarregar detalhe ao finalizar venda', () => {
+        const fixture = abrirViewEdit();
+        const comp = fixture.componentInstance;
+
+        httpTesting.expectOne('/api/vendas/1042').flush(SALE_DETAIL);
+        fixture.detectChanges();
+
+        let updated = false;
+        comp.saleUpdated.subscribe(() => (updated = true));
+
+        comp.finalizeSale();
+        expect(comp.actionState()).toBe('closing');
+
+        httpTesting.expectOne(r => r.url === '/api/vendas/1042/close' && r.method === 'POST').flush({});
+        fixture.detectChanges();
+
+        expect(comp.actionState()).toBe('idle');
+        expect(updated).toBe(true);
+        httpTesting.expectOne('/api/vendas/1042').flush({ ...SALE_DETAIL, status: 'Fechada' });
+    });
+
+    it('deve disparar POST /cancel e recarregar detalhe ao cancelar venda', () => {
+        const fixture = abrirViewEdit();
+        const comp = fixture.componentInstance;
+
+        httpTesting.expectOne('/api/vendas/1042').flush(SALE_DETAIL);
+        fixture.detectChanges();
+
+        let updated = false;
+        comp.saleUpdated.subscribe(() => (updated = true));
+
+        comp.cancelSale();
+        expect(comp.actionState()).toBe('cancelling');
+
+        httpTesting.expectOne(r => r.url === '/api/vendas/1042/cancel' && r.method === 'POST').flush({});
+        fixture.detectChanges();
+
+        expect(comp.actionState()).toBe('idle');
+        expect(updated).toBe(true);
+        httpTesting.expectOne('/api/vendas/1042').flush({ ...SALE_DETAIL, status: 'Cancelada' });
+    });
+
+    it('canAction deve ser false quando isDirty', () => {
+        const fixture = abrirViewEdit();
+        const comp = fixture.componentInstance;
+
+        httpTesting.expectOne('/api/vendas/1042').flush(SALE_DETAIL);
+        fixture.detectChanges();
+
+        expect(comp.canAction()).toBe(true);
+        comp.incrementVendido(1);
+        expect(comp.canAction()).toBe(false);
+    });
+
+    it('canAction deve ser false para venda Fechada', () => {
+        const fixture = abrirViewEdit();
+        const comp = fixture.componentInstance;
+
+        httpTesting.expectOne('/api/vendas/1042').flush({ ...SALE_DETAIL, status: 'Fechada' });
+        fixture.detectChanges();
+
+        expect(comp.canAction()).toBe(false);
+    });
+
+    it('deve resetar actionState para idle após erro no POST /close', () => {
+        const fixture = abrirViewEdit();
+        const comp = fixture.componentInstance;
+
+        httpTesting.expectOne('/api/vendas/1042').flush(SALE_DETAIL);
+        fixture.detectChanges();
+
+        comp.finalizeSale();
+        httpTesting.expectOne(r => r.url === '/api/vendas/1042/close').flush(
+            { status: 500 }, { status: 500, statusText: 'Internal Server Error' }
+        );
+        fixture.detectChanges();
+
+        expect(comp.actionState()).toBe('idle');
     });
 
     it('deve limpar estado anterior ao reabrir com o mesmo saleId', () => {

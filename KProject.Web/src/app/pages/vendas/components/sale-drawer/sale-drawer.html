@@ -384,23 +384,51 @@
 
         </div>
 
-        @if (canSaveEdits()) {
-            <div class="sale-drawer__footer">
+        @if (saleDetail()?.status === 'Aberta') {
+            <div class="sale-drawer__footer sale-drawer__footer--actions" [class.sale-drawer__footer--dirty]="isDirty()">
+                <div class="sale-drawer__success-overlay" [class.sale-drawer__success-overlay--visible]="saveState() === 'saved'">
+                    <span class="material-symbols-outlined">check</span>
+                    Alterações salvas
+                </div>
+
                 <button
-                    class="sale-drawer__save-btn"
-                    [class.sale-drawer__save-btn--saving]="saveState() === 'saving'"
-                    [class.sale-drawer__save-btn--saved]="saveState() === 'saved'"
+                    class="sale-drawer__action-btn sale-drawer__action-btn--finalize"
+                    [disabled]="!canAction()"
+                    (click)="finalizeSale()"
+                    title="Fechar venda"
+                >
+                    @if (actionState() === 'closing') {
+                        <span class="material-symbols-outlined sale-drawer__spinner">progress_activity</span>
+                    } @else {
+                        <span class="material-symbols-outlined">task_alt</span>
+                        Fechar
+                    }
+                </button>
+
+                <button
+                    class="sale-drawer__action-btn sale-drawer__action-btn--cancel"
+                    [disabled]="!canAction()"
+                    (click)="cancelSale()"
+                    title="Cancelar venda"
+                >
+                    @if (actionState() === 'cancelling') {
+                        <span class="material-symbols-outlined sale-drawer__spinner">progress_activity</span>
+                    } @else {
+                        <span class="material-symbols-outlined">close</span>
+                        Cancelar
+                    }
+                </button>
+
+                <button
+                    class="sale-drawer__action-btn sale-drawer__action-btn--save"
+                    [disabled]="!canSaveEdits()"
                     (click)="saveEdits()"
                 >
                     @if (saveState() === 'saving') {
                         <span class="material-symbols-outlined sale-drawer__spinner">progress_activity</span>
-                        Salvando...
-                    } @else if (saveState() === 'saved') {
-                        <span class="material-symbols-outlined">check</span>
-                        Salvo
                     } @else {
                         <span class="material-symbols-outlined">save</span>
-                        Salvar alterações
+                        Salvar
                     }
                 </button>
             </div>

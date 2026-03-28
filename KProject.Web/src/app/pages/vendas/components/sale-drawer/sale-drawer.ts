@@ -6,6 +6,7 @@ import { SaleDetail, SaleItemDetail } from '@models/venda';
 
 type DrawerMode = 'idle' | 'searching-product' | 'selecting-lot' | 'configuring-item';
 type SaveState = 'idle' | 'saving' | 'saved';
+type ActionState = 'idle' | 'closing' | 'cancelling';
 
 interface ClientOption { id: number; nome: string; }
 interface ProductOption { id: number; nome: string; totalLotes: number; }
@@ -44,6 +45,7 @@ export class SaleDrawer implements OnDestroy {
 
     mode = signal<DrawerMode>('idle');
     saveState = signal<SaveState>('idle');
+    actionState = signal<ActionState>('idle');
 
 
     // Client
@@ -148,6 +150,13 @@ export class SaleDrawer implements OnDestroy {
     }
 
     isReadOnly = computed(() => this.saleDetail()?.status !== 'Aberta');
+
+    canAction = computed(() =>
+        !this.isDirty() &&
+        this.saveState() === 'idle' &&
+        this.actionState() === 'idle' &&
+        this.saleDetail()?.status === 'Aberta'
+    );
 
 
     constructor() {
@@ -420,9 +429,43 @@ export class SaleDrawer implements OnDestroy {
             next: () => {
                 this.saveState.set('saved');
                 this.saleUpdated.emit();
-                setTimeout(() => this.close.emit(), 1500);
+                this.editableItems.update(items =>
+                    items.map(i => ({
+                        ...i,
+                        original: { ...i.original, vendido: i.vendido, devolvido: i.devolvido },
+                    }))
+                );
+                setTimeout(() => this.saveState.set('idle'), 1500);
             },
             error: () => this.saveState.set('idle'),
+        });
+    }
+
+    finalizeSale() {
+        if (!this.canAction()) return;
+        this.actionState.set('closing');
+        const id = this.saleId()!;
+        this.http.post(`/api/vendas/${id}/close`, {}).subscribe({
+            next: () => {
+                this.actionState.set('idle');
+                this.saleUpdated.emit();
+                this.loadSaleDetail(id);
+            },
+            error: () => this.actionState.set('idle'),
+        });
+    }
+
+    cancelSale() {
+        if (!this.canAction()) return;
+        this.actionState.set('cancelling');
+        const id = this.saleId()!;
+        this.http.post(`/api/vendas/${id}/cancel`, {}).subscribe({
+            next: () => {
+                this.actionState.set('idle');
+                this.saleUpdated.emit();
+                this.loadSaleDetail(id);
+            },
+            error: () => this.actionState.set('idle'),
         });
     }
 }
