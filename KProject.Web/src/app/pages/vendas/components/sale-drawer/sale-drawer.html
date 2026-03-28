@@ -264,7 +264,7 @@
                     </span>
                 </div>
                 <p class="sale-drawer__subtitle">
-                    Feito por: {{ detail.criadaPor }}&nbsp;&bull;&nbsp;Mod. em: {{ detail.modificadaEm | date:'dd/MM/yyyy' }}
+                    Feito por: {{ detail.criadaPor }}&nbsp;&bull;&nbsp;Mod. em: {{ detail.modificadaEm | date: 'dd/MM/yyyy' }}
                 </p>
             </div>
             <button class="sale-drawer__close" (click)="close.emit()" aria-label="Fechar">
@@ -388,7 +388,17 @@
             <div class="sale-drawer__footer sale-drawer__footer--actions" [class.sale-drawer__footer--dirty]="isDirty()">
                 <div class="sale-drawer__success-overlay" [class.sale-drawer__success-overlay--visible]="saveState() === 'saved'">
                     <span class="material-symbols-outlined">check</span>
-                    Alterações salvas
+                    Salvo!
+                </div>
+
+                <div class="sale-drawer__success-overlay sale-drawer__success-overlay--close" [class.sale-drawer__success-overlay--visible]="actionState() === 'closed'">
+                    <span class="material-symbols-outlined">task_alt</span>
+                    Fechado!
+                </div>
+
+                <div class="sale-drawer__success-overlay sale-drawer__success-overlay--cancel" [class.sale-drawer__success-overlay--visible]="actionState() === 'cancelled'">
+                    <span class="material-symbols-outlined">close</span>
+                    Cancelado!
                 </div>
 
                 <button

@@ -6,7 +6,7 @@ import { SaleDetail, SaleItemDetail } from '@models/venda';
 
 type DrawerMode = 'idle' | 'searching-product' | 'selecting-lot' | 'configuring-item';
 type SaveState = 'idle' | 'saving' | 'saved';
-type ActionState = 'idle' | 'closing' | 'cancelling';
+type ActionState = 'idle' | 'closing' | 'cancelling' | 'closed' | 'cancelled';
 
 interface ClientOption { id: number; nome: string; }
 interface ProductOption { id: number; nome: string; totalLotes: number; }
@@ -357,6 +357,7 @@ export class SaleDrawer implements OnDestroy {
         this.expandedItemId.set(null);
         this.saleError.set(false);
         this.saveState.set('idle');
+        this.actionState.set('idle');
         this.saleLoading.set(true);
 
         this.http.get<SaleDetail>(`/api/vendas/${id}`).subscribe({
@@ -447,9 +448,9 @@ export class SaleDrawer implements OnDestroy {
         const id = this.saleId()!;
         this.http.post(`/api/vendas/${id}/close`, {}).subscribe({
             next: () => {
-                this.actionState.set('idle');
+                this.actionState.set('closed');
                 this.saleUpdated.emit();
-                this.loadSaleDetail(id);
+                setTimeout(() => this.close.emit(), 1500);
             },
             error: () => this.actionState.set('idle'),
         });
@@ -461,9 +462,9 @@ export class SaleDrawer implements OnDestroy {
         const id = this.saleId()!;
         this.http.post(`/api/vendas/${id}/cancel`, {}).subscribe({
             next: () => {
-                this.actionState.set('idle');
+                this.actionState.set('cancelled');
                 this.saleUpdated.emit();
-                this.loadSaleDetail(id);
+                setTimeout(() => this.close.emit(), 1500);
             },
             error: () => this.actionState.set('idle'),
         });

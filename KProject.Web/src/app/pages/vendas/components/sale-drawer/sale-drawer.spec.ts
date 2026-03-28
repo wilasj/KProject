@@ -748,7 +748,7 @@ describe('SaleDrawer', () => {
         expect(comp.saveState()).toBe('idle');
     });
 
-    it('deve disparar POST /close e recarregar detalhe ao finalizar venda', () => {
+    it('deve disparar POST /close, exibir overlay e emitir saleUpdated ao finalizar venda', () => {
         const fixture = abrirViewEdit();
         const comp = fixture.componentInstance;
 
@@ -764,12 +764,11 @@ describe('SaleDrawer', () => {
         httpTesting.expectOne(r => r.url === '/api/vendas/1042/close' && r.method === 'POST').flush({});
         fixture.detectChanges();
 
-        expect(comp.actionState()).toBe('idle');
+        expect(comp.actionState()).toBe('closed');
         expect(updated).toBe(true);
-        httpTesting.expectOne('/api/vendas/1042').flush({ ...SALE_DETAIL, status: 'Fechada' });
     });
 
-    it('deve disparar POST /cancel e recarregar detalhe ao cancelar venda', () => {
+    it('deve disparar POST /cancel, exibir overlay e emitir saleUpdated ao cancelar venda', () => {
         const fixture = abrirViewEdit();
         const comp = fixture.componentInstance;
 
@@ -785,9 +784,8 @@ describe('SaleDrawer', () => {
         httpTesting.expectOne(r => r.url === '/api/vendas/1042/cancel' && r.method === 'POST').flush({});
         fixture.detectChanges();
 
-        expect(comp.actionState()).toBe('idle');
+        expect(comp.actionState()).toBe('cancelled');
         expect(updated).toBe(true);
-        httpTesting.expectOne('/api/vendas/1042').flush({ ...SALE_DETAIL, status: 'Cancelada' });
     });
 
     it('canAction deve ser false quando isDirty', () => {

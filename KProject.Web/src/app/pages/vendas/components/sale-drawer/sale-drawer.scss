@@ -486,6 +486,9 @@
         span { font-size: 1.125rem; }
 
         &--visible { opacity: 1; }
+
+        &--close { background: #eab308; }
+        &--cancel { background: #ef4444; }
     }
 
     &__action-btn {
