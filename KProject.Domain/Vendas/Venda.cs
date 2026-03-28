@@ -76,6 +76,31 @@ public sealed class Venda
         return Result.Success();
     }
 
+    public Result EditarItens(IReadOnlyList<(int ItemId, uint Vendido, uint Devolvido)> alteracoes, int alteradoPor)
+    {
+        if (Status is StatusVenda.Fechada or StatusVenda.Cancelada)
+        {
+            return Result.Failure(Error.Failure("Venda.StatusInvalido", "A venda não pode ser alterada quando status é cancelado/fechado"));
+        }
+
+        foreach (var (itemId, vendido, devolvido) in alteracoes)
+        {
+            var item = _itens.FirstOrDefault(i => i.Id == itemId);
+            if (item is null)
+            {
+                return Result.Failure(Error.NotFound("Venda.ItemNaoEncontrado", $"Item com ID {itemId} não encontrado na venda"));
+            }
+
+            var result = item.AdicionarHistorico(devolvido, vendido, alteradoPor);
+            if (result.IsFailure)
+            {
+                return result;
+            }
+        }
+
+        return Result.Success();
+    }
+
     //TODO: Por enquanto, so faz verificacoes simples e fecha a venda. Na verdade, depende de ItemConsignado pra atualizar as quantidades em aberto
     // para devolvidos e setar o status.
     public Result FecharVenda()

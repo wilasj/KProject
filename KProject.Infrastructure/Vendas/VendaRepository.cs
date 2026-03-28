@@ -37,6 +37,12 @@ public class VendaRepository(AppDbContext db) : IVendaRepository
         return new Page<VendaResponse>(items, total);
     }
 
+    public async Task<Venda?> GetByIdWithItensAsync(int id, CancellationToken token = default) =>
+        await db.Vendas
+            .Include(v => v.Itens)
+                .ThenInclude(i => i.Historico)
+            .FirstOrDefaultAsync(v => v.Id == id, token);
+
     public async Task<VendaDetalheResponse?> GetDetalheAsync(int id, CancellationToken token = default)
     {
         var venda = await db.Vendas

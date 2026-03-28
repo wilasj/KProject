@@ -165,6 +165,65 @@ public class VendaTests
         venda.Errors.ShouldBeEmpty();
     }
 
+    [Theory]
+    [InlineData(StatusVenda.Fechada)]
+    [InlineData(StatusVenda.Cancelada)]
+    public void Venda_NaoPodeEditarItens_ComStatusInvalidos(StatusVenda status)
+    {
+        var itens = new Dictionary<(int LoteId, string PacienteNome), uint>
+        {
+            { (1, "Paciente"), 5u }
+        };
+
+        var venda = Venda.Criar(1, 1, itens).Value;
+        var itemId = venda.Itens.First().Id;
+
+        if (status is StatusVenda.Fechada)
+            venda.FecharVenda();
+        else
+            venda.CancelarVenda();
+
+        var result = venda.EditarItens([(itemId, 1u, 0u)], 1);
+
+        result.IsFailure.ShouldBeTrue();
+        result.Errors.First().Code.ShouldBe("Venda.StatusInvalido");
+    }
+
+    [Fact]
+    public void Venda_EditarItens_DeveRetornarNotFound_QuandoItemNaoExiste()
+    {
+        var itens = new Dictionary<(int LoteId, string PacienteNome), uint>
+        {
+            { (1, "Paciente"), 5u }
+        };
+
+        var venda = Venda.Criar(1, 1, itens).Value;
+
+        var result = venda.EditarItens([(999, 1u, 0u)], 1);
+
+        result.IsFailure.ShouldBeTrue();
+        result.Errors.First().Code.ShouldBe("Venda.ItemNaoEncontrado");
+    }
+
+    [Fact]
+    public void Venda_EditarItens_DeveAtualizarHistorico_ComDadosValidos()
+    {
+        var itens = new Dictionary<(int LoteId, string PacienteNome), uint>
+        {
+            { (1, "Paciente"), 5u }
+        };
+
+        var venda = Venda.Criar(1, 1, itens).Value;
+        var itemId = venda.Itens.First().Id;
+
+        var result = venda.EditarItens([(itemId, 2u, 1u)], 1);
+
+        result.IsSuccess.ShouldBeTrue();
+        venda.Itens.First().Vendido.ShouldBe(2u);
+        venda.Itens.First().Devolvido.ShouldBe(1u);
+        venda.Itens.First().EmAberto.ShouldBe(2u);
+    }
+
     [Fact]
     public void ItemConsignado_NaoPodeSerCriado_ComUsuarioInvalido()
     {
