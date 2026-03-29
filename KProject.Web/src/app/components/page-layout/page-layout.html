@@ -1,0 +1,39 @@
+<div class="page-layout__main">
+  <app-search-bar
+    [placeholder]="config().searchPlaceholder"
+    [initialValue]="initialSearch()"
+    (search)="onSearch($event)"
+  />
+
+  <div class="page-layout__content">
+    <div class="page-layout__toolbar">
+      <h2 class="page-layout__title">{{ config().title }}</h2>
+      <button class="page-layout__btn-new" (click)="drawerOpen.set(true)">
+        <span class="material-symbols-outlined">add</span>
+        {{ config().buttonLabel }}
+      </button>
+    </div>
+
+    @if (loading()) {
+      <div class="page-layout__loading">
+        <span class="material-symbols-outlined">hourglass_empty</span>
+      </div>
+    } @else {
+      <ng-container
+        [ngTemplateOutlet]="contentDef().templateRef"
+        [ngTemplateOutletContext]="{
+          $implicit: items(),
+          total: total(),
+          currentPage: currentPage(),
+          pageSize: config().pageSize ?? 10
+        }"
+      />
+    }
+  </div>
+</div>
+
+<aside class="page-layout__drawer" [class.page-layout__drawer--open]="drawerOpen()">
+  <div class="page-layout__drawer-inner">
+    <ng-container [ngTemplateOutlet]="drawerDef().templateRef" />
+  </div>
+</aside>

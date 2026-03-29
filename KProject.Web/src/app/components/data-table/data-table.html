@@ -1,0 +1,22 @@
+@if (items().length === 0) {
+  <div class="data-table__empty">
+    <span class="material-symbols-outlined">{{ emptyIcon() }}</span>
+    <p>{{ emptyMessage() }}</p>
+  </div>
+} @else {
+  <div class="data-table__list">
+    @for (item of items(); track item.id) {
+      <ng-container
+        [ngTemplateOutlet]="rowDef().templateRef"
+        [ngTemplateOutletContext]="{ $implicit: item }"
+      />
+    }
+  </div>
+
+  <app-pagination
+    [total]="total()"
+    [current]="currentPage()"
+    [pageSize]="pageSize()"
+    (pageChange)="pageChange.emit($event)"
+  />
+}
