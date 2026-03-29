@@ -1,41 +1,28 @@
-<div class="clientes__main">
-  <app-search-bar
-    placeholder="Buscar clientes..."
-    [initialValue]="initialSearch()"
-    (search)="onSearch($event)"
-  />
+<app-page-layout [config]="config">
+  <ng-template pageLayoutContent let-items let-total="total" let-currentPage="currentPage" let-pageSize="pageSize">
+    <app-data-table
+      [items]="items"
+      [total]="total"
+      [currentPage]="currentPage"
+      [pageSize]="pageSize"
+      emptyIcon="group"
+      emptyMessage="Nenhum cliente encontrado"
+      (pageChange)="layout().onPageChange($event)"
+    >
+      <ng-template dataTableRow let-client>
+        <div class="client-row">
+          <span class="client-row__id">#{{ client.id }}</span>
+          <span class="client-row__name">{{ client.nome }}</span>
+        </div>
+      </ng-template>
+    </app-data-table>
+  </ng-template>
 
-  <div class="clientes__content">
-    <div class="clientes__toolbar">
-      <h2 class="clientes__title">Clientes</h2>
-      <button class="clientes__btn-new" (click)="drawerOpen.set(true)">
-        <span class="material-symbols-outlined">add</span>
-        Novo Cliente
-      </button>
-    </div>
-
-    @if (loading()) {
-      <div class="clientes__loading">
-        <span class="material-symbols-outlined">hourglass_empty</span>
-      </div>
-    } @else {
-      <app-client-table
-        [clients]="clients()"
-        [total]="total()"
-        [currentPage]="currentPage()"
-        [pageSize]="pageSize"
-        (pageChange)="onPageChange($event)"
-      />
-    }
-  </div>
-</div>
-
-<aside class="clientes__drawer" [class.clientes__drawer--open]="drawerOpen()">
-  <div class="clientes__drawer-inner">
+  <ng-template pageLayoutDrawer>
     <app-client-drawer
-      [open]="drawerOpen()"
-      (close)="drawerOpen.set(false)"
-      (clientCreated)="onClientCreated()"
+      [open]="layout().drawerOpen()"
+      (close)="layout().closeDrawer()"
+      (clientCreated)="layout().onItemSaved()"
     />
-  </div>
-</aside>
+  </ng-template>
+</app-page-layout>

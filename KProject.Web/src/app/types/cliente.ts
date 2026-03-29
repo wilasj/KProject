@@ -1,9 +1,8 @@
+import { PaginatedResponse } from './paginated-response';
+
 export interface Cliente {
   id: number;
   nome: string;
 }
 
-export interface ClientesResponse {
-  items: Cliente[];
-  total: number;
-}
+export type ClientesResponse = PaginatedResponse<Cliente>;
