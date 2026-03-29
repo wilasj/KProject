@@ -1,9 +1,11 @@
 using System.Net;
 using System.Net.Http.Json;
 using KProject.Application.Lotes.HistoricoLote;
+using KProject.Domain.Clientes;
 using KProject.Domain.Estoques;
 using KProject.Domain.Lotes;
 using KProject.Domain.Produtos;
+using KProject.Domain.Vendas;
 using KProject.Tests.Fixtures;
 using Shouldly;
 
@@ -131,5 +133,61 @@ public class HistoricoLoteEndpointTests(DatabaseFixture fixture)
         response.StatusCode.ShouldBe(HttpStatusCode.OK);
         var body = await response.Content.ReadFromJsonAsync<HistoricoPage>(TestContext.Current.CancellationToken);
         body!.Items.Count.ShouldBe(3);
+    }
+
+    [Fact]
+    public async Task HistoricoLote_MovimentoComVenda_DeveRetornarVendaId()
+    {
+        var client = await fixture.CriaClienteAutenticado("historico_vendaid@wilasj.dev", "Big_password!!@21");
+        int loteId = 0, vendaId = 0;
+
+        await fixture.ExecuteDbContext(async db =>
+        {
+            var produto = Produto.Criar("Produto VendaId", "REF-VID", "Descricao", "ANVISA-VID").Value;
+            db.Produtos.Add(produto);
+            await db.SaveChangesAsync();
+
+            var lote = Lote.Criar(produto.Id, 1, new DateOnly(2028, 1, 1), quantidadeInicial: 100).Value;
+            db.Lotes.Add(lote);
+            await db.SaveChangesAsync();
+            loteId = lote.Id;
+
+            var clienteEntity = Cliente.Criar("Cliente VendaId");
+            db.Clientes.Add(clienteEntity);
+            await db.SaveChangesAsync();
+
+            var venda = Venda.Criar(clienteEntity.Id, 1, new Dictionary<(int, string), uint>
+            {
+                { (lote.Id, "Paciente Teste"), 5u }
+            }).Value;
+            db.Vendas.Add(venda);
+
+            lote.Estoque.AplicarMovimento(5, TipoHistorico.SaidaConsignacao, venda);
+            await db.SaveChangesAsync();
+            vendaId = venda.Id;
+        });
+
+        var response = await client.GetAsync(
+            $"/api/lotes/{loteId}/historico?pagina=1&tamanhoPagina=20",
+            TestContext.Current.CancellationToken);
+
+        response.StatusCode.ShouldBe(HttpStatusCode.OK);
+        var body = await response.Content.ReadFromJsonAsync<HistoricoPage>(TestContext.Current.CancellationToken);
+        body!.Items.ShouldContain(i => i.VendaId == vendaId);
+    }
+
+    [Fact]
+    public async Task HistoricoLote_MovimentoSemVenda_VendaIdDeveSerNulo()
+    {
+        var client = await fixture.CriaClienteAutenticado("historico_nullvendaid@wilasj.dev", "Big_password!!@21");
+        var loteId = await SeedLoteComMovimentos("NullVendaId", movimentos: 1);
+
+        var response = await client.GetAsync(
+            $"/api/lotes/{loteId}/historico?pagina=1&tamanhoPagina=20",
+            TestContext.Current.CancellationToken);
+
+        response.StatusCode.ShouldBe(HttpStatusCode.OK);
+        var body = await response.Content.ReadFromJsonAsync<HistoricoPage>(TestContext.Current.CancellationToken);
+        body!.Items.ShouldAllBe(i => i.VendaId == null);
     }
 }

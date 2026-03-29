@@ -107,4 +107,20 @@ public class CancelaVendaCommandHandlerTests
         venda.Status.ShouldBe(StatusVenda.Cancelada);
         estoque.QuantidadeAtual.ShouldBe(30);
     }
+
+    [Fact]
+    public async Task Handle_DeveAssociarVendaAoHistoricoDeEstoque()
+    {
+        var venda = CriaVendaAberta(quantidade: 10u);
+        var estoque = Lote.Criar(1, 1, DateOnly.MaxValue, 20u).Value.Estoque;
+        _vendas.GetByIdWithItensAsync(1, Arg.Any<CancellationToken>()).Returns(venda);
+        _estoques.GetByLoteIdsAsync(Arg.Any<IEnumerable<int>>(), Arg.Any<CancellationToken>())
+            .Returns(new Dictionary<int, Estoque> { { 1, estoque } });
+
+        await Handle(ComandoValido());
+
+        var retorno = estoque.Historico.Last();
+        retorno.Tipo.ShouldBe(TipoHistorico.RetornoConsignacao);
+        retorno.Venda.ShouldBe(venda);
+    }
 }

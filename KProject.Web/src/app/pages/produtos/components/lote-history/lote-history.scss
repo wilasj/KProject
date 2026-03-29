@@ -95,6 +95,18 @@
     color: #555;
   }
 
+  &__venda {
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: #3b82f6;
+    cursor: pointer;
+    white-space: nowrap;
+
+    &:hover {
+      text-decoration: underline;
+    }
+  }
+
   &__date {
     color: #bdbdbd;
     font-size: 0.75rem;

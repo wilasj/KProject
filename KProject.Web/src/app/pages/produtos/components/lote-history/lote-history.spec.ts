@@ -10,7 +10,7 @@ const mockLote: Lote = { id: 1, numero: 101, validade: '2027-06-30', quantidadeT
 const mockPage1: HistoricoPage = {
   items: [
     { id: 1, tipo: 'Entrada', deltaQuantidade: 50, criadoEm: '2026-03-01T10:00:00Z' },
-    { id: 2, tipo: 'SaidaConsignacao', deltaQuantidade: -7, criadoEm: '2026-03-02T14:00:00Z' },
+    { id: 2, tipo: 'SaidaConsignacao', deltaQuantidade: -7, criadoEm: '2026-03-02T14:00:00Z', vendaId: 1042 },
   ],
   hasMore: true,
 };
@@ -116,5 +116,28 @@ describe('LoteHistory', () => {
     fixture.detectChanges();
 
     expect(fixture.nativeElement.querySelectorAll('.lote-history__row').length).toBe(0);
+  });
+
+  it('deve exibir link da venda quando vendaId está presente', () => {
+    const fixture = setup();
+    flush(fixture);
+
+    const vendaLinks = fixture.nativeElement.querySelectorAll('.lote-history__venda');
+    expect(vendaLinks.length).toBe(1);
+    expect(vendaLinks[0].textContent).toContain('#1042');
+  });
+
+  it('não deve exibir link da venda quando vendaId está ausente', () => {
+    const fixture = setup();
+    httpTesting.expectOne('/api/lotes/1/historico?pagina=1&tamanhoPagina=10').flush({
+      items: [
+        { id: 1, tipo: 'Entrada', deltaQuantidade: 50, criadoEm: '2026-03-01T10:00:00Z' },
+      ],
+      hasMore: false,
+    });
+    fixture.detectChanges();
+
+    const vendaLinks = fixture.nativeElement.querySelectorAll('.lote-history__venda');
+    expect(vendaLinks.length).toBe(0);
   });
 });

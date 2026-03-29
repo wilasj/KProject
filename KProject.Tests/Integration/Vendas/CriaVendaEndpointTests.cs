@@ -82,6 +82,7 @@ public class CriaVendaEndpointTests(DatabaseFixture fixture)
 
             var estoque = await db.Estoques
                 .Include(e => e.Historico)
+                    .ThenInclude(h => h.Venda)
                 .FirstAsync(e => e.LoteId == loteId, TestContext.Current.CancellationToken);
 
             estoque.QuantidadeAtual.ShouldBe(17);
@@ -89,6 +90,8 @@ public class CriaVendaEndpointTests(DatabaseFixture fixture)
             var ultimoMov = estoque.Historico.OrderByDescending(h => h.CriadoEm).First();
             ultimoMov.Tipo.ShouldBe(TipoHistorico.SaidaConsignacao);
             ultimoMov.DeltaQuantidade.ShouldBe(-3);
+            ultimoMov.Venda.ShouldNotBeNull();
+            ultimoMov.Venda.Id.ShouldBe(response!.Id);
         });
     }
 

@@ -1,5 +1,6 @@
 using KProject.Domain.Estoques;
 using KProject.Domain.Lotes;
+using KProject.Domain.Vendas;
 using Shouldly;
 
 namespace KProject.Tests.Unit.Estoques;
@@ -93,5 +94,30 @@ public class EstoqueTests
 
         result.IsSuccess.ShouldBeTrue();
         estoque.QuantidadeAtual.ShouldBe(0);
+    }
+
+    [Fact]
+    public void AplicarMovimento_ComVenda_RegistraVendaNoHistorico()
+    {
+        var estoque = CriaEstoque();
+        estoque.AplicarMovimento(10, TipoHistorico.Entrada);
+        var venda = Venda.Criar(1, 1, new Dictionary<(int, string), uint>
+        {
+            { (1, "Paciente"), 1u }
+        }).Value;
+
+        estoque.AplicarMovimento(1, TipoHistorico.SaidaConsignacao, venda);
+
+        estoque.Historico.Last().Venda.ShouldBe(venda);
+    }
+
+    [Fact]
+    public void AplicarMovimento_SemVenda_VendaNulaNoHistorico()
+    {
+        var estoque = CriaEstoque();
+
+        estoque.AplicarMovimento(5, TipoHistorico.Entrada);
+
+        estoque.Historico.Last().Venda.ShouldBeNull();
     }
 }

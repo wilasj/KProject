@@ -44,9 +44,11 @@ public class FechaVendaCommandHandler(
 
         foreach (var (loteId, qtd) in devolucaoPorLote)
         {
-            var movResult = estoquesPorLote[loteId].AplicarMovimento(qtd, TipoHistorico.RetornoConsignacao);
+            var movResult = estoquesPorLote[loteId].AplicarMovimento(qtd, TipoHistorico.RetornoConsignacao, venda);
             if (movResult.IsFailure)
+            {
                 return movResult;
+            }
         }
 
         await unitOfWork.SaveChangesAsync(token);

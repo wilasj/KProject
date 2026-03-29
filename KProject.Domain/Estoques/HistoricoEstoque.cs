@@ -1,4 +1,6 @@
-﻿namespace KProject.Domain.Estoques;
+﻿using KProject.Domain.Vendas;
+
+namespace KProject.Domain.Estoques;
 
 /// <summary>
 /// Representa um evento imutável de movimentação do estoque.
@@ -15,8 +17,7 @@ public sealed class HistoricoEstoque
     /// Utilizada para auditoria, rastreabilidade e relatórios.
     /// </summary>
     public TipoHistorico Tipo { get; set; }
-    
-    
+
     public DateTime CriadoEm { get; set; }
 
     /// <summary>
@@ -30,4 +31,10 @@ public sealed class HistoricoEstoque
     /// registrados no histórico, em ordem cronológica.
     /// </remarks>
     public int DeltaQuantidade { get; set; }
+
+    /// <summary>
+    /// Venda que originou esta movimentação, quando aplicável
+    /// (ex.: SaidaConsignacao, RetornoConsignacao).
+    /// </summary>
+    public Venda? Venda { get; set; }
 }

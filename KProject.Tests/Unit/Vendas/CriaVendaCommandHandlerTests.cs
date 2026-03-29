@@ -90,4 +90,22 @@ public class CriaVendaCommandHandlerTests
         await _vendas.Received(1).AddAsync(Arg.Any<Venda>(), Arg.Any<CancellationToken>());
         await _unitOfWork.Received(1).SaveChangesAsync(Arg.Any<CancellationToken>());
     }
+
+    [Fact]
+    public async Task Handle_DeveAssociarVendaAoHistoricoDeEstoque()
+    {
+        _clientes.ExistsAsync(1, Arg.Any<CancellationToken>()).Returns(true);
+        var estoques = EstoquePara(1, 10u);
+        _estoques.GetByLoteIdsAsync(Arg.Any<IEnumerable<int>>(), Arg.Any<CancellationToken>())
+            .Returns(estoques);
+
+        Venda? vendaSalva = null;
+        await _vendas.AddAsync(Arg.Do<Venda>(v => vendaSalva = v), Arg.Any<CancellationToken>());
+
+        await Handle(ComandoValido());
+
+        var ultimoMov = estoques[1].Historico.Last();
+        ultimoMov.Venda.ShouldNotBeNull();
+        ultimoMov.Venda.ShouldBe(vendaSalva);
+    }
 }

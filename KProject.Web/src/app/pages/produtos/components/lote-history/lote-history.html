@@ -27,6 +27,9 @@
             {{ mov.deltaQuantidade > 0 ? '+' : '' }}{{ mov.deltaQuantidade }}
           </span>
           <span class="lote-history__tipo">{{ tipoLabel[mov.tipo] }}</span>
+          @if (mov.vendaId) {
+            <span class="lote-history__venda">#{{ mov.vendaId }}</span>
+          }
           <span class="lote-history__date">{{ mov.criadoEm | date:'dd/MM/yyyy' }}</span>
         </div>
       } @empty {

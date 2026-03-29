@@ -107,4 +107,20 @@ public class FechaVendaCommandHandlerTests
         await _estoques.DidNotReceive().GetByLoteIdsAsync(Arg.Any<IEnumerable<int>>(), Arg.Any<CancellationToken>());
         await _unitOfWork.Received(1).SaveChangesAsync(Arg.Any<CancellationToken>());
     }
+
+    [Fact]
+    public async Task Handle_DeveAssociarVendaAoHistoricoDeEstoque()
+    {
+        var venda = CriaVendaAberta();
+        var estoque = Lote.Criar(1, 1, DateOnly.MaxValue, 20u).Value.Estoque;
+        _vendas.GetByIdWithItensAsync(1, Arg.Any<CancellationToken>()).Returns(venda);
+        _estoques.GetByLoteIdsAsync(Arg.Any<IEnumerable<int>>(), Arg.Any<CancellationToken>())
+            .Returns(new Dictionary<int, Estoque> { { 1, estoque } });
+
+        await Handle(ComandoValido());
+
+        var retorno = estoque.Historico.Last();
+        retorno.Tipo.ShouldBe(TipoHistorico.RetornoConsignacao);
+        retorno.Venda.ShouldBe(venda);
+    }
 }

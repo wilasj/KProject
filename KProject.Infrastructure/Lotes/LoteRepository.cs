@@ -30,7 +30,7 @@ public class LoteRepository(AppDbContext db) : ILoteRepository
             .OrderByDescending(h => h.CriadoEm)
             .Skip((pagina - 1) * tamanhoPagina)
             .Take(tamanhoPagina + 1)
-            .Select(h => new HistoricoEstoqueResponse(h.Id, h.Tipo.ToString(), h.DeltaQuantidade, h.CriadoEm))
+            .Select(h => new HistoricoEstoqueResponse(h.Id, h.Tipo.ToString(), h.DeltaQuantidade, h.CriadoEm, h.Venda != null ? h.Venda.Id : null))
             .ToListAsync(token);
 
         var hasMore = items.Count > tamanhoPagina;

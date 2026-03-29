@@ -1,4 +1,5 @@
 ﻿using KProject.Common;
+using KProject.Domain.Vendas;
 
 namespace KProject.Domain.Estoques;
 
@@ -25,24 +26,29 @@ public class Estoque
             AplicarMovimento(quantidadeInicial, TipoHistorico.Entrada);
     }
 
-    public Result AplicarMovimento(uint quantidade, TipoHistorico tipo)
+    public Result AplicarMovimento(uint quantidade, TipoHistorico tipo, Venda? venda = null)
     {
         if (quantidade == 0)
+        {
             return Result.Failure(Error.Failure("Estoque.QuantidadeInvalida", "A quantidade não pode ser zero"));
+        }
 
         var delta = TiposPositivos.Contains(tipo) ? (int)quantidade : -(int)quantidade;
 
         if (QuantidadeAtual + delta < 0)
+        {
             return Result.Failure(Error.Failure("Estoque.EstoqueInsuficiente", "A movimentação resultaria em estoque negativo"));
+        }
 
         QuantidadeAtual += delta;
-        
+
         _historico.Add(new HistoricoEstoque
         {
             EstoqueId = Id,
             DeltaQuantidade = delta,
             Tipo = tipo,
-            CriadoEm = DateTime.UtcNow
+            CriadoEm = DateTime.UtcNow,
+            Venda = venda,
         });
 
         return Result.Success();

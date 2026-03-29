@@ -99,6 +99,7 @@ public class CancelaVendaEndpointTests(DatabaseFixture fixture)
         {
             var estoque = await db.Estoques
                 .Include(e => e.Historico)
+                    .ThenInclude(h => h.Venda)
                 .FirstAsync(e => e.LoteId == loteId, TestContext.Current.CancellationToken);
 
             estoque.QuantidadeAtual.ShouldBe(20);
@@ -108,6 +109,8 @@ public class CancelaVendaEndpointTests(DatabaseFixture fixture)
                 .First();
             retorno.Tipo.ShouldBe(TipoHistorico.RetornoConsignacao);
             retorno.DeltaQuantidade.ShouldBe(10);
+            retorno.Venda.ShouldNotBeNull();
+            retorno.Venda.Id.ShouldBe(vendaId);
         });
     }
 

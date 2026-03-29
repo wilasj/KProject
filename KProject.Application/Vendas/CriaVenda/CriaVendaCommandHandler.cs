@@ -43,16 +43,20 @@ public class CriaVendaCommandHandler(
             .GroupBy(i => i.LoteId)
             .ToDictionary(g => g.Key, g => g.Aggregate(0u, (acc, i) => acc + i.Quantidade));
 
+        var venda = vendaResult.Value;
+
         foreach (var (loteId, qtd) in qtdPorLote)
         {
-            var movResult = estoquesPorLote[loteId].AplicarMovimento(qtd, TipoHistorico.SaidaConsignacao);
+            var movResult = estoquesPorLote[loteId].AplicarMovimento(qtd, TipoHistorico.SaidaConsignacao, venda);
             if (movResult.IsFailure)
+            {
                 return Result.Failure<int>(movResult.Errors);
+            }
         }
 
-        await vendas.AddAsync(vendaResult.Value, token);
+        await vendas.AddAsync(venda, token);
         await unitOfWork.SaveChangesAsync(token);
 
-        return Result.Success(vendaResult.Value.Id);
+        return Result.Success(venda.Id);
     }
 }

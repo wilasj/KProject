@@ -1,4 +1,5 @@
 ﻿using KProject.Domain.Estoques;
+using KProject.Domain.Vendas;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
@@ -19,7 +20,14 @@ public class HistoricoEstoqueConfiguration: IEntityTypeConfiguration<HistoricoEs
             .WithMany(e => e.Historico)
             .HasForeignKey(h => h.EstoqueId)
             .OnDelete(DeleteBehavior.Cascade);
-        
+
+        builder
+            .HasOne(h => h.Venda)
+            .WithMany()
+            .HasForeignKey("VendaId")
+            .IsRequired(false)
+            .OnDelete(DeleteBehavior.SetNull);
+
         builder.Property(h => h.DeltaQuantidade).IsRequired();
         builder.Property(h => h.Tipo).HasConversion<string>().IsRequired();
         builder.Property(h => h.CriadoEm).IsRequired();

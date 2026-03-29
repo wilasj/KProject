@@ -17,6 +17,7 @@ export interface StockMovement {
   tipo: TipoHistorico;
   deltaQuantidade: number;
   criadoEm: string;
+  vendaId?: number;
 }
 
 export interface HistoricoPage {
