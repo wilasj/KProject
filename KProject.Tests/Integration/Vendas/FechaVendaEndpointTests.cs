@@ -117,7 +117,7 @@ public class FechaVendaEndpointTests(DatabaseFixture fixture)
     }
 
     [Fact]
-    public async Task FechaVenda_ComItensParicialmenteResolvidos_DeveDevolverApenasEmAberto()
+    public async Task FechaVenda_ComItensParcialmenteResolvidos_DeveDevolverDevolvidosEEmAberto()
     {
         var (vendaId, loteId) = await CriaVendaAberta("Parcial", quantidadeConsignada: 10, quantidadeEstoque: 20);
 
@@ -156,7 +156,7 @@ public class FechaVendaEndpointTests(DatabaseFixture fixture)
             var estoque = await db.Estoques
                 .FirstAsync(e => e.LoteId == loteId, TestContext.Current.CancellationToken);
 
-            estoque.QuantidadeAtual.ShouldBe(15);
+            estoque.QuantidadeAtual.ShouldBe(17);
         });
     }
 

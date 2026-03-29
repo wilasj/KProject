@@ -20,20 +20,16 @@ public class FechaVendaCommandHandler(
                 $"Venda com ID {command.VendaId} não encontrada"));
         }
 
-        var loteIds = venda.Itens
-            .Where(i => i.EmAberto > 0)
-            .Select(i => i.LoteId)
-            .Distinct()
-            .ToList();
+        var retornoPorLote = venda.Itens
+            .Where(i => i.EmAberto > 0 || i.Devolvido > 0)
+            .GroupBy(i => i.LoteId)
+            .ToDictionary(g => g.Key, g => g.Aggregate(0u, (acc, i) => acc + i.EmAberto + i.Devolvido));
+
+        var loteIds = retornoPorLote.Keys.ToList();
 
         var estoquesPorLote = loteIds.Count > 0
             ? await estoquesRepository.GetByLoteIdsAsync(loteIds, token)
             : [];
-
-        var devolucaoPorLote = venda.Itens
-            .Where(i => i.EmAberto > 0)
-            .GroupBy(i => i.LoteId)
-            .ToDictionary(g => g.Key, g => g.Aggregate(0u, (acc, i) => acc + i.EmAberto));
 
         var result = venda.FecharVenda(command.FechadoPor);
 
@@ -42,7 +38,7 @@ public class FechaVendaCommandHandler(
             return result;
         }
 
-        foreach (var (loteId, qtd) in devolucaoPorLote)
+        foreach (var (loteId, qtd) in retornoPorLote)
         {
             var movResult = estoquesPorLote[loteId].AplicarMovimento(qtd, TipoHistorico.RetornoConsignacao, venda, command.FechadoPor);
             if (movResult.IsFailure)

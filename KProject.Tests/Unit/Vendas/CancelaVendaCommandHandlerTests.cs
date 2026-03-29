@@ -90,7 +90,7 @@ public class CancelaVendaCommandHandlerTests
     }
 
     [Fact]
-    public async Task Handle_DeveDevolverQuantidadeConsignadaTotal_MesmoComItensParicialmenteResolvidos()
+    public async Task Handle_DeveDevolverQuantidadeConsignadaTotal_MesmoComItensParcialmenteResolvidos()
     {
         var venda = CriaVendaAberta(quantidade: 10u);
         var item = venda.Itens.First();

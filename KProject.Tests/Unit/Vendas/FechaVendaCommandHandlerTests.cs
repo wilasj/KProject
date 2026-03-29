@@ -91,11 +91,33 @@ public class FechaVendaCommandHandlerTests
     }
 
     [Fact]
-    public async Task Handle_DeveFecharSemMovimentoEstoque_QuandoTodosItensJaResolvidos()
+    public async Task Handle_DeveDevolverEstoqueDoDevolvido_QuandoTodosItensJaResolvidos()
     {
         var venda = CriaVendaAberta();
         var item = venda.Itens.First();
         item.AdicionarHistorico(5u, 5u, 1);
+
+        var estoque = Lote.Criar(1, 1, DateOnly.MaxValue, 20u).Value.Estoque;
+        _vendas.GetByIdWithItensAsync(1, Arg.Any<CancellationToken>()).Returns(venda);
+        _estoques.GetByLoteIdsAsync(Arg.Any<IEnumerable<int>>(), Arg.Any<CancellationToken>())
+            .Returns(new Dictionary<int, Estoque> { { 1, estoque } });
+
+        var result = await Handle(ComandoValido());
+
+        result.IsSuccess.ShouldBeTrue();
+        venda.Status.ShouldBe(StatusVenda.Fechada);
+        venda.Itens.First().EmAberto.ShouldBe(0u);
+        estoque.Historico.Last().Tipo.ShouldBe(TipoHistorico.RetornoConsignacao);
+        estoque.Historico.Last().DeltaQuantidade.ShouldBe(5);
+        await _unitOfWork.Received(1).SaveChangesAsync(Arg.Any<CancellationToken>());
+    }
+
+    [Fact]
+    public async Task Handle_DeveFecharSemMovimentoEstoque_QuandoTodosItensVendidos()
+    {
+        var venda = CriaVendaAberta();
+        var item = venda.Itens.First();
+        item.AdicionarHistorico(0u, 10u, 1);
 
         _vendas.GetByIdWithItensAsync(1, Arg.Any<CancellationToken>()).Returns(venda);
 
