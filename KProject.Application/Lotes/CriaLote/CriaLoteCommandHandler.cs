@@ -19,7 +19,7 @@ public class CriaLoteCommandHandler(
             return Result.Failure<int>(
                 Error.NotFound("Produto.NaoEncontrado", $"Produto com ID {command.ProdutoId} não encontrado"));
 
-        var loteResult = Lote.Criar(command.ProdutoId, command.Numero, command.Validade, command.QuantidadeInicial);
+        var loteResult = Lote.Criar(command.ProdutoId, command.Numero, command.Validade, command.QuantidadeInicial, command.CriadoPor);
         if (loteResult.IsFailure)
             return Result.Failure<int>(loteResult.Errors);
 

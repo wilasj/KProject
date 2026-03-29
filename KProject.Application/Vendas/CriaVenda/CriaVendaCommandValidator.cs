@@ -13,6 +13,11 @@ public sealed class CriaVendaCommandValidator : AbstractValidator<CriaVendaComma
                 .WithErrorCode("CriaVenda.ClienteInvalido")
                 .WithMessage("O ID do cliente deve ser maior que zero");
 
+        RuleFor(c => c.CriadaPor)
+            .GreaterThan(0)
+                .WithErrorCode("Venda.UsuarioInvalido")
+                .WithMessage("O ID do usuário deve ser maior que zero");
+
         RuleFor(c => c.Itens)
             .NotEmpty()
                 .WithErrorCode("CriaVenda.ItensVazios")

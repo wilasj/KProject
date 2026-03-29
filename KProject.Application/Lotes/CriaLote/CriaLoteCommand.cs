@@ -8,4 +8,5 @@ public class CriaLoteCommand : ICommand
     public required int Numero { get; init; }
     public required DateOnly Validade { get; init; }
     public uint QuantidadeInicial { get; init; }
+    public required int CriadoPor { get; init; }
 }

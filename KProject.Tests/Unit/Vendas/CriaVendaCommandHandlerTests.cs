@@ -107,5 +107,6 @@ public class CriaVendaCommandHandlerTests
         var ultimoMov = estoques[1].Historico.Last();
         ultimoMov.Venda.ShouldNotBeNull();
         ultimoMov.Venda.ShouldBe(vendaSalva);
+        ultimoMov.CriadoPor.ShouldBe(1);
     }
 }

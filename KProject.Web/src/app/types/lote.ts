@@ -18,6 +18,7 @@ export interface StockMovement {
   deltaQuantidade: number;
   criadoEm: string;
   vendaId?: number;
+  criadoPor?: string;
 }
 
 export interface HistoricoPage {

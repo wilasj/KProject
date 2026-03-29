@@ -22,5 +22,10 @@ public sealed class CriaLoteCommandValidator : AbstractValidator<CriaLoteCommand
             .NotEqual(DateOnly.MinValue)
                 .WithErrorCode("CriaLote.ValidadeInvalida")
                 .WithMessage("A validade do lote deve ser informada");
+
+        RuleFor(c => c.CriadoPor)
+            .GreaterThan(0)
+                .WithErrorCode("CriaLote.UsuarioInvalido")
+                .WithMessage("O ID do usuário deve ser maior que zero");
     }
 }

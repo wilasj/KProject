@@ -31,7 +31,8 @@ public class CriaLoteCommandHandlerTests
         {
             ProdutoId = 1,
             Numero = 1,
-            Validade = new DateOnly(2027, 1, 1)
+            Validade = new DateOnly(2027, 1, 1),
+            CriadoPor = 1
         });
 
         result.IsFailure.ShouldBeTrue();
@@ -48,7 +49,8 @@ public class CriaLoteCommandHandlerTests
             ProdutoId = 1,
             Numero = 1,
             Validade = new DateOnly(2027, 1, 1),
-            QuantidadeInicial = 50
+            QuantidadeInicial = 50,
+            CriadoPor = 1
         });
 
         result.IsSuccess.ShouldBeTrue();

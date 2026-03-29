@@ -9,8 +9,8 @@ const mockLote: Lote = { id: 1, numero: 101, validade: '2027-06-30', quantidadeT
 
 const mockPage1: HistoricoPage = {
   items: [
-    { id: 1, tipo: 'Entrada', deltaQuantidade: 50, criadoEm: '2026-03-01T10:00:00Z' },
-    { id: 2, tipo: 'SaidaConsignacao', deltaQuantidade: -7, criadoEm: '2026-03-02T14:00:00Z', vendaId: 1042 },
+    { id: 1, tipo: 'Entrada', deltaQuantidade: 50, criadoEm: '2026-03-01T10:00:00Z', criadoPor: 'admin@test.dev' },
+    { id: 2, tipo: 'SaidaConsignacao', deltaQuantidade: -7, criadoEm: '2026-03-02T14:00:00Z', vendaId: 1042, criadoPor: 'joao@test.dev' },
   ],
   hasMore: true,
 };
@@ -139,5 +139,29 @@ describe('LoteHistory', () => {
 
     const vendaLinks = fixture.nativeElement.querySelectorAll('.lote-history__venda');
     expect(vendaLinks.length).toBe(0);
+  });
+
+  it('deve exibir nome do usuário quando criadoPor está presente', () => {
+    const fixture = setup();
+    flush(fixture);
+
+    const users = fixture.nativeElement.querySelectorAll('.lote-history__user');
+    expect(users.length).toBe(2);
+    expect(users[0].textContent).toContain('admin@test.dev');
+    expect(users[1].textContent).toContain('joao@test.dev');
+  });
+
+  it('não deve exibir nome do usuário quando criadoPor está ausente', () => {
+    const fixture = setup();
+    httpTesting.expectOne('/api/lotes/1/historico?pagina=1&tamanhoPagina=10').flush({
+      items: [
+        { id: 1, tipo: 'Entrada', deltaQuantidade: 50, criadoEm: '2026-03-01T10:00:00Z' },
+      ],
+      hasMore: false,
+    });
+    fixture.detectChanges();
+
+    const users = fixture.nativeElement.querySelectorAll('.lote-history__user');
+    expect(users.length).toBe(0);
   });
 });

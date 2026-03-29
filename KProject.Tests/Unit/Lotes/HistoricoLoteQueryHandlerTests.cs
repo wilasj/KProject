@@ -31,8 +31,8 @@ public class HistoricoLoteQueryHandlerTests
     {
         var page = new HistoricoPage(
         [
-            new(1, "Entrada", 100, DateTime.UtcNow, null),
-            new(2, "SaidaConsignacao", -1, DateTime.UtcNow.AddSeconds(-1), 42),
+            new(1, "Entrada", 100, DateTime.UtcNow, null, "admin@test.dev"),
+            new(2, "SaidaConsignacao", -1, DateTime.UtcNow.AddSeconds(-1), 42, "joao@test.dev"),
         ], HasMore: false);
 
         _lotes.ExistsAsync(1, Arg.Any<CancellationToken>()).Returns(true);

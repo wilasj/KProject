@@ -13,15 +13,15 @@ public sealed class Lote
 
     private Lote() { }
 
-    private Lote(int produtoId, int numero, DateOnly validade, uint quantidadeInicial)
+    private Lote(int produtoId, int numero, DateOnly validade, uint quantidadeInicial, int? criadoPor)
     {
         ProdutoId = produtoId;
         Numero = numero;
         Validade = validade;
-        Estoque = new Estoque(quantidadeInicial);
+        Estoque = new Estoque(quantidadeInicial, criadoPor);
     }
 
-    public static Result<Lote> Criar(int produtoId, int numero, DateOnly validade, uint quantidadeInicial = 0)
+    public static Result<Lote> Criar(int produtoId, int numero, DateOnly validade, uint quantidadeInicial = 0, int? criadoPor = null)
     {
         if (produtoId <= 0)
             return Result.Failure<Lote>(Error.Failure("Lote.ProdutoInvalido", "O ID do produto deve ser maior que zero"));
@@ -29,6 +29,6 @@ public sealed class Lote
         if (numero <= 0)
             return Result.Failure<Lote>(Error.Failure("Lote.NumeroInvalido", "O número do lote deve ser maior que zero"));
 
-        return Result.Success(new Lote(produtoId, numero, validade, quantidadeInicial));
+        return Result.Success(new Lote(produtoId, numero, validade, quantidadeInicial, criadoPor));
     }
 }

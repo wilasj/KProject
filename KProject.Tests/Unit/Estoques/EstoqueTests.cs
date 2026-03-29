@@ -120,4 +120,24 @@ public class EstoqueTests
 
         estoque.Historico.Last().Venda.ShouldBeNull();
     }
+
+    [Fact]
+    public void AplicarMovimento_ComCriadoPor_RegistraUsuarioNoHistorico()
+    {
+        var estoque = CriaEstoque();
+
+        estoque.AplicarMovimento(5, TipoHistorico.Entrada, criadoPor: 42);
+
+        estoque.Historico.Last().CriadoPor.ShouldBe(42);
+    }
+
+    [Fact]
+    public void AplicarMovimento_SemCriadoPor_CriadoPorNuloNoHistorico()
+    {
+        var estoque = CriaEstoque();
+
+        estoque.AplicarMovimento(5, TipoHistorico.Entrada);
+
+        estoque.Historico.Last().CriadoPor.ShouldBeNull();
+    }
 }

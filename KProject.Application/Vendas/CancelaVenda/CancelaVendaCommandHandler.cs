@@ -34,7 +34,7 @@ public class CancelaVendaCommandHandler(
 
         foreach (var (loteId, qtd) in devolucaoPorLote)
         {
-            var movResult = estoquesPorLote[loteId].AplicarMovimento(qtd, TipoHistorico.RetornoConsignacao, venda);
+            var movResult = estoquesPorLote[loteId].AplicarMovimento(qtd, TipoHistorico.RetornoConsignacao, venda, command.CanceladoPor);
             if (movResult.IsFailure)
             {
                 return movResult;

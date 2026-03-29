@@ -5,4 +5,5 @@ public record HistoricoEstoqueResponse(
     string Tipo,
     int DeltaQuantidade,
     DateTime CriadoEm,
-    int? VendaId);
+    int? VendaId,
+    string? CriadoPor);

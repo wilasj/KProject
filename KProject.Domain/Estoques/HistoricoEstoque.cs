@@ -33,6 +33,11 @@ public sealed class HistoricoEstoque
     public int DeltaQuantidade { get; set; }
 
     /// <summary>
+    /// ID do usuário que realizou a movimentação, quando disponível.
+    /// </summary>
+    public int? CriadoPor { get; set; }
+
+    /// <summary>
     /// Venda que originou esta movimentação, quando aplicável
     /// (ex.: SaidaConsignacao, RetornoConsignacao).
     /// </summary>

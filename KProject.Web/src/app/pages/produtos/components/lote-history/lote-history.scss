@@ -107,6 +107,15 @@
     }
   }
 
+  &__user {
+    font-size: 0.75rem;
+    color: #9e9e9e;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 8rem;
+  }
+
   &__date {
     color: #bdbdbd;
     font-size: 0.75rem;

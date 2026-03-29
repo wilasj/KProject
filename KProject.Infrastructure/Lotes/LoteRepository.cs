@@ -24,13 +24,24 @@ public class LoteRepository(AppDbContext db) : ILoteRepository
 
     public async Task<HistoricoPage> GetHistoricoPagedAsync(int loteId, int pagina, int tamanhoPagina, CancellationToken token = default)
     {
-        var items = await db.Lotes
-            .Where(l => l.Id == loteId)
-            .SelectMany(l => l.Estoque.Historico)
-            .OrderByDescending(h => h.CriadoEm)
+        var query =
+            from h in db.Lotes
+                .Where(l => l.Id == loteId)
+                .SelectMany(l => l.Estoque.Historico)
+            join u in db.Users on h.CriadoPor equals u.Id into users
+            from u in users.DefaultIfEmpty()
+            orderby h.CriadoEm descending
+            select new HistoricoEstoqueResponse(
+                h.Id,
+                h.Tipo.ToString(),
+                h.DeltaQuantidade,
+                h.CriadoEm,
+                h.Venda != null ? h.Venda.Id : null,
+                u != null ? u.UserName : null);
+
+        var items = await query
             .Skip((pagina - 1) * tamanhoPagina)
             .Take(tamanhoPagina + 1)
-            .Select(h => new HistoricoEstoqueResponse(h.Id, h.Tipo.ToString(), h.DeltaQuantidade, h.CriadoEm, h.Venda != null ? h.Venda.Id : null))
             .ToListAsync(token);
 
         var hasMore = items.Count > tamanhoPagina;

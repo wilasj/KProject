@@ -47,7 +47,7 @@ public class CriaVendaCommandHandler(
 
         foreach (var (loteId, qtd) in qtdPorLote)
         {
-            var movResult = estoquesPorLote[loteId].AplicarMovimento(qtd, TipoHistorico.SaidaConsignacao, venda);
+            var movResult = estoquesPorLote[loteId].AplicarMovimento(qtd, TipoHistorico.SaidaConsignacao, venda, command.CriadaPor);
             if (movResult.IsFailure)
             {
                 return Result.Failure<int>(movResult.Errors);

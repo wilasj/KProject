@@ -190,4 +190,47 @@ public class HistoricoLoteEndpointTests(DatabaseFixture fixture)
         var body = await response.Content.ReadFromJsonAsync<HistoricoPage>(TestContext.Current.CancellationToken);
         body!.Items.ShouldAllBe(i => i.VendaId == null);
     }
+
+    [Fact]
+    public async Task HistoricoLote_MovimentoComCriadoPor_DeveRetornarNomeDoUsuario()
+    {
+        var userId = await fixture.CriaUsuarioFixture("historico_criadopor@wilasj.dev", "Big_password!!@21");
+        var client = await fixture.CriaClienteAutenticado("historico_criadopor@wilasj.dev", "Big_password!!@21");
+        int loteId = 0;
+
+        await fixture.ExecuteDbContext(async db =>
+        {
+            var produto = Produto.Criar("Produto CriadoPor", "REF-CP", "Descricao", "ANVISA-CP").Value;
+            db.Produtos.Add(produto);
+            await db.SaveChangesAsync();
+
+            var lote = Lote.Criar(produto.Id, 1, new DateOnly(2028, 1, 1), quantidadeInicial: 100, criadoPor: userId).Value;
+            db.Lotes.Add(lote);
+            await db.SaveChangesAsync();
+            loteId = lote.Id;
+        });
+
+        var response = await client.GetAsync(
+            $"/api/lotes/{loteId}/historico?pagina=1&tamanhoPagina=20",
+            TestContext.Current.CancellationToken);
+
+        response.StatusCode.ShouldBe(HttpStatusCode.OK);
+        var body = await response.Content.ReadFromJsonAsync<HistoricoPage>(TestContext.Current.CancellationToken);
+        body!.Items.ShouldContain(i => i.CriadoPor == "historico_criadopor@wilasj.dev");
+    }
+
+    [Fact]
+    public async Task HistoricoLote_MovimentoSemCriadoPor_CriadoPorDeveSerNulo()
+    {
+        var client = await fixture.CriaClienteAutenticado("historico_nullcp@wilasj.dev", "Big_password!!@21");
+        var loteId = await SeedLoteComMovimentos("NullCP", movimentos: 1);
+
+        var response = await client.GetAsync(
+            $"/api/lotes/{loteId}/historico?pagina=1&tamanhoPagina=20",
+            TestContext.Current.CancellationToken);
+
+        response.StatusCode.ShouldBe(HttpStatusCode.OK);
+        var body = await response.Content.ReadFromJsonAsync<HistoricoPage>(TestContext.Current.CancellationToken);
+        body!.Items.ShouldAllBe(i => i.CriadoPor == null);
+    }
 }

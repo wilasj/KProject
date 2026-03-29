@@ -122,5 +122,6 @@ public class FechaVendaCommandHandlerTests
         var retorno = estoque.Historico.Last();
         retorno.Tipo.ShouldBe(TipoHistorico.RetornoConsignacao);
         retorno.Venda.ShouldBe(venda);
+        retorno.CriadoPor.ShouldBe(1);
     }
 }

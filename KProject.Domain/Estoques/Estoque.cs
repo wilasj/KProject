@@ -20,13 +20,15 @@ public class Estoque
     
     private Estoque() { }
 
-    internal Estoque(uint quantidadeInicial)
+    internal Estoque(uint quantidadeInicial, int? criadoPor = null)
     {
         if (quantidadeInicial > 0)
-            AplicarMovimento(quantidadeInicial, TipoHistorico.Entrada);
+        {
+            AplicarMovimento(quantidadeInicial, TipoHistorico.Entrada, criadoPor: criadoPor);
+        }
     }
 
-    public Result AplicarMovimento(uint quantidade, TipoHistorico tipo, Venda? venda = null)
+    public Result AplicarMovimento(uint quantidade, TipoHistorico tipo, Venda? venda = null, int? criadoPor = null)
     {
         if (quantidade == 0)
         {
@@ -48,6 +50,7 @@ public class Estoque
             DeltaQuantidade = delta,
             Tipo = tipo,
             CriadoEm = DateTime.UtcNow,
+            CriadoPor = criadoPor,
             Venda = venda,
         });
 
