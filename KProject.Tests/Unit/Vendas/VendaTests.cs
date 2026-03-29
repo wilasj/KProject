@@ -109,7 +109,7 @@ public class VendaTests
         if (status is StatusVenda.Fechada)
             venda.Value.FecharVenda(1);
         else
-            venda.Value.CancelarVenda();
+            venda.Value.CancelarVenda(1);
 
         var item = ItemConsignado.Criar(1, 1, "Paciente", 1).Value;
 
@@ -143,8 +143,8 @@ public class VendaTests
         }
         else
         {
-            venda.Value.CancelarVenda();
-            result = venda.Value.CancelarVenda();
+            venda.Value.CancelarVenda(1);
+            result = venda.Value.CancelarVenda(1);
         }
 
         result.Errors.First().ShouldNotBeNull();
@@ -179,9 +179,13 @@ public class VendaTests
         var itemId = venda.Itens.First().Id;
 
         if (status is StatusVenda.Fechada)
+        {
             venda.FecharVenda(1);
+        }
         else
-            venda.CancelarVenda();
+        {
+            venda.CancelarVenda(1);
+        }
 
         var result = venda.EditarItens([(itemId, 1u, 0u)], 1);
 

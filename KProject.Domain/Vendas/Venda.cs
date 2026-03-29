@@ -120,11 +120,20 @@ public sealed class Venda
         return Result.Success();
     }
 
-    public Result CancelarVenda()
+    public Result CancelarVenda(int canceladoPor)
     {
         if (Status is StatusVenda.Fechada or StatusVenda.Cancelada)
         {
             return Result.Failure(Error.Failure("Venda.CancelamentoInvalido", "É impossível cancelar vendas já fechadas/canceladas"));
+        }
+
+        foreach (var item in _itens)
+        {
+            var result = item.AdicionarHistorico(item.QuantidadeConsignada, 0u, canceladoPor);
+            if (result.IsFailure)
+            {
+                return result;
+            }
         }
 
         Status = StatusVenda.Cancelada;
