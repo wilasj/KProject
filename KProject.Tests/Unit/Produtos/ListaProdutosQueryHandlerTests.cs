@@ -31,7 +31,7 @@ public class ListaProdutosQueryHandlerTests
     {
         var itens = new List<ProdutoResponse>
         {
-            new(1, "Paracetamol", "REF-01", "Desc", "ANVISA-001", DateTime.UtcNow),
+            new(1, "Paracetamol", "REF-01", "Desc", "ANVISA-001", DateTime.UtcNow, 3),
         };
         var page = new Page<ProdutoResponse>(itens, 1);
         _produtos.GetPagedAsync(Arg.Any<string?>(), Arg.Any<int>(), Arg.Any<int>(), Arg.Any<CancellationToken>()).Returns(page);

@@ -33,7 +33,7 @@ public class ProdutoRepository(AppDbContext db) : IProdutoRepository
         var items = await q
             .Skip((page - 1) * pageSize)
             .Take(pageSize)
-            .Select(p => new ProdutoResponse(p.Id, p.Nome, p.Referencia, p.Descricao, p.CodigoAnvisa, p.CriadoEm))
+            .Select(p => new ProdutoResponse(p.Id, p.Nome, p.Referencia, p.Descricao, p.CodigoAnvisa, p.CriadoEm, db.Lotes.Count(l => l.ProdutoId == p.Id)))
             .ToListAsync(token);
 
         return new Page<ProdutoResponse>(items, total);

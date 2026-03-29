@@ -22,6 +22,7 @@ const mockSaleProducts = [
     {id: 5, nome: 'Saia Midi Preta', totalLotes: 2},
     {id: 6, nome: 'Jaqueta Couro Marrom', totalLotes: 1},
     {id: 7, nome: 'Shorts Linho Bege', totalLotes: 2},
+    {id: 8, nome: 'Camisa Social Azul', totalLotes: 0},
 ];
 
 const mockLotes: Record<number, object[]> = {

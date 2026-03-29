@@ -105,7 +105,12 @@
             } @else {
                 <div class="sale-drawer__product-list">
                     @for (product of products(); track product.id) {
-                        <button class="sale-drawer__product-item" (click)="selectProduct(product)">
+                        <button
+                            class="sale-drawer__product-item"
+                            [class.sale-drawer__product-item--disabled]="product.totalLotes === 0"
+                            [disabled]="product.totalLotes === 0"
+                            (click)="selectProduct(product)"
+                        >
                             <span class="sale-drawer__product-name">{{ product.nome }}</span>
                             <span class="sale-drawer__product-lots">
                                 {{ product.totalLotes }} {{ product.totalLotes === 1 ? 'lote' : 'lotes' }}

@@ -114,6 +114,28 @@ describe('SaleDrawer', () => {
         expect(items.length).toBe(2);
     });
 
+    it('deve desabilitar produto com totalLotes === 0', () => {
+        const fixture = TestBed.createComponent(SaleDrawer);
+        fixture.detectChanges();
+
+        fixture.nativeElement.querySelector('.sale-drawer__plus-btn').click();
+        fixture.detectChanges();
+        httpTesting.expectOne(r => r.url === '/api/produtos').flush({
+            items: [
+                { id: 1, nome: 'Produto Com Lotes', totalLotes: 2 },
+                { id: 2, nome: 'Produto Sem Lotes', totalLotes: 0 },
+            ],
+            total: 2,
+        });
+        fixture.detectChanges();
+
+        const items = fixture.nativeElement.querySelectorAll('.sale-drawer__product-item');
+        expect(items.length).toBe(2);
+        expect(items[0].disabled).toBe(false);
+        expect(items[1].disabled).toBe(true);
+        expect(items[1].classList).toContain('sale-drawer__product-item--disabled');
+    });
+
     it('deve entrar em modo selecting-lot ao selecionar produto', () => {
         const fixture = TestBed.createComponent(SaleDrawer);
         fixture.detectChanges();
