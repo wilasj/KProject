@@ -107,7 +107,7 @@ public class VendaTests
         venda.Errors.ShouldBeEmpty();
 
         if (status is StatusVenda.Fechada)
-            venda.Value.FecharVenda();
+            venda.Value.FecharVenda(1);
         else
             venda.Value.CancelarVenda();
 
@@ -138,8 +138,8 @@ public class VendaTests
 
         if (status is StatusVenda.Fechada)
         {
-            venda.Value.FecharVenda();
-            result = venda.Value.FecharVenda();
+            venda.Value.FecharVenda(1);
+            result = venda.Value.FecharVenda(1);
         }
         else
         {
@@ -179,7 +179,7 @@ public class VendaTests
         var itemId = venda.Itens.First().Id;
 
         if (status is StatusVenda.Fechada)
-            venda.FecharVenda();
+            venda.FecharVenda(1);
         else
             venda.CancelarVenda();
 

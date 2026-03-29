@@ -48,7 +48,7 @@ public class EditaVendaCommandHandlerTests
     public async Task Handle_DeveRetornarFailure_QuandoVendaFechada()
     {
         var venda = CriaVendaComItem();
-        venda.FecharVenda();
+        venda.FecharVenda(1);
         _vendas.GetByIdWithItensAsync(1, Arg.Any<CancellationToken>()).Returns(venda);
 
         var result = await Handle(ComandoValido());

@@ -101,15 +101,20 @@ public sealed class Venda
         return Result.Success();
     }
 
-    //TODO: Por enquanto, so faz verificacoes simples e fecha a venda. Na verdade, depende de ItemConsignado pra atualizar as quantidades em aberto
-    // para devolvidos e setar o status.
-    public Result FecharVenda()
+    public Result FecharVenda(int fechadoPor)
     {
         if (Status is StatusVenda.Fechada or StatusVenda.Cancelada)
         {
             return Result.Failure(Error.Failure("Venda.FechamentoInvalido", "É impossível fechar vendas já fechadas/canceladas"));
         }
-        
+
+        foreach (var item in _itens.Where(i => i.EmAberto > 0))
+        {
+            var result = item.AdicionarHistorico(item.Devolvido + item.EmAberto, item.Vendido, fechadoPor);
+            if (result.IsFailure)
+                return result;
+        }
+
         Status = StatusVenda.Fechada;
 
         return Result.Success();

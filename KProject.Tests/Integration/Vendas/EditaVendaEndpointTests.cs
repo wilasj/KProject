@@ -123,7 +123,7 @@ public class EditaVendaEndpointTests(DatabaseFixture fixture)
         await fixture.ExecuteDbContext(async db =>
         {
             var venda = await db.Vendas.FindAsync(vendaId);
-            venda!.FecharVenda();
+            venda!.FecharVenda(1);
             await db.SaveChangesAsync();
         });
 
