@@ -1,44 +1,43 @@
-<div class="vendas__main">
-    <app-search-bar
-        placeholder="Buscar vendas..."
-        [initialValue]="initialSearch()"
-        (search)="onSearch($event)"
-    />
-
-    <div class="vendas__content">
-        <div class="vendas__toolbar">
-            <h2 class="vendas__title">Vendas</h2>
-            <button class="vendas__btn-new" (click)="openNewSale()">
-                <span class="material-symbols-outlined">add</span>
-                Nova Venda
-            </button>
-        </div>
-
-        @if (loading()) {
-            <div class="vendas__loading">
-                <span class="material-symbols-outlined">hourglass_empty</span>
+<app-page-layout [config]="config">
+  <ng-template pageLayoutContent let-items let-total="total" let-currentPage="currentPage" let-pageSize="pageSize">
+    <app-data-table
+      [items]="items"
+      [total]="total"
+      [currentPage]="currentPage"
+      [pageSize]="pageSize"
+      emptyIcon="receipt_long"
+      emptyMessage="Nenhuma venda encontrada"
+      (pageChange)="layout().onPageChange($event)"
+    >
+      <ng-template dataTableRow let-sale>
+        <div class="sale-row">
+          <div class="sale-row__info">
+            <div class="sale-row__title">
+              <span class="sale-row__name">Venda #{{ sale.id }}</span>
+              <span class="sale-row__badge sale-row__badge--{{ sale.status.toLowerCase() }}">
+                {{ sale.status }}
+              </span>
             </div>
-        } @else {
-            <app-sale-table
-                [sales]="sales()"
-                [total]="total()"
-                [currentPage]="currentPage()"
-                [pageSize]="pageSize"
-                (pageChange)="onPageChange($event)"
-                (saleSelect)="onSaleSelect($event)"
-            />
-        }
-    </div>
-</div>
+            <span class="sale-row__meta">
+              {{ sale.clienteNome }}
+              <span class="sale-row__dot">·</span>
+              {{ sale.criadaEm | date:'dd/MM/yyyy' }}
+            </span>
+          </div>
+          <div class="sale-row__right">
+            <span class="sale-row__count">{{ sale.totalItens }} produtos</span>
+          </div>
+        </div>
+      </ng-template>
+    </app-data-table>
+  </ng-template>
 
-<aside class="vendas__drawer" [class.vendas__drawer--open]="drawerOpen()">
-    <div class="vendas__drawer-inner">
-        <app-sale-drawer
-            [open]="drawerOpen()"
-            [saleId]="selectedSaleId()"
-            (saleCreated)="onSaleCreated()"
-            (saleUpdated)="onSaleUpdated()"
-            (close)="closeDrawer()"
-        />
-    </div>
-</aside>
+  <ng-template pageLayoutDrawer>
+    <app-sale-drawer
+      [open]="layout().drawerOpen()"
+      (close)="layout().closeDrawer()"
+      (saleCreated)="layout().onItemSaved()"
+      (saleUpdated)="layout().onItemSaved()"
+    />
+  </ng-template>
+</app-page-layout>
