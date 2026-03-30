@@ -1,3 +1,5 @@
+import { PaginatedResponse } from './paginated-response';
+
 export interface Product {
   id: number;
   nome: string;
@@ -7,7 +9,4 @@ export interface Product {
   criadoEm: string;
 }
 
-export interface ProductsResponse {
-  items: Product[];
-  total: number;
-}
+export type ProductsResponse = PaginatedResponse<Product>;

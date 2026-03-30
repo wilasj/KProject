@@ -34,77 +34,60 @@ describe('ProductAccordion', () => {
 
   afterEach(() => httpTesting.verify());
 
-  it('não deve fazer requisição quando recolhido', () => {
+  function setup(expanded = false) {
     const fixture = TestBed.createComponent(ProductAccordion);
     fixture.componentRef.setInput('product', mockProduct);
-    fixture.componentRef.setInput('expanded', false);
+    if (expanded) {
+      fixture.componentInstance.toggle();
+    }
     fixture.detectChanges();
+    return fixture;
+  }
+
+  it('não deve fazer requisição quando recolhido', () => {
+    setup();
     httpTesting.expectNone('/api/produtos/1/lotes');
   });
 
   it('deve exibir skeletons ao expandir', () => {
-    const fixture = TestBed.createComponent(ProductAccordion);
-    fixture.componentRef.setInput('product', mockProduct);
-    fixture.componentRef.setInput('expanded', true);
-    fixture.detectChanges();
-
+    const fixture = setup(true);
     httpTesting.expectOne('/api/produtos/1/lotes');
-
     const skeletons = fixture.nativeElement.querySelectorAll('.lote-skeleton');
     expect(skeletons.length).toBeGreaterThan(0);
   });
 
   it('deve exibir os lotes após carregar', () => {
-    const fixture = TestBed.createComponent(ProductAccordion);
-    fixture.componentRef.setInput('product', mockProduct);
-    fixture.componentRef.setInput('expanded', true);
-    fixture.detectChanges();
-
+    const fixture = setup(true);
     httpTesting.expectOne('/api/produtos/1/lotes').flush(mockLotes);
     fixture.detectChanges();
-
     const cards = fixture.nativeElement.querySelectorAll('app-lote-card');
     expect(cards.length).toBe(2);
   });
 
   it('deve mudar para modo formulário ao clicar em adicionar', () => {
-    const fixture = TestBed.createComponent(ProductAccordion);
-    fixture.componentRef.setInput('product', mockProduct);
-    fixture.componentRef.setInput('expanded', true);
-    fixture.detectChanges();
+    const fixture = setup(true);
     httpTesting.expectOne('/api/produtos/1/lotes').flush(mockLotes);
     fixture.detectChanges();
-
     fixture.nativeElement.querySelector('.product-accordion__add-btn').click();
     fixture.detectChanges();
-
     expect(fixture.componentInstance.mode()).toBe('form');
   });
 
   it('deve mudar para modo histórico ao selecionar um lote', () => {
-    const fixture = TestBed.createComponent(ProductAccordion);
-    fixture.componentRef.setInput('product', mockProduct);
-    fixture.componentRef.setInput('expanded', true);
-    fixture.detectChanges();
+    const fixture = setup(true);
     httpTesting.expectOne('/api/produtos/1/lotes').flush(mockLotes);
     fixture.detectChanges();
-
     fixture.nativeElement.querySelector('app-lote-card').click();
     fixture.detectChanges();
     httpTesting.expectOne('/api/lotes/1/historico?pagina=1&tamanhoPagina=10').flush({ items: [], hasMore: false });
-
     expect(fixture.componentInstance.mode()).toBe('history');
     expect(fixture.componentInstance.selectedLote()?.id).toBe(1);
   });
 
   it('deve voltar para modo grid ao clicar no mesmo lote selecionado', () => {
-    const fixture = TestBed.createComponent(ProductAccordion);
-    fixture.componentRef.setInput('product', mockProduct);
-    fixture.componentRef.setInput('expanded', true);
-    fixture.detectChanges();
+    const fixture = setup(true);
     httpTesting.expectOne('/api/produtos/1/lotes').flush(mockLotes);
     fixture.detectChanges();
-
     const card = fixture.nativeElement.querySelector('app-lote-card');
     card.click();
     fixture.detectChanges();
@@ -112,27 +95,20 @@ describe('ProductAccordion', () => {
     fixture.detectChanges();
     card.click();
     fixture.detectChanges();
-
     expect(fixture.componentInstance.mode()).toBe('grid');
     expect(fixture.componentInstance.selectedLote()).toBeNull();
   });
 
   it('deve resetar o estado ao recolher', () => {
-    const fixture = TestBed.createComponent(ProductAccordion);
-    fixture.componentRef.setInput('product', mockProduct);
-    fixture.componentRef.setInput('expanded', true);
-    fixture.detectChanges();
+    const fixture = setup(true);
     httpTesting.expectOne('/api/produtos/1/lotes').flush(mockLotes);
     fixture.detectChanges();
-
     fixture.nativeElement.querySelector('app-lote-card').click();
     fixture.detectChanges();
     httpTesting.expectOne('/api/lotes/1/historico?pagina=1&tamanhoPagina=10').flush({ items: [], hasMore: false });
     fixture.detectChanges();
-
-    fixture.componentRef.setInput('expanded', false);
+    fixture.componentInstance.toggle();
     fixture.detectChanges();
-
     expect(fixture.componentInstance.mode()).toBe('grid');
     expect(fixture.componentInstance.selectedLote()).toBeNull();
   });

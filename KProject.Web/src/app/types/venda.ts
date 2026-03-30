@@ -1,4 +1,6 @@
-﻿export type StatusVenda = 'Aberta' | 'Fechada' | 'Cancelada';
+﻿import { PaginatedResponse } from './paginated-response';
+
+export type StatusVenda = 'Aberta' | 'Fechada' | 'Cancelada';
 
 export interface Sale {
   id: number;
@@ -8,10 +10,7 @@ export interface Sale {
   totalItens: number;
 }
 
-export interface SalesResponse {
-    items: Sale[];
-    total: number;
-}
+export type SalesResponse = PaginatedResponse<Sale>;
 
 export interface SaleItemDetail {
     id: number;

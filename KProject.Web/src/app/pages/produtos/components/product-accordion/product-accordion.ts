@@ -16,7 +16,7 @@ export class ProductAccordion {
   private http = inject(HttpClient);
 
   product = input.required<Product>();
-  expanded = input(false);
+  expanded = signal(false);
 
   mode = signal<'grid' | 'form' | 'history'>('grid');
   lotes = signal<Lote[]>([]);
@@ -32,6 +32,10 @@ export class ProductAccordion {
         this.selectedLote.set(null);
       }
     });
+  }
+
+  toggle() {
+    this.expanded.update(v => !v);
   }
 
   onAddLote() {

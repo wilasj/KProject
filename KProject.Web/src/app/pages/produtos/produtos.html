@@ -1,41 +1,40 @@
-<div class="produtos__main">
-  <app-search-bar
-    placeholder="Buscar produtos..."
-    [initialValue]="initialSearch()"
-    (search)="onSearch($event)"
-  />
+<app-page-layout [config]="config">
+  <ng-template pageLayoutContent let-items let-total="total" let-currentPage="currentPage" let-pageSize="pageSize">
+    <app-data-table
+      [items]="items"
+      [total]="total"
+      [currentPage]="currentPage"
+      [pageSize]="pageSize"
+      emptyIcon="inventory_2"
+      emptyMessage="Nenhum produto encontrado"
+      (pageChange)="layout().onPageChange($event)"
+    >
+      <ng-template dataTableRow let-product>
+        <div class="product-row" [class.product-row--expanded]="accordion.expanded()" (click)="accordion.toggle()">
+          <div class="product-row__info">
+            <span class="product-row__name">{{ product.nome }}</span>
+            <span class="product-row__meta">
+              {{ product.referencia }}
+              <span class="product-row__dot">·</span>
+              {{ product.codigoAnvisa }}
+            </span>
+            <span class="product-row__date">Criado em {{ product.criadoEm | date:'dd/MM/yyyy' }}</span>
+          </div>
+          <span
+            class="material-symbols-outlined product-row__chevron"
+            [class.product-row__chevron--open]="accordion.expanded()"
+          >keyboard_arrow_down</span>
+        </div>
+        <app-product-accordion #accordion [product]="product" />
+      </ng-template>
+    </app-data-table>
+  </ng-template>
 
-  <div class="produtos__content">
-    <div class="produtos__toolbar">
-      <h2 class="produtos__title">Produtos</h2>
-      <button class="produtos__btn-new" (click)="drawerOpen.set(true)">
-        <span class="material-symbols-outlined">add</span>
-        Novo Produto
-      </button>
-    </div>
-
-    @if (loading()) {
-      <div class="produtos__loading">
-        <span class="material-symbols-outlined">hourglass_empty</span>
-      </div>
-    } @else {
-      <app-product-table
-        [products]="products()"
-        [total]="total()"
-        [currentPage]="currentPage()"
-        [pageSize]="pageSize"
-        (pageChange)="onPageChange($event)"
-      />
-    }
-  </div>
-</div>
-
-<aside class="produtos__drawer" [class.produtos__drawer--open]="drawerOpen()">
-  <div class="produtos__drawer-inner">
+  <ng-template pageLayoutDrawer>
     <app-product-drawer
-      [open]="drawerOpen()"
-      (close)="drawerOpen.set(false)"
-      (productCreated)="onProductCreated()"
+      [open]="layout().drawerOpen()"
+      (close)="layout().closeDrawer()"
+      (productCreated)="layout().onItemSaved()"
     />
-  </div>
-</aside>
+  </ng-template>
+</app-page-layout>
