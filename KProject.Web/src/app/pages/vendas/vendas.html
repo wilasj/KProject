@@ -10,24 +10,10 @@
       (pageChange)="layout().onPageChange($event)"
     >
       <ng-template dataTableRow let-sale>
-        <div class="sale-row">
-          <div class="sale-row__info">
-            <div class="sale-row__title">
-              <span class="sale-row__name">Venda #{{ sale.id }}</span>
-              <span class="sale-row__badge sale-row__badge--{{ sale.status.toLowerCase() }}">
-                {{ sale.status }}
-              </span>
-            </div>
-            <span class="sale-row__meta">
-              {{ sale.clienteNome }}
-              <span class="sale-row__dot">·</span>
-              {{ sale.criadaEm | date:'dd/MM/yyyy' }}
-            </span>
-          </div>
-          <div class="sale-row__right">
-            <span class="sale-row__count">{{ sale.totalItens }} produtos</span>
-          </div>
-        </div>
+        <app-sale-accordion
+          [sale]="sale"
+          (saleUpdated)="layout().onItemSaved()"
+        />
       </ng-template>
     </app-data-table>
   </ng-template>

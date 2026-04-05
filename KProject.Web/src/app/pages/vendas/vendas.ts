@@ -1,12 +1,12 @@
 import { Component, viewChild } from '@angular/core';
-import { DatePipe } from '@angular/common';
 import { PageLayout, PageLayoutConfig, PageLayoutContentDef, PageLayoutDrawerDef } from '@components/page-layout/page-layout';
 import { DataTable, DataTableRowDef } from '@components/data-table/data-table';
 import { SaleDrawer } from './components/sale-drawer/sale-drawer';
+import { SaleAccordion } from './components/sale-accordion/sale-accordion';
 
 @Component({
   selector: 'app-vendas',
-  imports: [DatePipe, PageLayout, PageLayoutContentDef, PageLayoutDrawerDef, DataTable, DataTableRowDef, SaleDrawer],
+  imports: [PageLayout, PageLayoutContentDef, PageLayoutDrawerDef, DataTable, DataTableRowDef, SaleDrawer, SaleAccordion],
   templateUrl: './vendas.html',
   styleUrl: './vendas.scss',
 })

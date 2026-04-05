@@ -31,3 +31,13 @@ export interface SaleDetail {
     clienteNome: string;
     itens: SaleItemDetail[];
 }
+
+export interface EditableItem {
+    id: number;
+    produtoNome: string;
+    loteNumero: number;
+    pacienteNome: string;
+    quantidadeConsignada: number;
+    vendido: number;
+    devolvido: number;
+}

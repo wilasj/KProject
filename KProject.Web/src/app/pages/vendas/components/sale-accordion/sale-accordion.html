@@ -1,0 +1,166 @@
+<div class="sale-accordion__header" [class.sale-accordion__header--open]="expanded() || isClosing()" (click)="toggle()">
+  <div class="sale-accordion__info">
+    <div class="sale-accordion__title-row">
+      <span class="sale-accordion__name">Venda #{{ sale().id }}</span>
+      <span class="sale-accordion__badge sale-accordion__badge--{{ sale().status.toLowerCase() }}">
+        {{ sale().status }}
+      </span>
+    </div>
+    <span class="sale-accordion__meta">
+      {{ sale().clienteNome }}
+      <span class="sale-accordion__dot">·</span>
+      {{ sale().criadaEm | date:'dd/MM/yyyy' }}
+    </span>
+  </div>
+
+  <div class="sale-accordion__actions" (click)="$event.stopPropagation()">
+    <button
+      class="sale-accordion__btn sale-accordion__btn--save"
+      [class.sale-accordion__btn--visible]="isDirty()"
+      [disabled]="saving()"
+      (click)="onSave()"
+      title="Salvar alterações"
+    >
+      @if (saving()) {
+        <span class="material-symbols-outlined sale-accordion__spinner">progress_activity</span>
+      } @else {
+        <span class="material-symbols-outlined">save</span>
+      }
+    </button>
+
+    @if (!isReadOnly()) {
+      <button
+        class="sale-accordion__btn sale-accordion__btn--close"
+        [disabled]="actionState() !== 'idle'"
+        (click)="onFechar()"
+        title="Fechar venda"
+      >
+        <span class="material-symbols-outlined">lock</span>
+      </button>
+      <button
+        class="sale-accordion__btn sale-accordion__btn--cancel"
+        [disabled]="actionState() !== 'idle'"
+        (click)="onCancelar()"
+        title="Cancelar venda"
+      >
+        <span class="material-symbols-outlined">cancel</span>
+      </button>
+    }
+  </div>
+</div>
+
+@if (expanded()) {
+  <div
+    class="sale-accordion__panel"
+    [class.sale-accordion__panel--closing]="isClosing()"
+  >
+    @if (actionState() === 'closed' || actionState() === 'cancelled') {
+      <div class="sale-accordion__overlay" [class.sale-accordion__overlay--cancel]="actionState() === 'cancelled'">
+        <span class="material-symbols-outlined sale-accordion__overlay-icon">
+          {{ actionState() === 'cancelled' ? 'cancel' : 'lock' }}
+        </span>
+        <span class="sale-accordion__overlay-text">
+          {{ actionState() === 'cancelled' ? 'Cancelado!' : 'Fechado!' }}
+        </span>
+      </div>
+    }
+
+    @if (loading()) {
+      <div class="sale-accordion__skeleton-panel">
+        <div class="sale-accordion__skeleton-left">
+          <div class="sale-accordion__skeleton sale-accordion__skeleton--meta-line"></div>
+          <div class="sale-accordion__skeleton sale-accordion__skeleton--meta-line"></div>
+          <div class="sale-accordion__skeleton sale-accordion__skeleton--meta-line sale-accordion__skeleton--short"></div>
+          <div class="sale-accordion__skeleton-cards">
+            <div class="sale-accordion__skeleton sale-accordion__skeleton--card"></div>
+            <div class="sale-accordion__skeleton sale-accordion__skeleton--card"></div>
+            <div class="sale-accordion__skeleton sale-accordion__skeleton--card"></div>
+            <div class="sale-accordion__skeleton sale-accordion__skeleton--card"></div>
+          </div>
+        </div>
+        <div class="sale-accordion__skeleton-right">
+          @for (i of [1, 2, 3]; track i) {
+            <div class="sale-accordion__skeleton sale-accordion__skeleton--row"></div>
+          }
+        </div>
+      </div>
+    } @else {
+      <div class="sale-accordion__left">
+        <div class="sale-accordion__metadata">
+          <span class="sale-accordion__meta-item">
+            <span class="sale-accordion__meta-label">Modificado em:</span>
+            {{ modificadaEm() | date:'dd/MM/yyyy' }}
+          </span>
+          <span class="sale-accordion__meta-item">
+            <span class="sale-accordion__meta-label">Modificado por:</span>
+            {{ modificadaPor() }}
+          </span>
+          <span class="sale-accordion__meta-item">
+            <span class="sale-accordion__meta-label">Cliente:</span>
+            {{ clienteNome() }}
+          </span>
+        </div>
+
+        <div class="sale-accordion__stats">
+          <div class="sale-accordion__stat-card sale-accordion__stat-card--total">
+            <span class="sale-accordion__stat-label">
+              <span class="material-symbols-outlined">stacks</span>
+              Total
+            </span>
+            <span class="sale-accordion__stat-value">{{ total() }}</span>
+          </div>
+
+          <div class="sale-accordion__stats-row">
+            <div class="sale-accordion__stat-card">
+              <span class="sale-accordion__stat-label">
+                <span class="material-symbols-outlined">package_2</span>
+                Vendidos
+              </span>
+              <span class="sale-accordion__stat-value">{{ vendidos() }}</span>
+            </div>
+            <div class="sale-accordion__stat-card">
+              <span class="sale-accordion__stat-label">
+                <span class="material-symbols-outlined">undo</span>
+                Devolvidos
+              </span>
+              <span class="sale-accordion__stat-value">{{ devolvidos() }}</span>
+            </div>
+            <div class="sale-accordion__stat-card">
+              <span class="sale-accordion__stat-label">
+                <span class="material-symbols-outlined">hourglass_empty</span>
+                Em Aberto
+              </span>
+              <span class="sale-accordion__stat-value">{{ emAberto() }}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="sale-accordion__right">
+        <div class="sale-accordion__scroll-wrapper">
+          @if (showTopFog()) {
+            <div class="sale-accordion__fog sale-accordion__fog--top"></div>
+          }
+
+          <div
+            #scrollContainer
+            class="sale-accordion__list"
+            (scroll)="onScroll($any($event.target))"
+          >
+            @for (item of editableItems(); track item.id) {
+              <app-sale-item-row
+                [item]="item"
+                [readOnly]="isReadOnly()"
+                (itemChange)="onItemChange($event)"
+              />
+            }
+          </div>
+
+          @if (showBottomFog()) {
+            <div class="sale-accordion__fog sale-accordion__fog--bottom"></div>
+          }
+        </div>
+      </div>
+    }
+  </div>
+}
