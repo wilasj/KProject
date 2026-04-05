@@ -1,38 +1,22 @@
-<div class="client-drawer__header">
-  <div>
-    <h2 class="client-drawer__title">Novo Cliente</h2>
-    <p class="client-drawer__subtitle">Preencha os dados do cliente</p>
-  </div>
-  <button class="client-drawer__close" (click)="close.emit()" aria-label="Fechar">
-    <span class="material-symbols-outlined">close</span>
-  </button>
-</div>
+<app-drawer title="Novo Cliente" subtitle="Preencha os dados do cliente" [errors]="errors()" (close)="close.emit()">
+  <form class="client-drawer__form" [formGroup]="form" (ngSubmit)="onSubmit()">
+    <div class="client-drawer__field">
+      <label for="nome">Nome</label>
+      <input id="nome" type="text" formControlName="nome" placeholder="Nome do cliente" />
+    </div>
 
-@if (errors().length > 0) {
-  <div class="client-drawer__errors">
-    @for (error of errors(); track error.code) {
-      <span>{{ error.description }}</span>
-    }
-  </div>
-}
-
-<form class="client-drawer__form" [formGroup]="form" (ngSubmit)="onSubmit()">
-  <div class="client-drawer__field">
-    <label for="nome">Nome</label>
-    <input id="nome" type="text" formControlName="nome" placeholder="Nome do cliente" />
-  </div>
-
-  <button
-    type="submit"
-    class="client-drawer__submit"
-    [class.client-drawer__submit--saved]="saved()"
-    [disabled]="form.invalid || saving() || saved()"
-  >
-    @if (saved()) {
-      <span class="material-symbols-outlined">check_circle</span>
-      Salvo!
-    } @else {
-      {{ saving() ? 'Salvando...' : 'Salvar' }}
-    }
-  </button>
-</form>
+    <button
+      type="submit"
+      class="client-drawer__submit"
+      [class.client-drawer__submit--saved]="saved()"
+      [disabled]="form.invalid || saving() || saved()"
+    >
+      @if (saved()) {
+        <span class="material-symbols-outlined">check_circle</span>
+        Salvo!
+      } @else {
+        {{ saving() ? 'Salvando...' : 'Salvar' }}
+      }
+    </button>
+  </form>
+</app-drawer>

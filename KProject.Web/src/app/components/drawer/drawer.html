@@ -1,0 +1,21 @@
+<div class="drawer__header">
+  <div>
+    <h2 class="drawer__title">{{ title() }}</h2>
+    @if (subtitle()) {
+      <p class="drawer__subtitle">{{ subtitle() }}</p>
+    }
+  </div>
+  <button class="drawer__close" (click)="close.emit()" aria-label="Fechar">
+    <span class="material-symbols-outlined">close</span>
+  </button>
+</div>
+
+@if (errors().length > 0) {
+  <div class="drawer__errors">
+    @for (error of errors(); track error.code) {
+      <span>{{ error.description }}</span>
+    }
+  </div>
+}
+
+<ng-content />

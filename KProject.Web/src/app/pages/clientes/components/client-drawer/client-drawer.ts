@@ -1,12 +1,13 @@
 import { Component, effect, inject, input, output, signal } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
+import { Drawer } from '@components/drawer/drawer';
 
 interface ValidationError { code: string; description: string; }
 
 @Component({
   selector: 'app-client-drawer',
-  imports: [ReactiveFormsModule],
+  imports: [ReactiveFormsModule, Drawer],
   templateUrl: './client-drawer.html',
   styleUrl: './client-drawer.scss',
 })
