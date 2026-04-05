@@ -1,0 +1,5 @@
+@for (task of tasks(); track task.id) {
+  <app-import-task-row [task]="task" (rowClick)="taskClick.emit($event)" />
+} @empty {
+  <p class="import-task-list__empty">Nenhuma importação ainda.</p>
+}

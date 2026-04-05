@@ -2,10 +2,11 @@ import {Component, inject, output, signal} from '@angular/core';
 import {RouterLink, RouterLinkActive} from '@angular/router';
 import {Auth} from '@core/auth';
 import {InvitePopup} from '../invite-popup/invite-popup';
+import {PdfImporterComponent} from '@components/pdf-importer/pdf-importer.component';
 
 @Component({
   selector: 'app-sidebar',
-  imports: [RouterLink, RouterLinkActive, InvitePopup],
+  imports: [RouterLink, RouterLinkActive, InvitePopup, PdfImporterComponent],
   templateUrl: './sidebar.html',
   styleUrl: './sidebar.scss',
 })
@@ -13,6 +14,7 @@ export class Sidebar {
   private auth = inject(Auth);
   logoutClick = output<void>();
   inviteOpen = signal(false);
+  importOpen = signal(false);
 
   get initial(): string {
     const email = this.auth.email();

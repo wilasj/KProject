@@ -17,6 +17,15 @@
 
   <div class="sidebar__bottom">
     <button
+      class="sidebar__import"
+      (click)="importOpen.set(true)"
+      aria-label="Importar PDF"
+      title="Importar PDF"
+    >
+      <span class="material-symbols-outlined">upload_file</span>
+    </button>
+
+    <button
       class="sidebar__invite"
       (click)="inviteOpen.set(true)"
       aria-label="Convidar usuário"
@@ -33,4 +42,8 @@
 
 @if (inviteOpen()) {
   <app-invite-popup (close)="inviteOpen.set(false)" />
+}
+
+@if (importOpen()) {
+  <app-pdf-importer (close)="importOpen.set(false)" />
 }

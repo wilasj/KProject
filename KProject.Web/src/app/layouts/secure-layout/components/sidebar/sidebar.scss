@@ -93,6 +93,16 @@
     flex-shrink: 0;
   }
 
+  &__import {
+    @extend %sidebar-icon-btn;
+    @extend %sidebar-btn-reset;
+
+    &:hover {
+      background: var(--sidebar-hover-bg);
+      color: var(--sidebar-hover-color);
+    }
+  }
+
   &__invite {
     @extend %sidebar-icon-btn;
     @extend %sidebar-btn-reset;

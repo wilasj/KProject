@@ -1,0 +1,23 @@
+<div
+  class="import-task-row"
+  [class.import-task-row--clickable]="isClickable()"
+  [class.import-task-row--processing]="task().status === 'processing'"
+  (click)="onClick()"
+>
+  <span class="import-task-row__icon material-symbols-outlined" [attr.data-status]="task().status">
+    {{ statusIcon() }}
+  </span>
+
+  <div class="import-task-row__info">
+    <span class="import-task-row__filename">{{ task().fileName }}</span>
+    @if (task().status === 'error' && task().errorMessage) {
+      <span class="import-task-row__error">{{ task().errorMessage }}</span>
+    } @else {
+      <span class="import-task-row__date">{{ formattedDate() }}</span>
+    }
+  </div>
+
+  @if (isClickable()) {
+    <span class="import-task-row__chevron material-symbols-outlined">chevron_right</span>
+  }
+</div>

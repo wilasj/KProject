@@ -1,6 +1,7 @@
 import {HttpInterceptorFn, HttpResponse} from '@angular/common/http';
-import {of} from 'rxjs';
+import {of, Subject} from 'rxjs';
 import {delay} from 'rxjs/operators';
+import {ImportTask} from '@models/import';
 
 const randomDelay = () => Math.floor(Math.random() * 800) + 200;
 
@@ -110,6 +111,127 @@ const mockSales = [
     {id: 1031, clienteNome: 'Ricardo Souza', criadaEm: '2026-02-16T08:00:00Z', status: 'Fechada', totalItens: 1},
 ];
 
+export const mockSseSubject = new Subject<ImportTask>();
+
+const mockImportTasks: ImportTask[] = [
+    {
+        id: 'task-1',
+        fileName: 'fornecedor-abc-marco.pdf',
+        status: 'done',
+        createdAt: '2026-04-01T10:00:00Z',
+        changeLines: [],
+    },
+    {
+        id: 'task-2',
+        fileName: 'fornecedor-xyz-fev.pdf',
+        status: 'error',
+        createdAt: '2026-04-02T09:00:00Z',
+        errorMessage: 'Formato de PDF não reconhecido.',
+    },
+    {
+        id: 'task-4',
+        fileName: 'medtronic-lotes-q1-2026.pdf',
+        status: 'done',
+        createdAt: '2026-03-28T08:30:00Z',
+        changeLines: [],
+    },
+    {
+        id: 'task-5',
+        fileName: 'johnson-entradas-marco.pdf',
+        status: 'error',
+        createdAt: '2026-03-25T11:15:00Z',
+        errorMessage: 'PDF protegido por senha.',
+    },
+    {
+        id: 'task-6',
+        fileName: 'abbott-produtos-novos.pdf',
+        status: 'pending',
+        createdAt: '2026-04-05T16:50:00Z',
+    },
+    {
+        id: 'task-7',
+        fileName: 'stryker-implantes-abril.pdf',
+        status: 'processing',
+        createdAt: '2026-04-05T16:55:00Z',
+    },
+    {
+        id: 'task-8',
+        fileName: 'baxter-consumiveis-q2.pdf',
+        status: 'review',
+        createdAt: '2026-04-04T09:00:00Z',
+        changeLines: [
+            {
+                id: 'cl-5',
+                type: 'StockEntry',
+                productName: 'Cateter Venoso Central 7Fr',
+                referencia: 'CVC-007',
+                loteNumero: 3,
+                validade: '2028-03-31',
+                quantidade: 50,
+            },
+            {
+                id: 'cl-6',
+                type: 'NewProduct',
+                productName: 'Bolsa Enteral 500ml',
+                referencia: 'BE-500',
+                loteNumero: 1,
+                validade: '2027-12-01',
+                quantidade: 30,
+            },
+        ],
+    },
+    {
+        id: 'task-3',
+        fileName: 'fornecedor-abc-abril.pdf',
+        status: 'review',
+        createdAt: '2026-04-03T14:00:00Z',
+        changeLines: [
+            {
+                id: 'cl-1',
+                type: 'StockEntry',
+                productName: 'Camiseta Basica Branca',
+                referencia: 'CAM-001',
+                loteNumero: 1,
+                validade: '2027-06-15',
+                quantidade: 20,
+            },
+            {
+                id: 'cl-2',
+                type: 'NewLot',
+                productName: 'Calca Jeans Slim',
+                referencia: 'CAL-002',
+                loteNumero: 5,
+                validade: '2028-01-10',
+                quantidade: 15,
+            },
+            {
+                id: 'cl-3',
+                type: 'NewProduct',
+                productName: 'Produto Desconhecido',
+                referencia: 'PROD-999',
+                loteNumero: 7,
+                validade: '2027-09-01',
+                quantidade: 5,
+            },
+            {
+                id: 'cl-4',
+                type: 'Ambiguous',
+                productName: 'Vestido Floral',
+                referencia: 'VEST-003',
+                loteNumero: 2,
+                validade: '2027-03-10',
+                quantidade: 8,
+                candidates: [
+                    {id: '3', nome: 'Vestido Floral G', referencia: 'VFG-003'},
+                    {id: '9', nome: 'Vestido Floral P', referencia: 'VFP-009'},
+                ],
+            },
+        ],
+    },
+];
+
+let taskIdCounter = 10;
+
 export const mockInterceptor: HttpInterceptorFn = (req, next) => {
     if (req.url === '/api/clientes' && req.method === 'POST') {
         const body = req.body as {nome: string};
@@ -214,6 +336,53 @@ export const mockInterceptor: HttpInterceptorFn = (req, next) => {
         const start = (pagina - 1) * tamanhoPagina;
         const items = filtered.slice(start, start + tamanhoPagina);
         return of(new HttpResponse({status: 200, body: {items, total: filtered.length}})).pipe(delay(randomDelay()));
+    }
+
+    if (req.url === '/api/imports' && req.method === 'GET') {
+        return of(new HttpResponse({status: 200, body: mockImportTasks})).pipe(delay(randomDelay()));
+    }
+
+    if (req.url === '/api/imports' && req.method === 'POST') {
+        const formData = req.body as FormData;
+        const files = formData.getAll('files') as File[];
+        const newTasks: ImportTask[] = files.map(file => ({
+            id: `task-${taskIdCounter++}`,
+            fileName: file.name,
+            status: 'pending',
+            createdAt: new Date().toISOString(),
+        }));
+        mockImportTasks.push(...newTasks);
+        return of(new HttpResponse({status: 201, body: newTasks})).pipe(delay(randomDelay()));
+    }
+
+    const importConfirmMatch = req.url.match(/^\/api\/imports\/([^/]+)\/confirm$/);
+    if (importConfirmMatch && req.method === 'POST') {
+        const id = importConfirmMatch[1];
+        const task = mockImportTasks.find(t => t.id === id);
+        if (task) {
+            task.status = 'done';
+            mockSseSubject.next({...task});
+        }
+        return of(new HttpResponse({status: 204})).pipe(delay(randomDelay()));
+    }
+
+    const importDetailMatch = req.url.match(/^\/api\/imports\/([^/]+)$/);
+    if (importDetailMatch && req.method === 'GET') {
+        const id = importDetailMatch[1];
+        const task = mockImportTasks.find(t => t.id === id);
+        if (!task) {
+            return of(new HttpResponse({status: 404}));
+        }
+        return of(new HttpResponse({status: 200, body: task})).pipe(delay(randomDelay()));
+    }
+
+    if (importDetailMatch && req.method === 'DELETE') {
+        const id = importDetailMatch[1];
+        const index = mockImportTasks.findIndex(t => t.id === id);
+        if (index !== -1) {
+            mockImportTasks.splice(index, 1);
+        }
+        return of(new HttpResponse({status: 204})).pipe(delay(randomDelay()));
     }
 
     return next(req);

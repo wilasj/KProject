@@ -1,0 +1,48 @@
+<div class="pdf-importer__backdrop" (click)="close.emit()"></div>
+
+<div class="pdf-importer__box">
+  <div class="pdf-importer__header">
+    <span class="pdf-importer__title">Importar PDF</span>
+    <button class="pdf-importer__close" (click)="close.emit()" aria-label="Fechar">
+      <span class="material-symbols-outlined">close</span>
+    </button>
+  </div>
+
+  <div class="pdf-importer__task-list">
+    <app-import-task-list [tasks]="tasks()" (taskClick)="onTaskClick($event)" />
+  </div>
+
+  <div
+    class="pdf-importer__upload-zone"
+    [class.pdf-importer__upload-zone--drag-over]="dragOver()"
+    (click)="openFilePicker()"
+    (dragover)="onDragOver($event)"
+    (dragleave)="onDragLeave()"
+    (drop)="onDrop($event)"
+  >
+    <span class="material-symbols-outlined pdf-importer__upload-icon">
+      {{ uploading() ? 'hourglass_empty' : 'upload_file' }}
+    </span>
+    <p class="pdf-importer__upload-label">
+      Arraste PDFs aqui ou <span class="pdf-importer__upload-link">clique para selecionar</span>
+    </p>
+    @if (fileError()) {
+      <p class="pdf-importer__upload-error">{{ fileError() }}</p>
+    }
+    @if (skippedFiles().length > 0) {
+      <p class="pdf-importer__upload-skipped">
+        {{ skippedFiles().length === 1 ? 'Ignorado (já importado):' : 'Ignorados (já importados):' }}
+        {{ skippedFiles().join(', ') }}
+      </p>
+    }
+  </div>
+
+  <input
+    #fileInput
+    type="file"
+    accept=".pdf"
+    multiple
+    class="pdf-importer__file-input"
+    (change)="onFilesSelected($event)"
+  />
+</div>

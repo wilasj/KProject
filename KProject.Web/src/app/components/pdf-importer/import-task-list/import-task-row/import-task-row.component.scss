@@ -1,0 +1,71 @@
+:host {
+  display: block;
+}
+
+.import-task-row {
+  display: flex;
+  align-items: center;
+  gap: 0.625rem;
+  padding: 0.625rem 1rem;
+  transition: background var(--transition-base);
+
+  &--clickable {
+    cursor: pointer;
+
+    &:hover {
+      background: #f8f8f8;
+    }
+  }
+
+  &__icon {
+    font-size: 1.125rem;
+    flex-shrink: 0;
+
+    &[data-status='pending']    { color: #9e9e9e; }
+    &[data-status='processing'] { color: #f59e0b; animation: spin 1s linear infinite; }
+    &[data-status='review']     { color: #3b82f6; }
+    &[data-status='done']       { color: #22c55e; }
+    &[data-status='error']      { color: #ef4444; }
+  }
+
+  &__info {
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.125rem;
+  }
+
+  &__filename {
+    font-size: 0.8125rem;
+    font-weight: 500;
+    color: #1a1a1a;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  &__date {
+    font-size: 0.75rem;
+    color: #9e9e9e;
+  }
+
+  &__error {
+    font-size: 0.75rem;
+    color: #ef4444;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  &__chevron {
+    font-size: 1rem;
+    color: #9e9e9e;
+    flex-shrink: 0;
+  }
+}
+
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to   { transform: rotate(360deg); }
+}

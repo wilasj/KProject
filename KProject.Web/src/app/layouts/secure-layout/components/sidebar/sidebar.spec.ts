@@ -2,16 +2,31 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
 import { provideRouter } from '@angular/router';
 import { signal } from '@angular/core';
-import { of } from 'rxjs';
+import { of, Subject } from 'rxjs';
 import { Sidebar } from './sidebar';
 import { Auth } from '@core/auth';
 import { InvitePopup } from '../invite-popup/invite-popup';
+import { PdfImporterComponent } from '@components/pdf-importer/pdf-importer.component';
+import { ImportService } from '@core/import.service';
+import { ImportTask } from '@models/import';
+
+const mockImportService = {
+  getTasks: vi.fn().mockReturnValue(of([])),
+  uploadFiles: vi.fn().mockReturnValue(of([])),
+  connectSse: vi.fn().mockReturnValue(new Subject<Partial<ImportTask>>().asObservable()),
+  disconnectSse: vi.fn(),
+};
 
 describe('Sidebar', () => {
   let component: Sidebar;
   let fixture: ComponentFixture<Sidebar>;
 
-  beforeEach(() => TestBed.resetTestingModule());
+  beforeEach(() => {
+    TestBed.resetTestingModule();
+    mockImportService.getTasks.mockReturnValue(of([]));
+    mockImportService.connectSse.mockReturnValue(new Subject<Partial<ImportTask>>().asObservable());
+    mockImportService.disconnectSse.mockReset();
+  });
 
   const createComponent = async (email: string | null) => {
     await TestBed.configureTestingModule({
@@ -22,6 +37,7 @@ describe('Sidebar', () => {
           provide: Auth,
           useValue: { email: signal(email), criaInvite: vi.fn().mockReturnValue(of('token')) },
         },
+        { provide: ImportService, useValue: mockImportService },
       ],
     }).compileComponents();
 
@@ -90,5 +106,30 @@ describe('Sidebar', () => {
     popupInstance.close.emit();
 
     expect(component.inviteOpen()).toBe(false);
+  });
+
+  it('deve iniciar com importOpen como false', async () => {
+    await createComponent('test@test.com');
+    expect(component.importOpen()).toBe(false);
+  });
+
+  it('deve abrir o pdf-importer ao clicar no botao de import', async () => {
+    await createComponent('test@test.com');
+    fixture.detectChanges();
+
+    fixture.nativeElement.querySelector('.sidebar__import').click();
+
+    expect(component.importOpen()).toBe(true);
+  });
+
+  it('deve fechar o pdf-importer quando PdfImporterComponent emitir close', async () => {
+    await createComponent('test@test.com');
+    component.importOpen.set(true);
+    fixture.detectChanges();
+
+    const importerInstance = fixture.debugElement.query(By.directive(PdfImporterComponent)).componentInstance as PdfImporterComponent;
+    importerInstance.close.emit();
+
+    expect(component.importOpen()).toBe(false);
   });
 });
