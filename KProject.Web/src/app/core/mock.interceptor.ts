@@ -183,11 +183,11 @@ export const mockInterceptor: HttpInterceptorFn = (req, next) => {
               }
             : {
                 id,
-                status: 'Aberta',
+                status: mockSales.find(s => s.id === id)?.status ?? 'Aberta',
                 criadaEm: '2026-01-01T10:00:00Z',
                 modificadaEm: '2026-01-01T10:00:00Z',
                 criadaPor: 'Admin',
-                clienteNome: 'Cliente Generico',
+                clienteNome: mockSales.find(s => s.id === id)?.clienteNome ?? 'Cliente Generico',
                 itens: [
                     {id: 99, produtoNome: 'Produto Generico', loteNumero: 1, pacienteNome: 'Paciente X', quantidadeConsignada: 5, vendido: 3, devolvido: 1},
                 ],
