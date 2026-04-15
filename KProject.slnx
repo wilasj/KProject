@@ -8,7 +8,6 @@
     <File Path=".github/workflows/create-image.yaml" />
     <File Path="compose.dev.yaml" />
     <File Path="compose.prod.yaml" />
-    <File Path="compose.yaml" />
   </Folder>
   <Project Path="KProject.Api/KProject.Api.csproj" />
   <Project Path="KProject.Application/KProject.Application.csproj" />

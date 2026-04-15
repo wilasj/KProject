@@ -24,7 +24,7 @@ Each feature folder (e.g. `Clientes/CriaCliente/`) contains the command/query, i
 
 **Infrastructure:**
 
-- `compose.yaml` is the base; `compose.dev.yaml` extends it for local dev, `compose.prod.yaml` for production
+- `compose.dev.yaml` is for local dev (includes database); `compose.prod.yaml` is for production (no database — uses external `$POSTGRES_URI`)
 - CI/CD via GitHub Actions; hosted on Dokploy
 
 ## Domain
@@ -76,4 +76,4 @@ Consignment management system:
 
 ## Infrastructure
 
-- Do **not** modify `compose.yaml`, `compose.dev.yaml`, `compose.prod.yaml`, CI/CD pipelines, or `appsettings.json` without asking
+- Do **not** modify `compose.dev.yaml`, `compose.prod.yaml`, CI/CD pipelines, or `appsettings.json` without asking
