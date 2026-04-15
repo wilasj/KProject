@@ -4,12 +4,6 @@
     pull_policy: always
     environment:
       DOTNET_ENVIRONMENT: Production
-      ConnectionStrings__Database: Host=kproject.database;Database=kproject;Username=postgres;Password=${POSTGRES_PASSWORD}
+      ConnectionStrings__Database: ${POSTGRES_URI}
     expose:
       - 8080
-  
-  kproject.database:
-    environment:
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
-    ports:
-      - "127.0.0.1:5432:5432"
