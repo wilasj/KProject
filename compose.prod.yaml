@@ -5,5 +5,7 @@
     environment:
       DOTNET_ENVIRONMENT: Production
       ConnectionStrings__Database: ${POSTGRES_URI}
+    networks:
+      - dokploy-network  
     expose:
       - 8080
